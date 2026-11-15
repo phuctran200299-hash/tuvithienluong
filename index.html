@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tuvithienluong — Lập lá số Tử Vi</title>
+  <meta name="description" content="Lập lá số Tử Vi Đẩu Số chuẩn trường phái Việt Nam, lịch âm múi giờ GMT+7. Thầy Tuvithienluong luận giải chi tiết.">
+  <meta name="theme-color" content="#2a1844">
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Noto+Serif:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="page-home">
+  <!-- Bộ biểu tượng -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="8.5" cy="14.5" r="1.2" fill="currentColor"/><circle cx="12" cy="14.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-yinyang" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5a4.25 4.25 0 0 1 0 8.5 4.25 4.25 0 0 0 0 8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="7.75" r="1.2" fill="currentColor"/><circle cx="12" cy="16.25" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5l2.2 6.2 6.3 1-4.8 4.3 1.3 6.5L12 17.3l-5 3.2 1.3-6.5-4.8-4.3 6.3-1z" fill="currentColor"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <div class="scene" aria-hidden="true"><img src="assets/img/bg-scene.svg" alt=""></div>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="./" aria-label="Tuvithienluong — Trang chủ">
+        <img src="assets/img/logo.svg" alt="" width="42" height="42">
+        <span class="brand-text">
+          <span class="brand-name">Tuvithienluong</span>
+          <span class="brand-sub">Tử Vi Thiên Lương</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Chính">
+        <a href="#lap-la-so" class="nav-link is-current">Lập lá số</a>
+        <a href="la-so.html#n=L%C3%A1%20s%E1%BB%91%20m%E1%BA%ABu&d=20&m=2&y=1999&h=5&mi=30&g=nam&nx=2026&tx=10" class="nav-link">Lá số mẫu</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap hero">
+    <!-- Cột trái: hôm nay + giới thiệu -->
+    <section class="hero-left">
+      <article class="today glass-dark" aria-labelledby="today-title">
+        <h2 id="today-title" class="sr-only">Lịch hôm nay</h2>
+        <button type="button" class="today-nav prev" id="today-prev" aria-label="Ngày trước"><svg class="ico"><use href="#i-left"/></svg></button>
+        <div class="today-grid">
+          <div class="today-solar">
+            <div class="today-dow"><span id="t-dow"></span> <span class="pill" id="t-badge">Hôm nay</span></div>
+            <div class="today-day" id="t-day"></div>
+            <div class="today-my" id="t-my"></div>
+          </div>
+          <div class="today-lunar">
+            <div class="moon-ring">
+              <span class="moon-day" id="t-lday"></span>
+              <span class="moon-label">Âm lịch</span>
+            </div>
+            <div class="today-lmy" id="t-lmy"></div>
+          </div>
+        </div>
+        <dl class="today-facts">
+          <div><dt>Ngày</dt><dd id="t-cn-ngay"></dd></div>
+          <div><dt>Tháng</dt><dd id="t-cn-thang"></dd></div>
+          <div><dt>Tiết khí</dt><dd id="t-tiet"></dd></div>
+        </dl>
+        <div class="hoang-dao">
+          <span class="hd-label">Giờ hoàng đạo</span>
+          <ul id="t-hd"></ul>
+        </div>
+        <button type="button" class="today-nav next" id="today-next" aria-label="Ngày sau"><svg class="ico"><use href="#i-right"/></svg></button>
+      </article>
+
+      <div class="hero-copy">
+        <p class="eyebrow"><svg class="ico"><use href="#i-star"/></svg> Tử Vi Đẩu Số · Trường phái Việt Nam</p>
+        <h1>Lập lá số Tử Vi <span class="gold-text">chuẩn xác</span>, luận giải bởi thầy Thiên Lương</h1>
+        <p class="lead">An đủ hơn 110 sao, đại vận, tiểu hạn, lưu niên và nguyệt hạn. Lịch âm tính theo múi giờ Việt Nam (GMT+7). Dữ liệu chỉ nằm trên máy bạn.</p>
+        <ul class="features">
+          <li><strong>110+</strong><span>sao an đủ</span></li>
+          <li><strong>GMT+7</strong><span>lịch âm Việt</span></li>
+          <li><strong>1 chạm</strong><span>tải ảnh · in · chia sẻ</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Cột phải: form -->
+    <section class="hero-right" id="lap-la-so" aria-labelledby="form-title">
+      <div class="form-card glass-light">
+        <div class="form-head">
+          <h2 id="form-title">Lập lá số Tử Vi</h2>
+          <p>Khám phá vận mệnh · Định hướng tương lai</p>
+        </div>
+
+        <form id="form" novalidate>
+          <div class="ifield">
+            <span class="ibox"><svg class="ico"><use href="#i-user"/></svg></span>
+            <input id="ten" name="ten" type="text" autocomplete="name" placeholder="Họ và tên" maxlength="60" aria-label="Họ và tên">
+          </div>
+
+          <div class="ifield multi">
+            <span class="ibox"><svg class="ico"><use href="#i-cal"/></svg></span>
+            <div class="ifield-row cols-4">
+              <select id="ngay" name="ngay" aria-label="Ngày sinh"></select>
+              <select id="thang" name="thang" aria-label="Tháng sinh"></select>
+              <input id="nam" name="nam" type="number" inputmode="numeric" min="1900" max="2100" required placeholder="Năm sinh" aria-label="Năm sinh" data-error="nam-error">
+              <select id="lich" name="lich" aria-label="Loại lịch">
+                <option value="duong">Dương lịch</option>
+                <option value="am">Âm lịch</option>
+              </select>
+            </div>
+          </div>
+          <div id="nam-error" class="error-msg"><span role="img" aria-label="Lỗi">⚠</span> Nhập năm sinh từ 1900 đến 2100.</div>
+          <label class="check nhuan" hidden><input type="checkbox" id="thangNhuan" name="thangNhuan"> Sinh vào tháng nhuận</label>
+
+          <div class="ifield multi">
+            <span class="ibox"><svg class="ico"><use href="#i-clock"/></svg></span>
+            <div class="ifield-row cols-2">
+              <select id="gio" name="gio" aria-label="Giờ sinh"></select>
+              <select id="phut" name="phut" aria-label="Phút sinh"></select>
+            </div>
+          </div>
+          <p class="hint" id="gio-hint" aria-live="polite"></p>
+
+          <div class="split">
+            <div class="ifield">
+              <span class="ibox"><svg class="ico"><use href="#i-yinyang"/></svg></span>
+              <div class="seg" role="radiogroup" aria-label="Giới tính">
+                <label><input type="radio" name="gioiTinh" value="1" checked><span>Nam</span></label>
+                <label><input type="radio" name="gioiTinh" value="-1"><span>Nữ</span></label>
+              </div>
+            </div>
+            <div class="ifield">
+              <span class="ibox"><svg class="ico"><use href="#i-eye"/></svg></span>
+              <div class="ifield-row cols-2">
+                <input id="namXem" name="namXem" type="number" inputmode="numeric" min="1900" max="2200" required aria-label="Năm xem">
+                <select id="thangXem" name="thangXem" aria-label="Tháng xem (âm lịch)"></select>
+              </div>
+            </div>
+          </div>
+
+          <details class="advanced">
+            <summary>Tùy chọn an sao nâng cao</summary>
+            <div class="advanced-body">
+              <label class="check"><input type="checkbox" id="tySangNgayMoi" name="tySangNgayMoi" checked>
+                Sinh giờ Tý muộn (23h–24h) tính sang ngày hôm sau</label>
+              <label for="tuHoaCanh" class="adv-label">Tứ Hóa năm Canh</label>
+              <label class="check"><input type="checkbox" id="nhuanTach15" name="nhuanTach15">
+                Sinh tháng nhuận: sau ngày 15 tính sang tháng sau</label>
+              <label for="tuHoaCanh" class="adv-label">Tứ Hóa năm Canh</label>
+              <select id="tuHoaCanh" name="tuHoaCanh">
+                <option value="amDong">Nhật – Vũ – Âm – Đồng (phổ biến)</option>
+                <option value="dongAm">Nhật – Vũ – Đồng – Âm</option>
+              </select>
+              <label for="tuHoaNham" class="adv-label">Tứ Hóa năm Nhâm (Hóa Khoa)</label>
+              <select id="tuHoaNham" name="tuHoaNham">
+                <option value="taPhu">Lương – Tử – Tả – Vũ (Tả Phù hóa Khoa)</option>
+                <option value="thienPhu">Lương – Tử – Phủ – Vũ (Thiên Phủ hóa Khoa)</option>
+              </select>
+              <label for="khoiVietCanh" class="adv-label">Khôi – Việt năm Canh</label>
+              <select id="khoiVietCanh" name="khoiVietCanh">
+                <option value="nguDan">Khôi Ngọ – Việt Dần (Canh Tân Mã Hổ)</option>
+                <option value="suuMui">Khôi Sửu – Việt Mùi (Giáp Mậu Canh Ngưu Dương)</option>
+              </select>
+              <label for="thienGiai" class="adv-label">An Thiên Giải</label>
+              <select id="thienGiai" name="thienGiai">
+                <option value="lienTiep">Từ Thân, đếm liền từng cung</option>
+                <option value="nhayCung">Từ Thân, đếm nhảy cung (sách cụ Thiên Lương)</option>
+              </select>
+            </div>
+          </details>
+
+          <div id="form-error" class="form-error" role="alert" hidden></div>
+
+          <button type="submit" class="btn btn-cta">
+            <svg class="ico"><use href="#i-star"/></svg> Lập lá số
+          </button>
+          <p class="form-foot">Xem thử <a href="la-so.html#n=L%C3%A1%20s%E1%BB%91%20m%E1%BA%ABu&d=20&m=2&y=1999&h=5&mi=30&g=nam&nx=2026&tx=10">lá số minh họa</a></p>
+        </form>
+      </div>
+
+      <div class="history glass-light" id="history" hidden>
+        <h2>Lá số gần đây</h2>
+        <ul id="history-list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><strong>Tuvithienluong</strong> — Lá số an theo trường phái Tử Vi Việt Nam, lịch âm múi giờ GMT+7.</p>
+      <p class="muted">Lá số mang tính tham khảo. Phần luận giải chi tiết do thầy của Tuvithienluong thực hiện.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/tuvi-core.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/home.js"></script>
+</body>
+</html>

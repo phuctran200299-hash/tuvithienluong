@@ -1,0 +1,250 @@
+/* ============================================================
+   BẢN THIẾT KẾ 2 — "THIÊN HÀ"
+   Trời đêm, kim nhũ phát sáng, kính mờ. Lá số NỀN TỐI chữ sáng.
+   ============================================================ */
+.t-thienha {
+  --night: #0b0714;
+  --night-2: #140c24;
+  --panel: #180f2b;
+  --gold: #e8cf96;
+  --gold-2: #b48b3c;
+  --lav: #cfc3e8;
+  --lav-soft: #9c8fb8;
+
+  background: var(--night);
+  color: #ece6f7;
+}
+.t-thienha a { color: var(--gold); }
+.t-thienha ::selection { background: rgb(232 207 150 / .3); }
+
+/* ---------- Nền trời sao ---------- */
+.t-thienha .sky { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--night); }
+.t-thienha .sky::before {
+  content: ""; position: absolute; inset: -10%;
+  background-image:
+    radial-gradient(1.6px 1.6px at 12% 18%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 28% 62%, #e6d9ff, transparent),
+    radial-gradient(1.8px 1.8px at 44% 24%, #fff, transparent),
+    radial-gradient(1.1px 1.1px at 58% 70%, #fff3d0, transparent),
+    radial-gradient(1.5px 1.5px at 72% 32%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 86% 58%, #d8c8ff, transparent),
+    radial-gradient(1.4px 1.4px at 8% 78%, #fff, transparent),
+    radial-gradient(1.1px 1.1px at 36% 88%, #fff, transparent),
+    radial-gradient(1.6px 1.6px at 64% 12%, #fff6dc, transparent),
+    radial-gradient(1.2px 1.2px at 92% 86%, #fff, transparent),
+    radial-gradient(1.3px 1.3px at 20% 44%, #fff, transparent),
+    radial-gradient(1.1px 1.1px at 78% 76%, #e9ddff, transparent);
+  opacity: .85;
+}
+.t-thienha .sky .orb {
+  position: absolute; inset: auto 0 auto 50%; top: -220px; width: 760px; height: 760px;
+  transform: translateX(-50%); border-radius: 50%;
+  background: radial-gradient(circle, rgb(122 74 166 / .5) 0%, rgb(76 29 111 / .22) 42%, rgb(11 7 20 / 0) 70%);
+  filter: blur(14px);
+}
+
+/* ---------- Thanh chọn bản thiết kế ---------- */
+.t-thienha .switcher { color: var(--lav-soft); }
+.t-thienha .switcher a.is-current { background: rgb(232 207 150 / .14); color: var(--gold); }
+
+/* ---------- Header ---------- */
+.t-thienha .site-header { background: rgb(11 7 20 / .55); border-bottom: 1px solid rgb(232 207 150 / .18); }
+.t-thienha .brand-name { font-size: 1.3rem; letter-spacing: .24em; font-weight: 600; }
+.t-thienha .brand-sub { font-style: italic; text-transform: none; letter-spacing: .02em; color: var(--lav-soft); }
+.t-thienha .brand img { filter: drop-shadow(0 0 14px rgb(232 207 150 / .5)); }
+.t-thienha .nav-link { color: var(--lav); }
+.t-thienha .nav-link:hover { background: rgb(232 207 150 / .1); color: var(--gold); }
+.t-thienha .nav-link.is-current { color: var(--gold); background: rgb(232 207 150 / .12); }
+
+/* ---------- Mở đầu ---------- */
+.t-thienha .hero-sky { text-align: center; padding: 56px 0 30px; }
+.t-thienha .hero-mark {
+  display: block; margin: 0 auto 18px;
+  filter: drop-shadow(0 0 26px rgb(232 207 150 / .45));
+  animation: tl-float 7s ease-in-out infinite;
+}
+@keyframes tl-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@media (prefers-reduced-motion: reduce) { .t-thienha .hero-mark { animation: none; } }
+.t-thienha .eyebrow { color: var(--gold); justify-content: center; }
+.t-thienha .hero-sky h1 {
+  font-family: var(--font-serif); font-weight: 700; margin: 0 0 16px; color: #fff;
+  font-size: clamp(2.1rem, 5vw, 3.6rem); line-height: 1.16; letter-spacing: .01em;
+  text-shadow: 0 0 60px rgb(122 74 166 / .6);
+}
+.t-thienha .gold-text {
+  background: linear-gradient(135deg, #fff2cf 0%, #e8cf96 40%, #b48b3c 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.t-thienha .lead { color: var(--lav); margin-inline: auto; max-width: 62ch; }
+
+/* Dải thông tin ngày hôm nay */
+.t-thienha .sky-strip {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 14px; margin-top: 26px;
+}
+.t-thienha .sky-strip span {
+  display: grid; gap: 2px; padding: 10px 18px; min-width: 150px;
+  background: rgb(24 15 43 / .62); border: 1px solid rgb(232 207 150 / .22); border-radius: 14px;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.t-thienha .sky-strip i {
+  font-style: normal; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--lav-soft);
+}
+.t-thienha .sky-strip b { color: var(--gold); font-weight: 600; font-size: .95rem; }
+
+/* ---------- Form ---------- */
+.t-thienha .form-wrap { max-width: 760px; padding-bottom: 54px; }
+.t-thienha .form-card {
+  background: rgb(24 15 43 / .66); border: 1px solid rgb(232 207 150 / .28);
+  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+  border-radius: 22px; padding: 30px 28px 24px; color: #ece6f7;
+  box-shadow: 0 40px 80px -50px #000, inset 0 1px 0 rgb(255 255 255 / .06);
+}
+.t-thienha .form-card::before { background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: .7; }
+.t-thienha .form-head h2 {
+  font-family: var(--font-serif); background: linear-gradient(135deg, #fff2cf, #e8cf96 45%, #b48b3c);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.t-thienha .form-head p { color: var(--lav-soft); }
+.t-thienha .ifield {
+  background: rgb(11 7 20 / .55); border: 1px solid rgb(232 207 150 / .22); border-radius: 14px;
+}
+.t-thienha .ifield:focus-within { border-color: var(--gold); box-shadow: 0 0 0 4px rgb(232 207 150 / .14); }
+.t-thienha .ibox { background: rgb(232 207 150 / .12); color: var(--gold); }
+.t-thienha .ifield-row > * + * { border-left: 1px solid rgb(232 207 150 / .14); }
+.t-thienha .ifield input, .t-thienha .ifield select { color: #f3eefc; }
+.t-thienha .ifield input::placeholder { color: #8d81a8; }
+.t-thienha .ifield input:focus-visible, .t-thienha .ifield select:focus-visible { background-color: rgb(232 207 150 / .08); }
+.t-thienha select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23e8cf96' stroke-width='1.6'/%3E%3C/svg%3E");
+}
+.t-thienha option { background: #180f2b; color: #f3eefc; }
+.t-thienha .seg { background: rgb(11 7 20 / .5); }
+.t-thienha .seg span { color: var(--lav-soft); }
+.t-thienha .seg input:checked + span { background: rgb(232 207 150 / .18); color: var(--gold); box-shadow: none; }
+.t-thienha .btn-cta {
+  background: linear-gradient(135deg, #7a4aa6 0%, #4c1d6f 55%, #2a1046 100%);
+  border-color: rgb(232 207 150 / .5);
+  box-shadow: 0 18px 40px -20px rgb(122 74 166 / .9), inset 0 -2px 0 rgb(232 207 150 / .55);
+}
+.t-thienha .btn-soft {
+  background: rgb(24 15 43 / .7); color: var(--gold); border-color: rgb(232 207 150 / .3);
+}
+.t-thienha .btn-soft:hover { background: rgb(232 207 150 / .12); border-color: var(--gold); }
+.t-thienha .form-error { background: rgb(192 57 43 / .16); color: #ffb9ae; border-color: rgb(192 57 43 / .5); }
+
+/* ---------- Khối lá số ---------- */
+.t-thienha .section-head h1 {
+  font-family: var(--font-serif); font-size: clamp(1.8rem, 3.6vw, 2.6rem); margin: 4px 0 2px;
+  background: linear-gradient(135deg, #fff2cf, #e8cf96 45%, #b48b3c);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.t-thienha .chart-sub { color: var(--lav); }
+.t-thienha .summary li { background: rgb(24 15 43 / .6); border-color: rgb(232 207 150 / .22); }
+.t-thienha .s-label { color: var(--gold); }
+.t-thienha .dv-toggle { color: var(--lav); }
+.t-thienha .dv-toggle input { accent-color: #7a4aa6; }
+.t-thienha .board-tip, .t-thienha .legend { color: var(--lav-soft); }
+.t-thienha .legend span:has(.dot) { color: var(--lav); }
+.t-thienha .legend .h-K { color: #c9ccd6; } .t-thienha .legend .h-M { color: #6ddf9f; }
+.t-thienha .legend .h-T { color: #7fb8ff; } .t-thienha .legend .h-H { color: #ff8b7a; }
+.t-thienha .legend .h-O { color: #ffc066; }
+
+/* Khung lá số tối */
+.t-thienha .board-frame {
+  background: linear-gradient(145deg, rgb(24 15 43 / .9), rgb(11 7 20 / .95));
+  border-radius: 24px;
+  box-shadow: 0 50px 90px -60px #000, 0 0 0 1px rgb(232 207 150 / .3), 0 0 60px -30px rgb(122 74 166 / .8);
+}
+.t-thienha .board-frame::before, .t-thienha .board-frame::after { border-color: rgb(232 207 150 / .6); }
+
+/* Lá số nền tối */
+.t-thienha .board {
+  --line: rgb(232 207 150 / .32);
+  --tl-paper: #120c20;
+  background: #0f0a1c; color: #ece6f7; border-color: rgb(232 207 150 / .5);
+}
+.t-thienha .cung { background: #120c20; }
+.t-thienha .cung.is-menh { background: linear-gradient(180deg, #291a47, #120c20 60%); }
+.t-thienha .cung.is-dv { box-shadow: inset 0 0 0 1px rgb(232 207 150 / .18); }
+.t-thienha .c-canchi { color: #cfc3e8; }
+.t-thienha .c-ten { color: var(--gold); }
+.t-thienha .is-menh .c-ten { color: #ff9e8a; }
+.t-thienha .cung.is-than .c-ten { color: #d9b8ff; }
+.t-thienha .than-tag { background: #7a4aa6; }
+.t-thienha .c-dh { color: #e6dcf7; }
+.t-thienha .c-dh .th { color: var(--lav-soft); }
+.t-thienha .c-dh .th-xem { background: #b48b3c; color: #130c22; }
+.t-thienha .c-chinh { color: #fff; }
+.t-thienha .c-chinh .vo-chinh-dieu { color: var(--lav-soft); }
+.t-thienha .c-foot { border-top: 1px dotted rgb(232 207 150 / .25); }
+.t-thienha .c-foot .ts { color: #c3a6ff; }
+.t-thienha .c-foot .ln { color: #d8c8e2; }
+.t-thienha .c-foot .dv { color: var(--gold); }
+.t-thienha .sao.dvs { opacity: .62; }
+
+/* Ngũ hành sáng lên trên nền tối */
+.t-thienha .board .h-K { color: #c9ccd6; }
+.t-thienha .board .h-M { color: #6ddf9f; }
+.t-thienha .board .h-T { color: #7fb8ff; }
+.t-thienha .board .h-H { color: #ff8b7a; }
+.t-thienha .board .h-O { color: #ffc066; }
+
+/* Tương tác */
+.t-thienha .cung:hover { background: #1a1130; }
+.t-thienha .cung.is-active {
+  background: #241640; box-shadow: inset 0 0 0 2.5px var(--gold), 0 0 24px -6px rgb(232 207 150 / .5);
+}
+.t-thienha .cung.is-active .c-ten { color: #fff3d6; }
+.t-thienha .cung.is-tam-hop { background: #1b1233; box-shadow: inset 0 0 0 2px rgb(195 166 255 / .55); }
+.t-thienha .cung.is-xung { background: #1e1427; box-shadow: inset 0 0 0 2px rgb(232 207 150 / .5); }
+.t-thienha .sao:hover { background: rgb(232 207 150 / .16); }
+
+/* Trung cung */
+.t-thienha .trung-cung {
+  background: radial-gradient(circle at 50% 42%, #1d1335 0 38%, #0f0a1c 100%);
+  border-color: rgb(232 207 150 / .32);
+}
+.t-thienha .tc-brand { color: var(--gold); }
+.t-thienha .tc-brand img { filter: drop-shadow(0 0 8px rgb(232 207 150 / .6)); }
+.t-thienha .tc-title { color: #fff; border-bottom-color: var(--gold); }
+.t-thienha .tc-info { background: transparent; color: #e9e2f5; }
+.t-thienha .tc-info th { color: var(--gold); }
+.t-thienha .tc-info td.cc { color: #c3a6ff; }
+.t-thienha .tc-info small { color: var(--lav-soft); }
+.t-thienha .tc-seal { border-color: rgb(232 207 150 / .6); color: var(--gold); }
+.t-thienha .tc-focus { background: rgb(24 15 43 / .92); border-color: rgb(232 207 150 / .35); color: #f0e9fb; }
+.t-thienha .tieu-han { color: var(--lav-soft); }
+.t-thienha .tieu-han.is-active { background: var(--gold); color: #130c22; }
+.t-thienha .tam-hop polygon { stroke: rgb(195 166 255 / .8); }
+.t-thienha .tam-hop .xung { stroke: var(--gold); }
+.t-thienha .tam-hop.is-focus polygon { stroke: #c3a6ff; fill: rgb(122 74 166 / .14); }
+.t-thienha .tt-badge { background: var(--gold); color: #130c22; border-color: #fff3d6; }
+.t-thienha .tt-badge.triet { background: #7a4aa6; color: #fff3d6; border-color: var(--gold); }
+
+/* ---------- CTA + footer ---------- */
+.t-thienha .cta-band { background: rgb(24 15 43 / .7); border-color: rgb(232 207 150 / .28); }
+.t-thienha .cta-band h2 { font-family: var(--font-serif); color: var(--gold); }
+.t-thienha .cta-band p { color: var(--lav); }
+.t-thienha .site-footer { background: rgb(11 7 20 / .9); border-top: 1px solid rgb(232 207 150 / .2); color: var(--lav-soft); }
+.t-thienha .site-footer strong { color: var(--gold); letter-spacing: .16em; }
+
+@media (max-width: 560px) {
+  .t-thienha .hero-sky { padding: 34px 0 20px; }
+  .t-thienha .hero-mark { width: 76px; height: 76px; }
+  .t-thienha .brand-name { font-size: 1.02rem; letter-spacing: .16em; }
+  .t-thienha .sky-strip span { min-width: 0; flex: 1 1 44%; padding: 8px 12px; }
+}
+@media print {
+  .t-thienha { background: #fff; color: #000; }
+  .t-thienha .sky, .t-thienha .hero-sky, .t-thienha .form-wrap, .t-thienha .site-header,
+  .t-thienha .site-footer, .t-thienha .cta-band, .t-thienha .summary, .t-thienha .section-head { display: none !important; }
+  .t-thienha .board-frame { background: #fff; box-shadow: none; padding: 0; }
+  .t-thienha .board, .t-thienha .cung, .t-thienha .trung-cung { background: #fff; color: #1a1420; }
+  .t-thienha .board { --line: #3a2a5f; border-color: #3a2a5f; }
+  .t-thienha .c-ten { color: #8a6a1e; }
+  .t-thienha .board .h-K { color: #6f6f78; } .t-thienha .board .h-M { color: #1e8449; }
+  .t-thienha .board .h-T { color: #1f1a2b; } .t-thienha .board .h-H { color: #c0392b; }
+  .t-thienha .board .h-O { color: #c46a12; }
+  .t-thienha .c-chinh, .t-thienha .tc-title, .t-thienha .tc-info { color: #1a1420; }
+  .t-thienha .tc-info th { color: #3a2a5f; }
+}

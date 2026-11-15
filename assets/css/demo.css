@@ -1,0 +1,31 @@
+/* Dùng chung cho 3 bản demo giao diện — thanh chọn bản thiết kế & bố cục gộp 1 trang.
+   Không nằm trong trang thật (index.html / la-so.html). */
+
+.switcher {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 16px; font-size: .86rem; position: relative; z-index: 25;
+}
+.switcher b { font-weight: 600; opacity: .7; margin-right: 6px; }
+.switcher a {
+  text-decoration: none; padding: 5px 12px; border-radius: 999px; font-weight: 600;
+  border: 1px solid currentColor; opacity: .75; transition: opacity .15s, background-color .15s;
+}
+.switcher a:hover { opacity: 1; }
+.switcher a.is-current { opacity: 1; }
+
+/* Khối kết quả gộp chung trang */
+.demo-result { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); padding-bottom: 56px; }
+.demo-result .summary { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.demo-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
+.demo-note {
+  text-align: center; font-size: .85rem; opacity: .75; margin: 0;
+}
+.section-head { text-align: center; margin: 0 0 6px; }
+.section-head h2 { margin: 0; font-size: 1.5rem; }
+
+@media (max-width: 1000px) {
+  .demo-result .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media print {
+  .switcher, .demo-tools, .demo-note, .section-head { display: none !important; }
+}
