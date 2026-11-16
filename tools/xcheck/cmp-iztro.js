@@ -8,7 +8,15 @@ const MAP = {
   'Trường Sinh': 'Tràng Sinh', 'Lực Sỹ': 'Lực Sỹ'
 };
 const SKIP = new Set(['Âm Sát', 'Thiên Vu', 'Thiên Nguyệt', 'Niên Giải', 'Tuần Trung', 'Tuần Không', 'Triệt Lộ', 'Triệt Không',
-  'Không Vong', 'Nguyệt Đức', 'Thiên Đức', 'Long Đức']);
+  'Không Vong', 'Nguyệt Đức', 'Thiên Đức', 'Long Đức',
+  // iztro co HAI sao deu dich sang tieng Viet la "Phi Liêm":
+  //   - 飞廉 trong vong Bac Si (p.boshi12) — dung la sao Phi Liem cua phai VN, doi chieu binh thuong;
+  //   - 蜚廉 trong p.adjectiveStars — sao rieng cua phai TQ, an theo chi nam, phai VN khong dung.
+  // Gop chung hai sao nay se bao "Phi Liêm lech ~3743/8000" trong khi vong Bac Si thuc te khop 100%.
+  'Phi Liêm (蜚廉, phái TQ)']);
+
+// Ten cung: iztro (vi-VN) -> ten dung trong phai VN
+const CUNG_ALIAS = { 'Tử Nữ': 'Tử Tức' };
 
 const stats = {}; // ten -> {n, bad, ex}
 function rec(ten, ok, ex) {
@@ -36,7 +44,9 @@ for (let i = 0; i < 4000; i++) {
   mine.cung.forEach(c => { (pos[c.trangSinh] = pos[c.trangSinh] || []).push(c.chi); });
 
   a.palaces.forEach(p => {
-    const list = [...p.majorStars, ...p.minorStars, ...p.adjectiveStars].map(s => s.name)
+    const list = [...p.majorStars, ...p.minorStars].map(s => s.name)
+      // doi ten 蜚廉 (adjectiveStars) de khong de len Phi Liem cua vong Bac Si — xem SKIP o tren
+      .concat(p.adjectiveStars.map(s => (s.name === 'Phi Liêm' ? 'Phi Liêm (蜚廉, phái TQ)' : s.name)))
       .concat([p.changsheng12, p.boshi12]).filter(Boolean);
     list.forEach(n0 => {
       const n = MAP[n0] || n0;
@@ -67,7 +77,9 @@ for (let i = 0; i < 4000; i++) {
     // Đại hạn
     const myC = mine.cung.find(c => c.chi === p.earthlyBranch);
     rec('Đại hạn', myC.daiHan === p.decadal.range[0], `${tag}: ${p.earthlyBranch} iztro ${p.decadal.range[0]} mình ${myC.daiHan}`);
-    rec('Tên cung', (p.name === myC.ten) || (p.name.replace('Huynh Đệ', 'Huynh Đệ') === myC.ten),
+    // iztro (vi-VN) goi cung Tu Tuc la "Tử Nữ" — chi khac cach goi, khong phai lech vi tri
+    const tenCungIztro = CUNG_ALIAS[p.name] || p.name;
+    rec('Tên cung', tenCungIztro === myC.ten,
       `${tag}: ${p.earthlyBranch} iztro ${p.name} mình ${myC.ten}`);
     if (p.isBodyPalace) rec('Cung Thân', myC.than, tag);
   });

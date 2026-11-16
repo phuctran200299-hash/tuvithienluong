@@ -12,6 +12,21 @@ from lasotuvi.App import lapDiaBan            # noqa: E402
 from lasotuvi.DiaBan import diaBan            # noqa: E402
 from lasotuvi.AmDuong import (ngayThangNam, ngayThangNamCanChi,  # noqa: E402
                               timCuc, nguHanh)
+from lasotuvi import Sao as _sao_module       # noqa: E402
+from lasotuvi.Sao import Sao as _Sao          # noqa: E402
+
+# lasotuvi giu moi sao trong mot bien toan cuc cap module, va DiaBan.py chi goi
+# anDacTinh() khi o tuong ung trong maTranDacTinh co gia tri:
+#     if maTranDacTinh[sao.saoID][viTriDiaBan] in ["M", "V", "Đ", "B", "H"]:
+# Gap o None thi sao GIU NGUYEN dac tinh cua la so truoc do -> ro trang thai.
+# Cac bang nay chi chua "Đ" va None nen ro chi lan duoc mot gia tri, khien loi
+# trong rat "on dinh" va de bi bo qua. Reset truoc moi la so de doi chieu dung.
+_SAO_TOAN_CUC = [v for v in vars(_sao_module).values() if isinstance(v, _Sao)]
+
+
+def resetDacTinh():
+    for s in _SAO_TOAN_CUC:
+        s.saoDacTinh = None
 
 CASES = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cases.json'),
                        encoding='utf-8'))
@@ -19,6 +34,7 @@ CASES = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 out = []
 for c in CASES:
     nn, tt, yy, gio, gt = c['d'], c['m'], c['y'], c['gio'], c['g']
+    resetDacTinh()
     try:
         db = lapDiaBan(diaBan, nn, tt, yy, gio, gt, True, 7)
     except Exception as e:                                   # noqa: BLE001

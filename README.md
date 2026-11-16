@@ -57,7 +57,9 @@ Khi khách chốt một bản, chuyển phần CSS của bản đó vào `assets
   Engine vẫn nhận tham số `tz` và link cũ có `tz=` vẫn mở đúng.
 
 ## Kiểm chứng
-Ba lớp đối chiếu độc lập (script trong thư mục tạm của phiên làm việc, không nằm trong repo):
+Bốn lớp đối chiếu độc lập. Script nằm trong `tools/xcheck/` (xem `tools/xcheck/README.md` để chạy lại);
+dữ liệu đối chiếu tải về thì bị `.gitignore`, dựng lại được bằng chính các script đó.
+Lần chạy lại gần nhất: **16/11/2026**, với iztro 2.6.5 và bản `main` mới nhất của lasotuvi.
 
 1. **`tests/engine.test.js`** — 39 phép kiểm: lá số mẫu tuvi.vn (khớp từng sao), bảng an sao đủ 10 Can / 4 nhóm tam hợp,
    sao đại vận, bộ Đức lưu niên, bảng đắc tính phụ tinh, từ chối dữ liệu sai,
@@ -67,11 +69,19 @@ Ba lớp đối chiếu độc lập (script trong thư mục tạm của phiên
 2. **tuvi.vn (phái VN, trang tham chiếu chính)** — 20 lá số chọn theo từng Can/Chi khó, gửi qua form rồi bóc HTML:
    khớp **216/227 hạng mục**, gồm Can 12 cung (Ngũ Hổ Độn), tên cung, đại hạn, tiểu hạn, Tràng Sinh, nguyệt hạn,
    chính tinh + miếu/vượng/đắc/bình/hãm, ~100 phụ tinh, toàn bộ lưu tinh và sao đại vận.
-3. **iztro (TQ, ~4.4k⭐)** — 4.000 lá số ngẫu nhiên: khớp 100% ở chính tinh, Cục, đại hạn, cung Thân, Tuần, Triệt,
-   vòng Thái Tuế, Bác Sĩ, Tràng Sinh, Tứ Hóa và ~60 phụ tinh.
-4. **lasotuvi (Python gốc)** — 2.000 lá số: khớp 126 hạng mục; mọi chỗ lệch là lỗi đã sửa ở mục trên
-   (kể cả **Thai ↔ Dưỡng bị đảo trong lasotuvi** — iztro và thứ tự vòng Tràng Sinh cổ điển xác nhận bản này đúng)
-   và bảng miếu hãm bị rò trạng thái giữa các lá số do dùng biến toàn cục (lỗi của lasotuvi).
+3. **iztro (TQ, ~4.4k⭐)** — 4.000 lá số ngẫu nhiên: khớp 100% ở chính tinh, Cục, đại hạn, tên cung, cung Thân,
+   Tuần, Triệt, vòng Thái Tuế, Bác Sĩ (cả 12 sao), Tràng Sinh, Tứ Hóa và ~60 phụ tinh — **90 hạng mục khớp tuyệt đối**.
+   Chỉ còn 7 hạng mục lệch, tất cả đều là khác biệt phái VN ↔ phái TQ (bảng bên dưới).
+4. **lasotuvi (Python gốc)** — 2.000 lá số: **khớp 129 hạng mục**; mọi chỗ lệch đều là sửa đổi có chủ ý đã nêu ở trên
+   (kể cả **Thai ↔ Dưỡng bị đảo trong lasotuvi** — iztro và thứ tự vòng Tràng Sinh cổ điển xác nhận bản này đúng).
+
+   **Lưu ý về đắc tính của lasotuvi**: `DiaBan.py` chỉ gọi `anDacTinh()` khi ô tương ứng trong `maTranDacTinh`
+   có giá trị; gặp ô `None` thì sao — vốn là **biến toàn cục cấp module** — giữ nguyên đắc tính của *lá số trước đó*.
+   Vì các bảng này chỉ chứa `Đ` và `None`, rò rỉ chỉ lan được đúng một giá trị nên trông rất "ổn định" và dễ bị bỏ qua.
+   `tools/xcheck/dump_py.py` nay reset đắc tính trước mỗi lá số để vô hiệu hóa lỗi này. Sau khi vô hiệu hóa,
+   5 hạng mục (đắc tính Đại Hao, Tiểu Hao, Thiên Hình, Thiên Mã, Thiên Riêu) chuyển từ "lệch hàng nghìn ca"
+   sang **khớp 100%** — chúng chỉ là nhiễu. Bảy hạng mục đắc tính còn lệch gồm 5 bảng đã cố ý dựng lại (mục dưới)
+   và 2 trường hợp (Hỏa Tinh, Linh Tinh) chỉ là hệ quả của lệch vị trí — bảng đắc tính của chúng giống hệt nhau ở hai bên.
 
 ### Những chỗ còn khác tuvi.vn (đã truy nguyên, không phải lỗi)
 | Điểm | Bản này | tuvi.vn | Căn cứ |
@@ -81,6 +91,25 @@ Ba lớp đối chiếu độc lập (script trong thư mục tạm của phiên
 | L.Long Đức, L.Phúc Đức | Theo vòng Thái Tuế của năm xem | Trùng vị trí sao gốc | tuvi.vn tự mâu thuẫn (L.Thiên Đức/L.Nguyệt Đức của họ vẫn theo năm xem) |
 | ĐV. Hóa Khoa khi cung đại vận can Nhâm | Tả Phù | Thiên Phủ | tuvi.vn dùng Tả Phù cho năm sinh Nhâm nhưng Thiên Phủ cho đại vận |
 | ĐV. Xương/Khúc một số Can | Theo bảng lưu Xương/Khúc | Thiếu hoặc lệch | cùng bảng đó khớp 100% ở lưu niên |
+
+### Những chỗ khác iztro (phái Trung Quốc — khác hệ, không phải lỗi)
+Đo trên 4.000 lá số ngẫu nhiên, 16/11/2026:
+
+| Điểm | Bản này (phái VN) | iztro (phái TQ) | Lệch / 4.000 | Căn cứ |
+|---|---|---|---|---|
+| Giải Thần | an cùng cung Phượng Các (theo Long Trì) | an theo chi năm | 3.665 | **lasotuvi khớp 100%** với bản này |
+| Thiên Quý | cách an phái VN | cách an phái TQ | 3.318 | **lasotuvi khớp 100%** với bản này |
+| Hỏa Tinh | khởi theo tam hợp tuổi, bảng VN | bảng TQ | 1.729 | lasotuvi khớp 3/4 nhóm tuổi; riêng Tỵ Dậu Sửu xem mục “Sửa” ở trên |
+| Linh Tinh | như trên | như trên | 1.599 | như trên |
+| Thiên Trù | năm Quý → **Tuất** | năm Quý → Hợi | 395 | khớp tuvi.vn |
+| Thiên Khôi / Thiên Việt | năm Canh → Ngọ–Dần | năm Canh → Sửu–Mùi | 388 | tùy chọn `khoiVietCanh`; mặc định khớp tuvi.vn |
+
+Mọi hạng mục khác — gồm **cả 12 sao vòng Bác Sĩ** và tên 12 cung — khớp tuyệt đối.
+
+> **Bẫy khi đọc báo cáo iztro**: iztro (vi-VN) dịch **hai sao khác nhau** thành cùng tên “Phi Liêm” —
+> 飞廉 của vòng Bác Sĩ (phái VN có) và 蜚廉 trong `adjectiveStars` (riêng phái TQ). Gộp chung sẽ thấy
+> “Phi Liêm lệch 3743/8000” trong khi vòng Bác Sĩ thực tế khớp **0 lỗi / 4.000**. `cmp-iztro.js` đã tách hai sao này.
+> Tương tự, iztro gọi cung Tử Tức là “Tử Nữ” — chỉ khác cách gọi, đã map trong script.
 
 ### Bảng miếu/vượng/đắc/bình/hãm của phụ tinh (đã bổ sung)
 Trước đây 8 phụ tinh chỉ có bảng thưa của lasotuvi. Nay bảng được dựng lại **đầy đủ 12 cung** từ 20 lá số tuvi.vn
