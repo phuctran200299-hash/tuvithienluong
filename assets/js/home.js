@@ -74,8 +74,51 @@
     var o31 = $('ngay').querySelector('option[value="31"]');
     o31.hidden = am; o31.disabled = am;
     if (am && $('ngay').value === '31') $('ngay').value = '30';
+    updateDoiLich();
   }
   $('lich').addEventListener('change', updateLich);
+
+  /* ---- Đổi lịch hai chiều: nhập dương ra âm, nhập âm ra dương ---- */
+  function laNgayDuongCoThat(d, m, y) {
+    var dt = new Date(y, m - 1, d);
+    return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
+  }
+
+  function updateDoiLich() {
+    var el = $('doi-lich');
+    el.className = 'doi-lich';
+    var d = Number($('ngay').value), m = Number($('thang').value), y = Number($('nam').value);
+    if (!d || !m || !y || y < 1900 || y > 2100) { el.textContent = ''; return; }
+
+    try {
+      if (isAmLich()) {
+        // Âm -> Dương
+        var s = TVTL.lunar.lunarToSolar(d, m, y, $('thangNhuan').checked ? 1 : 0, 7);
+        if (!s || !s[2]) {
+          el.className = 'doi-lich loi';
+          el.textContent = 'Năm ' + y + ' không có tháng ' + m + ' nhuận — bỏ dấu tích "tháng nhuận" hoặc chọn tháng khác.';
+          return;
+        }
+        var ts = TVTL.thongTinNgay(s[0], s[1], s[2], 7);
+        el.innerHTML = 'Dương lịch: <b>' + s[0] + '/' + s[1] + '/' + s[2] + '</b> · năm ' + C.escapeHtml(ts.canChiNam);
+      } else {
+        // Dương -> Âm
+        if (!laNgayDuongCoThat(d, m, y)) {
+          el.className = 'doi-lich loi';
+          el.textContent = 'Ngày ' + d + '/' + m + '/' + y + ' không có trên lịch dương.';
+          return;
+        }
+        var t = TVTL.thongTinNgay(d, m, y, 7);
+        el.innerHTML = 'Âm lịch: <b>' + t.am.ngay + '/' + t.am.thang + (t.am.nhuan ? ' nhuận' : '') + '/' + t.am.nam +
+          '</b> · năm ' + C.escapeHtml(t.canChiNam);
+      }
+    } catch (e) { el.textContent = ''; }
+  }
+
+  $('ngay').addEventListener('change', updateDoiLich);
+  $('thang').addEventListener('change', updateDoiLich);
+  $('nam').addEventListener('input', updateDoiLich);
+  $('thangNhuan').addEventListener('change', updateDoiLich);
 
   function readForm() {
     return {
@@ -107,6 +150,7 @@
     $('khoiVietCanh').value = p.khoiVietCanh === 'suuMui' ? 'suuMui' : 'nguDan';
     $('thienGiai').value = p.thienGiai === 'nhayCung' ? 'nhayCung' : 'lienTiep';
     $('nhuanTach15').checked = !!p.nhuanTach15;
+    updateDoiLich();
     // mở sẵn phần nâng cao nếu đang dùng tùy chọn khác mặc định
     if (p.tySangNgayMoi === false || p.tuHoaCanh === 'dongAm' || p.tuHoaNham === 'thienPhu' ||
         p.khoiVietCanh === 'suuMui' || p.thienGiai === 'nhayCung' || p.nhuanTach15) form.querySelector('.advanced').open = true;

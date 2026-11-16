@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tuvithienluong — Lập lá số Tử Vi</title>
   <meta name="description" content="Lập lá số Tử Vi Đẩu Số chuẩn trường phái Việt Nam, lịch âm múi giờ GMT+7. Thầy Tuvithienluong luận giải chi tiết.">
-  <meta name="theme-color" content="#2a1844">
-  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <meta name="theme-color" content="#3b1d5d">
+  <link rel="icon" type="image/png" href="assets/img/logo-mark.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Noto+Serif:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
@@ -25,20 +25,17 @@
     <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </svg>
 
-  <div class="scene scene-dim" aria-hidden="true"><img src="assets/img/bg-scene.svg" alt=""></div>
-
   <header class="site-header">
     <div class="wrap header-inner">
-      <a class="brand" href="./" aria-label="Tuvithienluong — Trang chủ">
-        <img src="assets/img/logo.svg" alt="" width="56" height="56">
+      <a class="brand" href="./" aria-label="Thiên Lương — Trang chủ">
+        <img src="assets/img/logo-mark.png" alt="" width="512" height="512">
         <span class="brand-text">
-          <span class="brand-name">Tuvithienluong</span>
-          <span class="brand-sub">Tử Vi Thiên Lương</span>
+          <span class="brand-name">THIÊN LƯƠNG</span>
+          <span class="brand-sub">Sáng rõ trước mỗi quyết định</span>
         </span>
       </a>
       <nav class="nav" aria-label="Chính">
         <a href="#lap-la-so" class="nav-link is-current">Lập lá số</a>
-        <a href="la-so.html#n=L%C3%A1%20s%E1%BB%91%20m%E1%BA%ABu&d=20&m=2&y=1999&h=5&mi=30&g=nam&nx=2026&tx=10" class="nav-link">Lá số mẫu</a>
       </nav>
     </div>
   </header>
@@ -114,6 +111,7 @@
           </div>
           <div id="nam-error" class="error-msg"><span role="img" aria-label="Lỗi">⚠</span> Nhập năm sinh từ 1900 đến 2100.</div>
           <label class="check nhuan" hidden><input type="checkbox" id="thangNhuan" name="thangNhuan"> Sinh vào tháng nhuận</label>
+          <p class="doi-lich" id="doi-lich" aria-live="polite"></p>
 
           <div class="ifield multi">
             <span class="ibox"><svg class="ico"><use href="#i-clock"/></svg></span>
@@ -176,7 +174,6 @@
           <button type="submit" class="btn btn-cta">
             <svg class="ico"><use href="#i-star"/></svg> Lập lá số
           </button>
-          <p class="form-foot">Xem thử <a href="la-so.html#n=L%C3%A1%20s%E1%BB%91%20m%E1%BA%ABu&d=20&m=2&y=1999&h=5&mi=30&g=nam&nx=2026&tx=10">lá số minh họa</a></p>
         </form>
       </div>
 
