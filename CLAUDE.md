@@ -14,7 +14,9 @@ No build step, no package.json, no npm dependencies. Plain HTML + CSS + classic 
 node tests/engine.test.js      # engine test suite (39 checks, incl. a 2000-chart invariant sweep); exits 1 if any fail
 npx serve .                    # serve locally — use this, not just opening index.html, for copy-link/PNG
 python -m http.server 8080     # alternative static server
-node tools/gen-scene.js        # regenerate assets/img/bg-scene.svg (only when the background art changes)
+SITE_URL=https://… node tools/build.js   # build dist/ for deploy; refuses to run without SITE_URL
+python tools/gen-og.py         # regenerate assets/img/og-image.png (only when brand/wording changes)
+node tools/gen-scene.js        # regenerate assets/img/bg-scene.svg (no longer referenced by any page)
 node tools/xcheck/cmp-tuvivn.js    # accuracy cross-check vs tuvi.vn (network; 16 charts, 1.5s apart)
 node tools/xcheck/cmp-offline.js   # re-check the saved tuvi.vn HTML, optionally with other option values
 node tools/xcheck/dac-tinh.js      # miếu/vượng/đắc/bình/hãm table: tuvi.vn vs iztro vs engine
@@ -76,5 +78,8 @@ Disputed points are exposed as options in "Tùy chọn an sao nâng cao" and thr
 - Hover/tam-hợp highlighting is gated behind `@media (hover: hover)`; click pins focus, Esc clears. `clearFocus(board)` is called before print and PNG export.
 - `.chart-page` and `#content` use `grid-template-columns: minmax(0, 1fr)` to stop the board overflowing on mobile; plain `1fr` reintroduces a horizontal scrollbar.
 - `CONFIG.lienHeThayUrl` in `common.js` is empty, which hides the CTA band. The user will supply the thầy's Zalo/Messenger link later.
-- Deploy target is free static hosting (Cloudflare Pages). `tests/`, `tools/`, the PDFs and the `.jpg` reference screenshots in the root are working material, not part of what gets published.
+- Deploy target is free static hosting (Cloudflare Pages), and **never the repo root** — `tools/build.js` assembles `dist/` from an explicit list so the two PDFs, the three `design-*.html` demos, `CLAUDE.md` and `README.md` stay unpublished. Its last step re-scans the built HTML **and JS and CSS** for `assets/...` paths and fails the build on any that was not copied; that check exists because `render.js` injects `assets/img/logo.svg` from JS, where an HTML-only scan misses it. Add a new asset → it is copied automatically; add a demo-only asset → add it to `EXCLUDE`.
+- `assets/img/og-image.png` is committed, not built on deploy: Cloudflare's build container has Node but no Pillow. Regenerate it locally with `tools/gen-og.py`, which **aborts if a font lacks a glyph** — Georgia, Bookman and Sylfaen have no `Ư`/`Ơ` and no two-diacritic letters, and a missing glyph renders as an empty box while the script still reports success. Comparing bounding boxes does not detect this (the `.notdef` box has one); the script compares each glyph's bitmap against a code point known to be absent. `✦` is in no Windows font and is drawn as a polygon.
+- Chart pages carry the client's name and birth time, so `la-so.html` is built with `noindex` and disallowed in `robots.txt`.
+- Assets are cached for 1 day, not a year: filenames carry no content hash, so `immutable` would pin a stale `style.css` on every visitor. Change this only together with hashed filenames.
 - `tools/xcheck/cmp-tuvivn.js` posts to a third party's public form. Keep the 1.5s delay, keep the name field as `"A"`, and never send the user's real name or any personal data to it.

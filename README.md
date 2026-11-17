@@ -8,7 +8,20 @@ Web app tĩnh (HTML/CSS/JS thuần, không cần server) chỉ làm một việc
   npx serve .        # hoặc: python -m http.server 8080
   ```
 - Kiểm thử engine: `node tests/engine.test.js`
-- Triển khai: copy cả thư mục lên bất kỳ hosting tĩnh nào (Netlify, Vercel, GitHub Pages, cPanel...).
+
+## Triển khai
+> **Đừng copy cả thư mục lên hosting.** Hosting tĩnh publish mọi file nó thấy, nên làm vậy sẽ
+> công khai luôn hai file PDF nội bộ, ba bản demo giao diện chưa chốt, `CLAUDE.md` và `README.md`.
+
+```
+SITE_URL=https://tenmien.com node tools/build.js   # dựng thư mục dist/
+```
+`dist/` chỉ chứa `index.html`, `la-so.html`, `assets/` cần thiết, cộng `robots.txt`, `sitemap.xml`
+và `_headers`. Script tự chèn thẻ `og:` / `canonical` theo `SITE_URL`, và **dừng build nếu có file
+`assets/...` nào được mã trỏ tới mà không được đóng gói kèm** (kể cả khi đường dẫn nằm trong JS).
+
+Cloudflare Pages: nối với repo GitHub, đặt build command `node tools/build.js`, output directory
+`dist`, và biến môi trường `SITE_URL`. `dist/` nằm trong `.gitignore` vì nó được dựng lại mỗi lần build.
 
 ## Cấu trúc
 | File | Vai trò |
@@ -20,7 +33,8 @@ Web app tĩnh (HTML/CSS/JS thuần, không cần server) chỉ làm một việc
 | `assets/js/common.js` | Dùng chung: link chia sẻ (`?d=..&m=..`), lịch sử, cấu hình (`lienHeThayUrl`) |
 | `assets/js/home.js` / `chart-page.js` | Điều khiển trang chủ / trang lá số |
 | `assets/css/style.css` | Giao diện tím – vàng kim (màu lấy từ PDF nhận diện) |
-| `assets/img/bg-scene.svg` | Tranh nền (sinh bằng `node tools/gen-scene.js`) |
+| `assets/img/og-image.png` | Ảnh hiện ra khi dán link lên Zalo/Facebook (sinh bằng `python tools/gen-og.py`) |
+| `tools/build.js` | Dựng `dist/` để deploy: lọc file được phép công bố, chèn thẻ `og:`, sinh `robots.txt`/`sitemap.xml`/`_headers` |
 | `tests/engine.test.js` | Đối chiếu từng sao với lá số mẫu tuvi.vn (Kỷ Mão 1999) |
 | `tools/xcheck/` | Script đối chiếu engine với tuvi.vn / iztro / lasotuvi (xem `tools/xcheck/README.md`) |
 | `design-1/2/3.html` + `assets/css/theme-*.css` | 3 bản demo giao diện để khách chọn (xem mục dưới) |

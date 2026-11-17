@@ -1,6 +1,9 @@
 # Phụ thuộc chỉ dùng cho script đối chiếu
 node_modules/
 
+# Bản dựng để deploy (tạo lại bằng: node tools/build.js)
+dist/
+
 # Dữ liệu đối chiếu tải về (tạo lại được bằng tools/xcheck/cmp-tuvivn.js)
 tools/xcheck/html/
 tools/xcheck/cases.json
