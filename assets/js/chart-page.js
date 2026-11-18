@@ -1,4 +1,4 @@
-/* Tuvithienluong — Trang lá số */
+/* Tử Vi Thiên Lương — Trang lá số */
 (function () {
   'use strict';
 
@@ -27,9 +27,14 @@
     $('board').classList.toggle('hide-dv', !hien);
   }
 
+  /**
+   * Một thẻ tóm tắt. Dòng phụ LUÔN được in ra, kể cả khi rỗng: thiếu nó thì thẻ
+   * một dòng ("Thân cư", "Mệnh chủ · Thân chủ") cao hơn hàng xóm một nhịp và
+   * chữ trong cả hàng lệch nhau (TL-09).
+   */
   function summaryItem(label, value, sub) {
-    return '<li><span class="s-label">' + label + '</span><strong>' + esc(value) + '</strong>' +
-      (sub ? '<small>' + esc(sub) + '</small>' : '') + '</li>';
+    return '<li class="fact"><span class="k">' + label + '</span><span class="v">' + esc(value) + '</span>' +
+      '<span class="s">' + (sub ? esc(sub) : '') + '</span></li>';
   }
 
   function render() {
@@ -64,9 +69,13 @@
     $('month-sel').value = params.thangXem;
 
     TVTLRender.renderBoard(chart, $('board'));
+    // Trên điện thoại khối trung cung chỉ còn đủ chỗ cho huy hiệu, nên bảng
+    // thông tin được in lại thành một thẻ riêng ngay dưới lá số (TL-03).
+    TVTLRender.renderInfoCard(chart, $('chart-info'));
     applyDvToggle();
-    document.title = (i.ten ? i.ten + ' — ' : '') + 'Lá số Tử Vi · Tuvithienluong';
+    document.title = (i.ten ? i.ten + ' — ' : '') + 'Lá số Tử Vi · Tử Vi Thiên Lương';
     $('btn-edit').href = 'index.html#' + C.toQuery(params);
+    capNhatLinkLuanGiai();
     history.replaceState(null, '', location.pathname + '#' + C.toQuery(params));
     return true;
   }
@@ -81,10 +90,18 @@
   $('content').hidden = false;
   C.pushHistory(params);
 
-  // Nút liên hệ thầy (chỉ hiện khi đã cấu hình link)
-  if (C.CONFIG.lienHeThayUrl) {
-    $('cta').hidden = false;
-    $('cta-link').href = C.CONFIG.lienHeThayUrl;
+  // Nút "Nhờ Thầy luận giải": mang theo lá số đang xem sang trang Đặt lịch,
+  // nhờ vậy biểu mẫu tự điền sẵn họ tên và ngày giờ sinh.
+  function capNhatLinkLuanGiai() {
+    if (!C.CONFIG.trangMoi) return;   // trang Đặt lịch đang tạm ẩn
+    var href = 'dat-lich.html#' + C.toQuery(params);
+    $('consult-link').href = href;
+    $('sticky-link').href = href;
+  }
+  capNhatLinkLuanGiai();
+  if (C.CONFIG.trangMoi) {
+    $('sticky-cta').hidden = false;
+    document.body.classList.add('has-sticky');
   }
 
   /* ---------- Đổi năm / tháng xem ---------- */
@@ -100,6 +117,13 @@
   $('chk-dv').addEventListener('change', function () {
     try { localStorage.setItem('tvtl_hien_dv', this.checked ? '1' : '0'); } catch (e) { /* bỏ qua */ }
     applyDvToggle();
+  });
+
+  /* ---------- Thu gọn / mở rộng sao phụ (điện thoại) ---------- */
+  $('btn-sao').addEventListener('click', function () {
+    var mo = $('board').classList.toggle('show-all-sao');
+    this.setAttribute('aria-pressed', mo ? 'true' : 'false');
+    this.querySelector('span').textContent = mo ? 'Thu gọn sao phụ' : 'Hiện đủ sao phụ';
   });
 
   /* ---------- Công cụ ---------- */

@@ -2,14 +2,16 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lá số Tử Vi — Tuvithienluong</title>
-  <meta name="description" content="Lá số Tử Vi lập bởi Tuvithienluong — an sao chuẩn trường phái Việt Nam.">
-  <meta name="theme-color" content="#3b1d5d">
-  <link rel="icon" type="image/png" href="assets/img/logo-mark.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Lá số Tử Vi — Tử Vi Thiên Lương</title>
+  <meta name="description" content="Lá số Tử Vi lập bởi Tử Vi Thiên Lương — an sao chuẩn trường phái Việt Nam.">
+  <meta name="theme-color" content="#2a1546">
+  <link rel="icon" href="assets/img/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/png" sizes="256x256" href="assets/img/logo-tuvithienluong-tim-256.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Noto+Serif:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="page-chart">
@@ -21,97 +23,126 @@
     <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v6H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5l2.2 6.2 6.3 1-4.8 4.3 1.3 6.5L12 17.3l-5 3.2 1.3-6.5-4.8-4.3 6.3-1z" fill="currentColor"/></symbol>
-    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   </svg>
 
   <header class="site-header">
     <div class="wrap header-inner">
-      <a class="brand" href="./" aria-label="Thiên Lương — Trang chủ">
-        <img src="assets/img/logo-mark.svg" alt="" width="100" height="100">
-        <span class="brand-text">
-          <span class="brand-name">THIÊN LƯƠNG</span>
-          <span class="brand-sub">Sáng rõ trước mỗi quyết định</span>
-        </span>
+      <a class="brand" href="index.html" aria-label="Tử Vi Thiên Lương — trang chủ">
+        <img src="assets/img/logo-tuvithienluong-tim-128.png"
+             srcset="assets/img/logo-tuvithienluong-tim-128.png 1x, assets/img/logo-tuvithienluong-tim-256.png 2x"
+             width="50" height="50" alt="" decoding="async">
+        <span><b>TỬ VI THIÊN LƯƠNG</b><small>Lá số · Luận giải · Tư vấn</small></span>
       </a>
-      <nav class="nav" aria-label="Chính">
-        <a href="./#lap-la-so" class="nav-link">Lập lá số mới</a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav class="nav" id="site-nav" aria-label="Chính">
+        <a href="index.html" aria-current="page">Lập lá số</a>
+        <a href="chuyen-gia.html">Chuyên gia</a>
+        <a href="bai-viet.html">Bài viết</a>
+        <a href="dat-lich.html" class="nav-cta">Đặt lịch luận giải</a>
       </nav>
     </div>
   </header>
 
-  <main class="wrap chart-page">
-    <!-- Lỗi / thiếu tham số -->
-    <section class="glass-light empty-state" id="empty" hidden>
-      <h1>Chưa có thông tin lá số</h1>
-      <p id="empty-msg">Hãy nhập ngày giờ sinh để lập lá số.</p>
-      <a class="btn btn-cta" href="./#lap-la-so">Lập lá số</a>
-    </section>
-
-    <div id="content" hidden>
-      <!-- Tiêu đề -->
-      <section class="chart-hero reveal">
-        <nav class="crumbs" aria-label="Đường dẫn"><a href="./">Trang chủ</a><span>/</span><span>Lá số Tử Vi</span></nav>
-        <h1 id="c-name"></h1>
-        <p class="chart-sub" id="c-sub"></p>
-        <ul class="summary" id="c-summary"></ul>
+  <main>
+    <div class="wrap">
+      <!-- Thiếu tham số -->
+      <section class="panel empty-state" id="empty" hidden>
+        <h1>Chưa có thông tin lá số</h1>
+        <p class="muted" id="empty-msg">Hãy nhập ngày giờ sinh để lập lá số.</p>
+        <a class="btn btn-gold" href="index.html">Lập lá số</a>
       </section>
 
-      <!-- Thanh công cụ -->
-      <section class="chart-toolbar glass-light reveal" aria-label="Công cụ lá số">
-        <div class="year-switch" role="group" aria-label="Năm xem">
-          <button type="button" class="icon-btn" id="year-prev" aria-label="Năm trước"><svg class="ico"><use href="#i-left"/></svg></button>
-          <div class="year-now">
-            <span class="year-label">Năm xem</span>
-            <strong id="year-text"></strong>
+      <div class="view" id="content" hidden>
+        <div class="chart-head">
+          <nav class="crumbs" aria-label="Đường dẫn"><a href="index.html">Lập lá số</a><span>/</span><span>Lá số Tử Vi</span></nav>
+          <span class="eyebrow">Lá số Tử Vi</span>
+          <h1 id="c-name"></h1>
+          <p class="sub" id="c-sub"></p>
+        </div>
+
+        <ul class="facts" id="c-summary"></ul>
+
+        <section class="consult-bar" aria-label="Nhờ Thầy luận giải">
+          <div class="who">
+            <img src="assets/img/logo-tuvithienluong-tim-256.png" alt="" width="64" height="64" loading="lazy" decoding="async">
+            <div>
+              <b>Lá số đã an xong. Ý nghĩa nằm ở phần luận giải.</b>
+              <p>Thầy Thiên Lương đọc lá số theo tam phương tứ chính và vận hạn, trả lời đúng câu hỏi của bạn.</p>
+            </div>
           </div>
-          <button type="button" class="icon-btn" id="year-next" aria-label="Năm sau"><svg class="ico"><use href="#i-right"/></svg></button>
+          <a class="btn btn-gold" id="consult-link" href="dat-lich.html">Nhờ Thầy luận giải lá số này</a>
+        </section>
+
+        <section class="chart-toolbar" aria-label="Công cụ lá số">
+          <div class="year-switch" role="group" aria-label="Năm xem">
+            <button type="button" class="icon-btn" id="year-prev" aria-label="Năm trước"><svg class="ico"><use href="#i-left"/></svg></button>
+            <div class="year-now">
+              <span class="year-label">Năm xem</span>
+              <strong id="year-text"></strong>
+            </div>
+            <button type="button" class="icon-btn" id="year-next" aria-label="Năm sau"><svg class="ico"><use href="#i-right"/></svg></button>
+          </div>
           <select id="month-sel" aria-label="Tháng xem (âm lịch)"></select>
-        </div>
-        <label class="dv-toggle" for="chk-dv">
-          <input type="checkbox" id="chk-dv" checked>
-          <span>Hiện sao đại vận (ĐV.)</span>
-        </label>
-        <div class="toolbar-actions">
-          <a class="btn btn-soft" id="btn-edit" href="./"><svg class="ico"><use href="#i-edit"/></svg><span>Sửa</span></a>
-          <button type="button" class="btn btn-soft" id="btn-copy"><svg class="ico"><use href="#i-link"/></svg><span>Sao chép link</span></button>
-          <button type="button" class="btn btn-soft" id="btn-print"><svg class="ico"><use href="#i-print"/></svg><span>In</span></button>
-          <button type="button" class="btn btn-primary" id="btn-png"><svg class="ico"><use href="#i-download"/></svg><span>Tải ảnh</span></button>
-        </div>
-      </section>
+          <label class="dv-toggle" for="chk-dv">
+            <input type="checkbox" id="chk-dv" checked>
+            <span>Hiện sao đại vận (ĐV.)</span>
+          </label>
+          <div class="toolbar-actions">
+            <a class="btn btn-quiet" id="btn-edit" href="index.html"><svg class="ico"><use href="#i-edit"/></svg><span>Sửa</span></a>
+            <button type="button" class="btn btn-quiet" id="btn-copy"><svg class="ico"><use href="#i-link"/></svg><span>Sao chép link</span></button>
+            <button type="button" class="btn btn-quiet" id="btn-print"><svg class="ico"><use href="#i-print"/></svg><span>In</span></button>
+            <button type="button" class="btn btn-ghost" id="btn-png"><svg class="ico"><use href="#i-download"/></svg><span>Tải ảnh</span></button>
+          </div>
+        </section>
 
-      <!-- Lá số -->
-      <section class="board-frame reveal" aria-label="Lá số 12 cung">
-        <p class="board-tip">Rê chuột hoặc chạm vào một cung để xem tam phương tứ chính</p>
-        <div class="board-scroll">
-          <div class="board" id="board"></div>
-        </div>
-        <div class="legend" aria-label="Chú giải">
-          <span><i class="dot h-K"></i>Kim</span>
-          <span><i class="dot h-M"></i>Mộc</span>
-          <span><i class="dot h-T"></i>Thủy</span>
-          <span><i class="dot h-H"></i>Hỏa</span>
-          <span><i class="dot h-O"></i>Thổ</span>
-          <span>(M) Miếu · (V) Vượng · (Đ) Đắc · (B) Bình · (H) Hãm</span>
-          <span><em>L.</em> Sao lưu niên · <em>ĐV.</em> Sao đại vận · ĐV./LN. Cung đại vận / lưu niên · Th. Nguyệt hạn</span>
-        </div>
-      </section>
+        <section class="board-frame" aria-label="Lá số 12 cung">
+          <p class="board-tip">Rê chuột hoặc chạm vào một cung để xem tam phương tứ chính</p>
+          <p class="board-tip board-tip-mobile">Chạm vào một cung để xem chi tiết đầy đủ</p>
+          <button type="button" class="btn btn-quiet btn-sao" id="btn-sao" aria-pressed="false">
+            <svg class="ico"><use href="#i-list"/></svg><span>Hiện đủ sao phụ</span>
+          </button>
+          <div class="board-scroll">
+            <div class="board" id="board"></div>
+          </div>
+          <div class="legend" aria-label="Chú giải">
+            <span class="lg-item"><i class="dot h-K"></i>Kim</span>
+            <span class="lg-item"><i class="dot h-M"></i>Mộc</span>
+            <span class="lg-item"><i class="dot h-T"></i>Thủy</span>
+            <span class="lg-item"><i class="dot h-H"></i>Hỏa</span>
+            <span class="lg-item"><i class="dot h-O"></i>Thổ</span>
+            <span class="lg-item">(M) Miếu</span>
+            <span class="lg-item">(V) Vượng</span>
+            <span class="lg-item">(Đ) Đắc</span>
+            <span class="lg-item">(B) Bình</span>
+            <span class="lg-item">(H) Hãm</span>
+            <span class="lg-item"><em>L.</em> Sao lưu niên</span>
+            <span class="lg-item"><em>ĐV.</em> Sao đại vận</span>
+            <span class="lg-item"><em>ĐV./LN.</em> Cung đại vận / lưu niên</span>
+            <span class="lg-item"><em>Th.</em> Nguyệt hạn</span>
+          </div>
+        </section>
 
-      <!-- Kêu gọi luận giải -->
-      <section class="cta-band glass-dark reveal" id="cta" hidden>
-        <div>
-          <h2>Nhờ thầy luận giải lá số này</h2>
-          <p>Thầy Tuvithienluong sẽ luận chi tiết tính cách, sự nghiệp, tài lộc, tình duyên và vận hạn của bạn.</p>
-        </div>
-        <a class="btn btn-cta" id="cta-link" href="#" target="_blank" rel="noopener"><svg class="ico"><use href="#i-chat"/></svg> Liên hệ thầy</a>
-      </section>
+        <!-- Bảng thông tin: thay cho khối trung cung khi màn hình quá hẹp (TL-03) -->
+        <section class="info-card" id="chart-info" aria-label="Thông tin lá số"></section>
+      </div>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
     </div>
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </main>
 
+  <div class="sticky-cta" id="sticky-cta" hidden>
+    <img src="assets/img/logo-tuvithienluong-tim-128.png" alt="" width="40" height="40" loading="lazy" decoding="async">
+    <a class="btn btn-gold" id="sticky-link" href="dat-lich.html">Nhờ Thầy luận giải lá số này</a>
+  </div>
+
   <footer class="site-footer">
-    <div class="wrap">
-      <p><strong>Tuvithienluong</strong> — Lá số an theo trường phái Tử Vi Việt Nam, lịch âm múi giờ GMT+7.</p>
-      <p class="muted">Lá số mang tính tham khảo. Phần luận giải chi tiết do thầy của Tuvithienluong thực hiện.</p>
+    <div class="wrap footer-inner">
+      <div>
+        <p><b>Tử Vi Thiên Lương</b> — Lá số an theo trường phái Tử Vi Việt Nam, lịch âm múi giờ GMT+7.</p>
+        <p>Lá số mang tính tham khảo. Phần luận giải chi tiết do Thầy Thiên Lương trực tiếp thực hiện.</p>
+      </div>
+      <a class="btn btn-ghost footer-cta" href="dat-lich.html">Nhờ Thầy luận giải</a>
     </div>
   </footer>
 

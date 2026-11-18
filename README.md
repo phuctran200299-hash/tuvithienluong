@@ -1,4 +1,4 @@
-# Tuvithienluong — Lập lá số Tử Vi
+# Tử Vi Thiên Lương — Lập lá số Tử Vi
 
 Web app tĩnh (HTML/CSS/JS thuần, không cần server) chỉ làm một việc: **lập lá số Tử Vi theo trường phái Việt Nam**.
 
@@ -8,6 +8,7 @@ Web app tĩnh (HTML/CSS/JS thuần, không cần server) chỉ làm một việc
   npx serve .        # hoặc: python -m http.server 8080
   ```
 - Kiểm thử engine: `node tests/engine.test.js`
+- Kiểm thử giao diện: `node tests/ui.test.js` (chốt lại 11 lỗi khách báo, mã TL-01…TL-11)
 
 ## Triển khai
 > **Đừng copy cả thư mục lên hosting.** Hosting tĩnh publish mọi file nó thấy, nên làm vậy sẽ
@@ -26,20 +27,52 @@ Cloudflare Pages: nối với repo GitHub, đặt build command `node tools/buil
 ## Cấu trúc
 | File | Vai trò |
 |---|---|
-| `index.html` | Trang chủ: tranh nền, thẻ "Hôm nay" (âm lịch, tiết khí, giờ hoàng đạo), form lập lá số |
+| `index.html` | Trang chủ: tranh nền, thẻ "Hôm nay" (âm lịch, tiết khí, giờ hoàng đạo), form lập lá số — **giữ thiết kế cũ** (xem mục Năm màn hình) |
 | `la-so.html` | Trang lá số: tóm tắt, đổi năm/tháng xem, lá số 12 cung, in / tải ảnh / chia sẻ |
+| `chuyen-gia.html` | Hồ sơ Thầy Thiên Lương: lĩnh vực, triết lý, quy trình 4 bước |
+| `bai-viet.html` | Danh sách bài viết + bài chi tiết (`#bai-<slug>`), lọc theo chuyên mục |
+| `dat-lich.html` | Biểu mẫu đặt lịch luận giải, tự điền từ lá số vừa lập |
+| `assets/js/posts.js` | Toàn bộ nội dung bài viết + hàm dựng thẻ/bài; `posts-page.js` điều khiển trang |
+| `assets/js/booking.js` | Biểu mẫu đặt lịch: tự điền, kiểm tra, dựng nội dung yêu cầu để gửi Zalo |
 | `assets/js/tuvi-core.js` | Lõi: lịch âm (Hồ Ngọc Đức, GMT+7) + an sao, đại vận, tiểu hạn, lưu niên, nguyệt hạn, tiết khí |
 | `assets/js/render.js` | Vẽ lá số 12 cung + trung cung, tam phương tứ chính khi rê chuột, Tuần/Triệt |
 | `assets/js/common.js` | Dùng chung: link chia sẻ (`?d=..&m=..`), lịch sử, cấu hình (`lienHeThayUrl`) |
 | `assets/js/home.js` / `chart-page.js` | Điều khiển trang chủ / trang lá số |
-| `assets/css/style.css` | Giao diện tím – vàng kim (màu lấy từ PDF nhận diện) |
+| `assets/css/style.css` | Giao diện tím – vàng đồng, dựng theo bản demo đã chốt (xem mục Bộ nhận diện) |
+| `assets/img/logo-tuvithienluong-tim-*.{png,webp}` | Bộ logo tròn chân dung Thầy Thiên Lương, nền tím, nền ngoài trong suốt (sinh bằng `python tools/gen-logo.py`) |
 | `assets/img/og-image.png` | Ảnh hiện ra khi dán link lên Zalo/Facebook (sinh bằng `python tools/gen-og.py`) |
 | `tools/build.js` | Dựng `dist/` để deploy: lọc file được phép công bố, chèn thẻ `og:`, sinh `robots.txt`/`sitemap.xml`/`_headers` |
 | `tests/engine.test.js` | Đối chiếu từng sao với lá số mẫu tuvi.vn (Kỷ Mão 1999) |
+| `tests/ui.test.js` | Chốt 11 lỗi khách báo: thứ tự họ tên, lá số vừa khung điện thoại, trung cung, tên thương hiệu, logo, chú giải, menu… |
+| `tools/gen-logo.py` | Sinh bộ logo tím từ `tools/logo-src/logo-chan-dung-goc.png` (đổi nền navy → tím, cắt tròn, xuất 128/256/512/1024 + favicon) |
 | `tools/xcheck/` | Script đối chiếu engine với tuvi.vn / iztro / lasotuvi (xem `tools/xcheck/README.md`) |
 | `design-1/2/3.html` + `assets/css/theme-*.css` | 3 bản demo giao diện để khách chọn (xem mục dưới) |
 
-## Ba bản demo giao diện (để khách chọn)
+## Năm màn hình
+Đây là web tĩnh nhiều trang, **không phải SPA**. Bản demo khách duyệt dùng `location.hash` để chuyển
+giữa 4 khung xem, nhưng dự án này không làm vậy được: **thông số lá số đã chiếm dấu `#`** (xem mục
+"Trang lá số" bên dưới). Nên mỗi màn là một file riêng, chỉ `bai-viet.html` dùng `#bai-<slug>` cho bài
+chi tiết — chỗ đó không có lá số nên an toàn.
+
+Header và footer được chép tay vào các file (không có bước build template). `tests/ui.test.js` kiểm
+các trang có khớp nhau không.
+
+**Hai thiết kế cùng tồn tại (theo yêu cầu khách):**
+- `index.html` **giữ giao diện trước bản demo** (đã có các sửa TL-01…TL-11). Toàn bộ CSS của nó nằm
+  trong khối `.page-home` ở `style.css`, có bộ token riêng (chữ Noto Serif, `.wrap` rộng 1200px) nên
+  không ảnh hưởng bốn trang kia. Đừng gỡ tiền tố `.page-home`.
+- `la-so.html` và ba trang mới dùng giao diện theo bản demo.
+
+**Công tắc ba trang mới — `CONFIG.trangMoi` trong `assets/js/common.js`** (hiện `false`):
+- `false`: Chuyên gia · Bài viết · Đặt lịch bị **ẩn** — mọi link tới chúng bị ẩn bằng JS, thanh
+  "Nhờ Thầy luận giải" và dải CTA dính đáy ở trang lá số cũng ẩn; `tools/build.js` đọc đúng dòng này
+  và **không đóng gói** ba trang + `posts.js`, `posts-page.js`, `booking.js` vào `dist/`.
+- `true`: hiện lại đủ menu, `dist/` có đủ năm trang. Chỉ đổi một chữ này, rồi build lại.
+
+## Ba bản demo giao diện cũ (đã thay thế)
+> Ba file `design-*.html` dưới đây là bản chọn giao diện **đợt trước**, nay đã bị bản demo mới thay thế.
+> Chúng vẫn `<link>` vào `style.css` nên sau đợt dựng lại thì bố cục vỡ. Không được publish, xoá được
+> khi khách xác nhận.
 Mỗi bản là **một trang chạy thật**: form + lá số 12 cung gộp chung một trang, dùng đúng engine và đúng
 `render.js` của trang thật, chỉ khác CSS. Logo: `assets/img/logo-mark.svg` (vẽ lại theo bộ nhận diện Thiên Lương).
 
@@ -153,3 +186,41 @@ Chưa có tùy chọn (giữ theo lasotuvi, cần thầy xem): Thiên Trù năm 
 Còn để trống chờ thầy: đắc tính của Văn Xương / Văn Khúc ở **Mão** và **Dậu**, Thiên Khốc ở **Sửu**,
 Lộc Tồn ở **Tỵ** và **Hợi** — tuvi.vn không ghi, lasotuvi ghi nhưng không đáng tin.
 Nguyệt hạn: tháng Giêng tính từ cung tiểu hạn (đếm lùi tới tháng sinh, rồi tới giờ sinh) — khớp tuvi.vn.
+## Bộ nhận diện (chốt 18/11/2026)
+
+- **Tên duy nhất:** `TỬ VI THIÊN LƯƠNG` (chữ in: logo, header) · `Tử Vi Thiên Lương` (văn bản, `<title>`).
+  Chuỗi `tuvithienluong` chỉ còn dùng cho **tên miền và tên file**, không bao giờ hiện thành chữ trên trang.
+  `tests/ui.test.js` chặn việc nó quay lại.
+- **Logo:** ảnh tròn chân dung Thầy Thiên Lương, nền tím `#3b1d5d`, nền ngoài trong suốt, viền vàng 1,5px
+  (vẽ bằng CSS `border`, không nung vào ảnh — để viền giữ đúng độ mảnh ở mọi cỡ hiển thị). Ở header,
+  vòng chữ trong logo quá nhỏ để đọc nên logo **luôn đi kèm** chữ `TỬ VI THIÊN LƯƠNG` màu vàng đồng
+  bên phải. Không kéo dãn, không cắt vuông, không đặt trên nền ảnh.
+
+| File | Cỡ | Dùng ở đâu |
+|---|---|---|
+| `logo-tuvithienluong-tim-128.png` + `-256.png` | 128 / 256 px | Header (52px desktop, 42px mobile; 256 cho màn Retina qua `srcset`), huy hiệu giữa lá số trên điện thoại |
+| `logo-tuvithienluong-tim-512.webp` | 512 px | Banner trang chủ, mục Chuyên gia |
+| `logo-tuvithienluong-tim-1024.png` | 1024 px | Bản in; nguồn để `gen-og.py` dán vào ảnh chia sẻ. **Không publish** (nặng 1,4 MB) |
+| `logo-tuvithienluong-tim-master.png` | 1084 px | Bản gốc đã cắt tròn, không dùng trực tiếp trên web. **Không publish** |
+| `favicon.ico` · `apple-touch-icon.png` | 16–64 / 180 px | Biểu tượng tab và màn hình chính điện thoại |
+| `og-image.png` | 1200×630 | Ảnh xem trước khi gửi link qua Zalo/Facebook |
+
+- **Bảng màu** (lấy nguyên văn brief, `tests/ui.test.js` khoá từng giá trị):
+
+  | Token | Mã | Dùng ở đâu |
+  |---|---|---|
+  | `--tl-purple-950` | `#1c0e30` | nền trang, chân trang |
+  | `--tl-purple-900` | `#2a1546` | header, bảng menu xổ |
+  | `--tl-purple-800` | `#3b1d5d` | quầng sáng đầu trang, nền logo |
+  | `--tl-purple-700` | `#4c286e` | thẻ, bề mặt nổi |
+  | `--tl-gold-500` | `#c9a56b` | viền, nét, nút phụ |
+  | `--tl-gold-300` | `#e8cf9f` | chữ thương hiệu, tiêu đề |
+  | `--tl-ivory` | `#fbf7ef` | nền lá số |
+
+  Tên token cũ (`--tl-paper`, `--tl-lav-*`, `--font-serif`…) vẫn còn trong `:root` dưới dạng bí danh,
+  chỉ để phần CSS lá số không phải viết lại — đừng dùng thêm chỗ mới.
+- **Chữ:** `Cormorant Garamond` cho tiêu đề, `Be Vietnam Pro` cho nội dung. Cormorant mặc định dùng
+  chữ số kiểu cổ (số 1 và 8 thụt khỏi dòng cơ sở) nên mọi chỗ có số đều đặt
+  `font-variant-numeric: lining-nums tabular-nums`.
+- Sửa logo → chạy lại `python tools/gen-logo.py`, rồi `python tools/gen-og.py` (ảnh chia sẻ dán logo đó vào),
+  rồi `node tests/ui.test.js`.

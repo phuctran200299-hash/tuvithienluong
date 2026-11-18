@@ -3,10 +3,26 @@
   'use strict';
 
   var CONFIG = {
+    /**
+     * CÔNG TẮC ba trang Chuyên gia · Bài viết · Đặt lịch luận giải.
+     *
+     * false (đang dùng): mọi liên kết tới ba trang đó bị ẩn trên giao diện, và
+     *   `tools/build.js` cũng KHÔNG đóng gói ba file đó vào dist/ (nó đọc thẳng
+     *   dòng này để chỉ có đúng MỘT chỗ bật/tắt).
+     * true: menu hiện lại đủ bốn mục và dist/ có đủ năm trang.
+     *
+     * Ba file HTML vẫn nằm trong repo và vẫn mở được khi chạy máy cá nhân, nên
+     * đổi đúng chữ này là xem thử được ngay.
+     */
+    trangMoi: false,
+
     /** Link Zalo / Messenger của thầy cho nút "Nhờ thầy luận giải". Để trống thì ẩn nút. */
     lienHeThayUrl: '',
     historyKey: 'tvtl_history_v1'
   };
+
+  /** Các trang nằm sau công tắc `trangMoi` */
+  var TRANG_MOI = ['chuyen-gia.html', 'bai-viet.html', 'dat-lich.html'];
 
   function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -91,6 +107,48 @@
     clearTimeout(toast._t);
     toast._t = setTimeout(function () { t.classList.remove('show'); }, 2200);
   }
+
+  /* ---------- Ẩn ba trang chưa công bố ---------- */
+  /* Ẩn chứ không xoá khỏi DOM: chart-page.js còn gán href cho #consult-link và
+     #sticky-link, xoá đi là nó lỗi. Khối cha nào chỉ tồn tại để chứa đúng cái
+     link đó (thanh luận giải, dải CTA dính đáy) thì ẩn cả khối. */
+  (function anTrangMoi() {
+    if (CONFIG.trangMoi) return;
+    var sel = TRANG_MOI.map(function (f) { return 'a[href^="' + f + '"]'; }).join(', ');
+    document.querySelectorAll(sel).forEach(function (a) {
+      var khoi = a.closest('.consult-bar, .sticky-cta');
+      (khoi || a).hidden = true;
+    });
+    document.body.classList.remove('has-sticky');
+  })();
+
+  /* ---------- Menu thu gọn trên điện thoại ---------- */
+  /* Chạy trên cả hai trang vì header dùng chung. Script nằm cuối <body> nên
+     header đã có trong DOM, không cần chờ DOMContentLoaded. */
+  (function initNav() {
+    var btn = document.getElementById('nav-toggle');
+    var nav = document.getElementById('site-nav');
+    if (!btn || !nav) return;
+
+    function setOpen(open) {
+      nav.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    btn.addEventListener('click', function () {
+      setOpen(btn.getAttribute('aria-expanded') !== 'true');
+    });
+    // Bấm vào một mục -> đóng menu (các mục đều là neo trong cùng trang)
+    nav.addEventListener('click', function (e) {
+      if (e.target.closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) { setOpen(false); btn.focus(); }
+    });
+    document.addEventListener('click', function (e) {
+      if (!nav.classList.contains('is-open')) return;
+      if (!nav.contains(e.target) && !btn.contains(e.target)) setOpen(false);
+    });
+  })();
 
   root.TVTLCommon = {
     CONFIG: CONFIG, escapeHtml: escapeHtml, pad: pad,

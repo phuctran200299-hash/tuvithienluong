@@ -4,12 +4,13 @@
 Sinh ảnh chia sẻ (Open Graph) 1200x630 -> assets/img/og-image.png
 
 Đây là ảnh hiện ra khi khách dán link lên Zalo / Facebook / Messenger, nên nó
-phải khớp bộ nhận diện: nền trời sao tím của trang, biểu tượng la bàn kim nhũ,
-tên thương hiệu và câu định vị.
+phải khớp bộ nhận diện: nền trời sao tím của trang, logo tròn chân dung Thầy
+Thiên Lương, tên thương hiệu và câu định vị.
 
-Biểu tượng được VẼ LẠI từ đúng hình học của assets/img/logo-mark.svg chứ không
-dán assets/img/logo-mark.png, vì file .png có sẵn nền tím đặc — dán lên nền
-gradient sẽ lòi ra một ô vuông phẳng.
+Dùng assets/img/logo-tuvithienluong-tim-1024.png (do tools/gen-logo.py sinh ra):
+nền ngoài hình tròn đã trong suốt nên dán lên nền gradient không lòi ô vuông.
+Khổ ảnh giữ 1200x630 — Facebook/Zalo cắt ảnh vuông khi hiện trong luồng tin,
+còn khổ 1.91:1 thì hiện trọn vẹn.
 
 Chạy:  python tools/gen-og.py
 Cần:   Pillow  (pip install Pillow)
@@ -41,8 +42,6 @@ GLOW = (0x7A, 0x4A, 0xA6)
 GOLD_LIGHT = (0xF0, 0xDB, 0xA8)
 GOLD_MID = (0xD9, 0xB9, 0x6F)
 GOLD_DARK = (0xAC, 0x8A, 0x3B)
-GOLD_DG1 = (0xC3, 0xA2, 0x59)
-GOLD_DG2 = (0x8F, 0x6F, 0x2B)
 HUB = (0x3A, 0x20, 0x60)
 CREAM = (0xF4, 0xE8, 0xC1)
 GOLD_600 = (0xC7, 0xA1, 0x4E)
@@ -99,16 +98,6 @@ def vertical_gradient(size, stops):
     return img.resize((w, h))
 
 
-def diagonal_gradient(size, c0, c1):
-    w, h = size
-    img = Image.new("RGB", (w, h))
-    px = img.load()
-    for y in range(h):
-        for x in range(w):
-            px[x, y] = lerp(c0, c1, (x / max(1, w - 1) + y / max(1, h - 1)) / 2)
-    return img
-
-
 def draw_background():
     bg = vertical_gradient((W, H), [(0.0, NIGHT), (0.46, MID), (1.0, DEEP)])
 
@@ -138,45 +127,6 @@ def draw_background():
         c = lerp(bg.getpixel((int(x), int(y))), rnd.choice(tints), a)
         d.ellipse([x - r, y - r, x + r, y + r], fill=c)
     return bg
-
-
-def compass_mark(size):
-    """Vẽ lại biểu tượng theo đúng toạ độ viewBox 0 0 100 100 của logo-mark.svg."""
-    s = size * SS
-    k = s / 100.0  # đổi đơn vị viewBox -> pixel
-
-    def P(pts):
-        return [(x * k, y * k) for x, y in pts]
-
-    # Hai nhóm hình, hai dải kim nhũ khác nhau, đúng như gradient lg/dg trong SVG
-    m_lg = Image.new("L", (s, s), 0)
-    m_dg = Image.new("L", (s, s), 0)
-    d_lg, d_dg = ImageDraw.Draw(m_lg), ImageDraw.Draw(m_dg)
-
-    d_lg.rectangle(P([(3, 3), (97, 97)]), outline=255, width=max(1, round(2.6 * k)))
-    d_lg.ellipse(P([(11.5, 11.5), (88.5, 88.5)]), outline=255, width=max(1, round(2.2 * k)))
-
-    for pts in [[(50, 7), (55.4, 50), (50, 50)], [(93, 50), (50, 44.6), (50, 50)],
-                [(50, 93), (44.6, 50), (50, 50)], [(7, 50), (50, 55.4), (50, 50)]]:
-        d_lg.polygon(P(pts), fill=255)
-
-    for pts in [[(68, 32), (52.6, 47.4), (47.4, 52.6)], [(68, 68), (52.6, 52.6), (47.4, 47.4)],
-                [(32, 68), (47.4, 52.6), (52.6, 47.4)], [(32, 32), (47.4, 47.4), (52.6, 52.6)],
-                [(50, 7), (44.6, 50), (50, 50)], [(93, 50), (50, 55.4), (50, 50)],
-                [(50, 93), (55.4, 50), (50, 50)], [(7, 50), (50, 44.6), (50, 50)]]:
-        d_dg.polygon(P(pts), fill=255)
-
-    art = Image.new("RGBA", (s, s), (0, 0, 0, 0))
-    art.paste(vertical_gradient((s, s), [(0.0, GOLD_LIGHT), (0.55, GOLD_MID), (1.0, GOLD_DARK)]), (0, 0), m_lg)
-    art.paste(diagonal_gradient((s, s), GOLD_DG1, GOLD_DG2), (0, 0), m_dg)
-
-    # Trục giữa: chấm tím viền kim nhũ
-    d = ImageDraw.Draw(art)
-    r = 4.6 * k
-    d.ellipse([(50 * k - r, 50 * k - r), (50 * k + r, 50 * k + r)],
-              fill=HUB + (255,), outline=GOLD_MID + (255,), width=max(1, round(1.6 * k)))
-
-    return art.resize((size, size), Image.LANCZOS)
 
 
 def text_tracked(draw, xy, text, fnt, fill, tracking=0, anchor_center=True):
@@ -219,22 +169,46 @@ def diamond(draw, cx, cy, rx, ry, fill):
                   (cx - rx * 0.42, cy - ry * 0.42)], fill=fill)
 
 
+def paste_logo(img, size, top):
+    """Dán logo tròn, thêm vành kim nhũ mảnh cho tách khỏi nền tím."""
+    src = os.path.join(ROOT, "assets", "img", "logo-tuvithienluong-tim-1024.png")
+    if not os.path.exists(src):
+        sys.exit(f"Thiếu {src} — chạy `python tools/gen-logo.py` trước.")
+    ss = 4
+    logo = Image.open(src).convert("RGBA").resize((size, size), Image.LANCZOS)
+    ring = Image.new("RGBA", (size * ss, size * ss), (0, 0, 0, 0))
+    ImageDraw.Draw(ring).ellipse([1 * ss, 1 * ss, size * ss - 1 * ss, size * ss - 1 * ss],
+                                 outline=GOLD_600 + (255,), width=round(1.8 * ss))
+    logo.alpha_composite(ring.resize((size, size), Image.LANCZOS))
+    img.paste(logo, (W // 2 - size // 2, top), logo)
+
+
+def fit_font(name, text, max_width, start, tracking, draw):
+    """Chọn cỡ chữ lớn nhất mà dòng chữ vẫn nằm gọn trong max_width."""
+    for size in range(start, 20, -2):
+        f = font(name, size)
+        w = sum(draw.textlength(ch, font=f) for ch in text) + tracking * (len(text) - 1)
+        if w <= max_width:
+            return f
+    sys.exit(f"Không thu nhỏ đủ để vừa {max_width}px: {text}")
+
+
 def main():
     img = draw_background()
     d = ImageDraw.Draw(img)
 
-    mark = compass_mark(168)
-    img.paste(mark, (W // 2 - 84, 56), mark)
+    paste_logo(img, 196, 34)
 
     # Times New Roman: nét thanh đậm tương phản, gần bản khắc chữ của logo gốc.
     # KHÔNG dùng Georgia/Bookman/Sylfaen — ba font đó thiếu Ư, Ơ và nhiều chữ có
     # hai dấu (ế, ộ, ị...), in ra sẽ thành ô vuông rỗng.
-    f_name = font("timesbd.ttf", 82)
-    check_glyphs(f_name, "THIÊN LƯƠNG", "tên thương hiệu")
-    gold_text_tracked(img, (W // 2, 244), "THIÊN LƯƠNG", f_name, tracking=18)
+    ten = "TỬ VI THIÊN LƯƠNG"
+    f_name = fit_font("timesbd.ttf", ten, W - 180, 78, 14, d)
+    check_glyphs(f_name, ten, "tên thương hiệu")
+    gold_text_tracked(img, (W // 2, 250), ten, f_name, tracking=14)
 
     # Đường kẻ mảnh hai bên dấu ✦
-    y = 372
+    y = 362
     for x0, x1 in [(W // 2 - 250, W // 2 - 26), (W // 2 + 26, W // 2 + 250)]:
         for i in range(x0, x1):
             t = (i - x0) / (x1 - x0)
@@ -244,17 +218,17 @@ def main():
 
     f_tag = font("timesi.ttf", 40)
     check_glyphs(f_tag, "Sáng rõ trước mỗi quyết định", "câu định vị")
-    text_tracked(d, (W // 2, 398), "Sáng rõ trước mỗi quyết định", f_tag, CREAM)
+    text_tracked(d, (W // 2, 388), "Sáng rõ trước mỗi quyết định", f_tag, CREAM)
 
     f_sub = font("seguisb.ttf", 25)
-    sub = "LẬP LÁ SỐ TỬ VI · TRƯỜNG PHÁI VIỆT NAM"
+    sub = "LẬP LÁ SỐ · LUẬN GIẢI · TƯ VẤN"
     check_glyphs(f_sub, sub, "dòng mô tả")
-    text_tracked(d, (W // 2, 494), sub, f_sub, GOLD_600, tracking=4)
+    text_tracked(d, (W // 2, 480), sub, f_sub, GOLD_600, tracking=4)
 
     f_foot = font("segoeui.ttf", 22)
-    foot = "An đủ hơn 110 sao · Lịch âm Việt Nam GMT+7"
+    foot = "An đủ hơn 110 sao · Trường phái Việt Nam · Lịch âm GMT+7"
     check_glyphs(f_foot, foot, "dòng chân")
-    text_tracked(d, (W // 2, 545), foot, f_foot, (0xC8, 0xBE, 0xDC))
+    text_tracked(d, (W // 2, 531), foot, f_foot, (0xC8, 0xBE, 0xDC))
 
     img.save(OUT, "PNG", optimize=True)
     print(f"Đã tạo {OUT} ({os.path.getsize(OUT) // 1024} KB, {W}x{H})")

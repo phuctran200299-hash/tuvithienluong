@@ -169,7 +169,7 @@
     // kiểm tra trước để báo lỗi ngay tại form (ngày không tồn tại, tháng nhuận sai...)
     try { TVTL.lapLaSo(p); } catch (err) { showError(err.message); return; }
     showError('');
-    var btn = form.querySelector('.btn-cta');
+    var btn = form.querySelector('button[type="submit"]');
     btn.classList.add('is-loading');
     btn.disabled = true;
     location.href = C.chartUrl(p);
@@ -205,7 +205,7 @@
   renderHistory();
   // Khôi phục nút khi quay lại bằng nút Back của trình duyệt
   window.addEventListener('pageshow', function () {
-    var btn = form.querySelector('.btn-cta');
+    var btn = form.querySelector('button[type="submit"]');
     btn.classList.remove('is-loading');
     btn.disabled = false;
   });

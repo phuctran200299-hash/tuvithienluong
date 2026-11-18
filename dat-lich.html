@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Đặt lịch luận giải — Tử Vi Thiên Lương</title>
+  <meta name="description" content="Gửi yêu cầu luận giải lá số cho Thầy Thiên Lương. Trợ lý liên hệ xác nhận lịch trong vòng 24 giờ.">
+  <meta name="theme-color" content="#2a1546">
+  <link rel="icon" href="assets/img/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/png" sizes="256x256" href="assets/img/logo-tuvithienluong-tim-256.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="page-booking">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html" aria-label="Tử Vi Thiên Lương — trang chủ">
+        <img src="assets/img/logo-tuvithienluong-tim-128.png"
+             srcset="assets/img/logo-tuvithienluong-tim-128.png 1x, assets/img/logo-tuvithienluong-tim-256.png 2x"
+             width="50" height="50" alt="" decoding="async">
+        <span><b>TỬ VI THIÊN LƯƠNG</b><small>Lá số · Luận giải · Tư vấn</small></span>
+      </a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav class="nav" id="site-nav" aria-label="Chính">
+        <a href="index.html">Lập lá số</a>
+        <a href="chuyen-gia.html">Chuyên gia</a>
+        <a href="bai-viet.html">Bài viết</a>
+        <a href="dat-lich.html" class="nav-cta" aria-current="page">Đặt lịch luận giải</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap view">
+      <div class="page-head">
+        <span class="eyebrow">Đặt lịch luận giải</span>
+        <h1>Nhờ Thầy Thiên Lương luận giải lá số</h1>
+        <p class="lead">Điền trong khoảng một phút. Trợ lý sẽ liên hệ xác nhận lịch trong vòng 24 giờ.</p>
+      </div>
+
+      <div class="book">
+        <div class="panel" id="formPanel">
+          <form id="bookForm" novalidate>
+            <fieldset>
+              <legend>Thông tin lá số</legend>
+              <p class="prefill" id="prefillNote" hidden>Đã tự điền từ lá số bạn vừa lập. Bạn có thể sửa nếu cần.</p>
+              <!-- autocomplete="off": tránh trình duyệt điền lại họ tên theo thứ tự Tây (TL-01) -->
+              <label class="f" for="name">Họ và tên
+                <input type="text" id="name" name="hoten" autocomplete="off" spellcheck="false" required>
+              </label>
+              <div class="grid2">
+                <label class="f" for="gender">Giới tính
+                  <select id="gender"><option value="Nam">Nam</option><option value="Nữ">Nữ</option></select>
+                </label>
+                <label class="f" for="dob">Ngày sinh (dương lịch)
+                  <input type="date" id="dob" required>
+                </label>
+              </div>
+              <div class="grid2">
+                <label class="f" for="tob">Giờ sinh<input type="time" id="tob"></label>
+                <label class="check" style="align-self:end;padding-block:11px">
+                  <input type="checkbox" id="unknownTime"> Không rõ giờ sinh
+                </label>
+              </div>
+              <p class="hint" id="chartLink"></p>
+            </fieldset>
+
+            <fieldset>
+              <legend>Gói luận giải</legend>
+              <div class="pkgs">
+                <label class="pkg"><input type="radio" name="pkg" value="Luận giải tổng quan" checked>
+                  <b>Luận giải tổng quan</b><span>Tính cách, sở trường, đại vận hiện tại.</span><em>Phí: Thầy chốt</em></label>
+                <label class="pkg"><input type="radio" name="pkg" value="Luận giải chuyên đề">
+                  <b>Luận giải chuyên đề</b><span>Sự nghiệp, tài lộc, gia đạo hoặc sức khỏe.</span><em>Phí: Thầy chốt</em></label>
+                <label class="pkg"><input type="radio" name="pkg" value="Vận hạn năm">
+                  <b>Vận hạn năm</b><span>Lưu niên và 12 tháng của năm xem.</span><em>Phí: Thầy chốt</em></label>
+                <label class="pkg"><input type="radio" name="pkg" value="Tư vấn trực tiếp 1–1">
+                  <b>Tư vấn trực tiếp 1–1</b><span>Gặp Thầy, trao đổi sâu theo vấn đề riêng.</span><em>Phí: Thầy chốt</em></label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Liên hệ</legend>
+              <div class="grid2">
+                <label class="f" for="phone">Số điện thoại / Zalo
+                  <input type="tel" id="phone" autocomplete="tel" inputmode="tel" placeholder="09xx xxx xxx" required>
+                  <span class="err" id="phoneErr" hidden>Số điện thoại chưa đúng. Nhập 10 số, bắt đầu bằng 0 (hoặc +84).</span>
+                </label>
+                <label class="f" for="email">Email (không bắt buộc)
+                  <input type="email" id="email" autocomplete="email">
+                </label>
+              </div>
+              <span class="f">Hình thức trao đổi</span>
+              <div class="modes">
+                <label><input type="radio" name="mode" value="Zalo" checked>Zalo</label>
+                <label><input type="radio" name="mode" value="Gọi điện">Gọi điện</label>
+                <label><input type="radio" name="mode" value="Google Meet">Google Meet</label>
+                <label><input type="radio" name="mode" value="Gặp trực tiếp">Gặp trực tiếp</label>
+              </div>
+              <label class="f" for="qs">Câu hỏi bạn muốn Thầy giải đáp (tối đa 3 câu, mỗi câu một dòng)
+                <textarea id="qs" maxlength="900" placeholder="Ví dụ: Giai đoạn 2026–2027 có nên mở rộng kinh doanh?"></textarea>
+              </label>
+            </fieldset>
+
+            <label class="consent"><input type="checkbox" id="consent">
+              <span>Tôi đồng ý để Tử Vi Thiên Lương sử dụng thông tin trên nhằm lập lá số, liên hệ và
+                luận giải. Nội dung lá số và luận giải mang tính tham khảo.</span></label>
+            <span class="err" id="formErr" hidden></span>
+            <button class="btn btn-gold" type="submit" style="justify-self:start">Gửi yêu cầu luận giải</button>
+          </form>
+        </div>
+
+        <aside class="side">
+          <div class="panel side-who">
+            <img src="assets/img/logo-tuvithienluong-tim-256.png" alt="" width="72" height="72" loading="lazy" decoding="async">
+            <div>
+              <b>Thầy Thiên Lương</b>
+              <p>~40 năm nghiên cứu · Cố vấn doanh nghiệp · Đào tạo hàng nghìn học viên</p>
+              <a href="chuyen-gia.html" style="font-size:13.5px">Xem hồ sơ chuyên gia</a>
+            </div>
+          </div>
+
+          <div class="panel contact">
+            <span class="eyebrow">Liên hệ nhanh</span>
+            <div class="crow">
+              <div><div class="k">Hotline · Zalo</div><div class="v">0942 813 768</div></div>
+              <button type="button" class="copy" data-copy="0942813768">Sao chép</button>
+            </div>
+            <div class="crow">
+              <div><div class="k">Email</div><div class="v">info.thienluong@gmail.com</div></div>
+              <button type="button" class="copy" data-copy="info.thienluong@gmail.com">Sao chép</button>
+            </div>
+            <div class="crow">
+              <div><div class="k">Địa chỉ</div><div class="v">92 An Tiêm, P. Việt Hưng, Hạ Long, Quảng Ninh</div></div>
+              <button type="button" class="copy" data-copy="92 An Tiêm, phường Việt Hưng, Hạ Long, Quảng Ninh">Sao chép</button>
+            </div>
+            <p class="note">Thông tin liên hệ lấy từ bản demo đã duyệt; Thầy chốt kênh chính thức trước khi phát hành.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div>
+        <p><b>Tử Vi Thiên Lương</b> — Lá số an theo trường phái Tử Vi Việt Nam, lịch âm múi giờ GMT+7.</p>
+        <p>Lá số mang tính tham khảo. Phần luận giải chi tiết do Thầy Thiên Lương trực tiếp thực hiện.</p>
+      </div>
+      <a class="btn btn-ghost footer-cta" href="chuyen-gia.html">Xem hồ sơ chuyên gia</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/tuvi-core.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/booking.js"></script>
+</body>
+</html>
