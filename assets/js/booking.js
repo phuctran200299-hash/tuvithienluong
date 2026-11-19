@@ -133,7 +133,7 @@
       '<span class="eyebrow">Đã ghi nhận</span>' +
       '<h2>Cảm ơn ' + esc(ten) + '</h2>' +
       '<p class="muted">Trang này chưa nối với hệ thống nhận đơn, nên yêu cầu <b>chưa tự gửi đi</b>. ' +
-      'Hãy sao chép nội dung dưới đây và nhắn cho Thầy qua Zalo <b>0942 813 768</b>.</p>' +
+      'Hãy sao chép nội dung dưới đây và nhắn cho Thầy qua Zalo <b>0788 399 599</b>.</p>' +
       '<div class="code">' + esc(ma) + '</div>' +
       '<table class="sum">' +
       '<tr><td>Gói</td><td>' + esc(goi) + '</td></tr>' +

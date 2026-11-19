@@ -63,7 +63,7 @@ các trang có khớp nhau không.
   không ảnh hưởng bốn trang kia. Đừng gỡ tiền tố `.page-home`.
 - `la-so.html` và ba trang mới dùng giao diện theo bản demo.
 
-**Công tắc ba trang mới — `CONFIG.trangMoi` trong `assets/js/common.js`** (hiện `false`):
+**Công tắc ba trang mới — `CONFIG.trangMoi` trong `assets/js/common.js`** (hiện `true`, đang hiện đủ năm trang):
 - `false`: Chuyên gia · Bài viết · Đặt lịch bị **ẩn** — mọi link tới chúng bị ẩn bằng JS, thanh
   "Nhờ Thầy luận giải" và dải CTA dính đáy ở trang lá số cũng ẩn; `tools/build.js` đọc đúng dòng này
   và **không đóng gói** ba trang + `posts.js`, `posts-page.js`, `booking.js` vào `dist/`.

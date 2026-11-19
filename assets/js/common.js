@@ -14,7 +14,7 @@
      * Ba file HTML vẫn nằm trong repo và vẫn mở được khi chạy máy cá nhân, nên
      * đổi đúng chữ này là xem thử được ngay.
      */
-    trangMoi: false,
+    trangMoi: true,
 
     /** Link Zalo / Messenger của thầy cho nút "Nhờ thầy luận giải". Để trống thì ẩn nút. */
     lienHeThayUrl: '',

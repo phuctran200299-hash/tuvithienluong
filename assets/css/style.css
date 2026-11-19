@@ -319,7 +319,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--tl-gold-500); 
 }
 .consult-bar .who { display: flex; gap: 14px; align-items: center; min-width: 0; flex: 1 1 300px; }
 .consult-bar img { width: 64px; height: 64px; border-radius: 50%; flex: none; box-shadow: 0 0 0 1.5px var(--tl-gold-500); }
-.consult-bar b { font-size: 17px; color: var(--tl-gold-300); font-family: var(--f-display); }
+.consult-bar b { font-size: 17px; }
 .consult-bar p { font-size: 14px; color: var(--tl-muted); }
 
 .chart-toolbar {
@@ -356,7 +356,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--tl-gold-500); 
 
 /* ---------- Chuyên gia ---------- */
 .hero { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 40px; align-items: center; }
-.hero img { width: 100%; max-width: 340px; aspect-ratio: 1; border-radius: 50%; box-shadow: 0 0 0 2px var(--tl-gold-500), 0 24px 60px rgb(0 0 0 / .5); }
+.hero img { width: 100%; height: auto; max-width: 340px; aspect-ratio: 1; border-radius: 50%; box-shadow: 0 0 0 2px var(--tl-gold-500), 0 24px 60px rgb(0 0 0 / .5); }
 .hero .txt { display: grid; gap: 14px; min-width: 0; }
 .hero .lead { font-size: 17px; max-width: 58ch; }
 .hero .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
@@ -764,7 +764,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--tl-gold-500); 
   .board-tip-mobile { display: block; }
   .btn-sao { display: inline-flex; width: 100%; }
   .info-card { display: block; }
-  .footer-inner { flex-direction: column; align-items: stretch; text-align: center; }
+  .footer-inner { flex-direction: column; align-items: stretch; text-align: start; }
   .sheet-meta { grid-template-columns: minmax(0, 1fr); }
 
   /* --- lưới 12 cung thu nhỏ vừa bề ngang màn hình --- */
@@ -884,7 +884,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--tl-gold-500); 
   .dv-toggle { width: 100%; }
   .toolbar-actions { width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .toolbar-actions .btn { padding: 9px 4px; flex-direction: column; gap: 2px; font-size: .78rem; }
-  .footer-inner { flex-direction: column; align-items: stretch; text-align: center; }
+  .footer-inner { flex-direction: column; align-items: stretch; text-align: start; }
   .footer-cta { width: 100%; }
   .sheet-meta { grid-template-columns: minmax(0, 1fr); }
 }
