@@ -1,0 +1,44 @@
+# Push lên main → chạy test → dựng dist/ → đưa lên Cloudflare Pages (project "tuvithienluong",
+# tên miền tuvithienluong.vn). Test hoặc build lỗi thì dừng, bản đang chạy không bị đụng tới.
+# Cần 2 secret của repo: CLOUDFLARE_API_TOKEN (quyền Account · Cloudflare Pages · Edit)
+# và CLOUDFLARE_ACCOUNT_ID.
+name: Deploy lên Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Test bộ máy an sao
+        run: node tests/engine.test.js
+
+      - name: Test giao diện
+        run: node tests/ui.test.js
+
+      - name: Dựng dist/
+        run: node tools/build.js
+        env:
+          SITE_URL: https://tuvithienluong.vn
+
+      - name: Đưa lên Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=tuvithienluong --branch=main --commit-dirty=true

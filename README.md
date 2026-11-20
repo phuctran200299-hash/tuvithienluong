@@ -21,8 +21,22 @@ SITE_URL=https://tenmien.com node tools/build.js   # dựng thư mục dist/
 và `_headers`. Script tự chèn thẻ `og:` / `canonical` theo `SITE_URL`, và **dừng build nếu có file
 `assets/...` nào được mã trỏ tới mà không được đóng gói kèm** (kể cả khi đường dẫn nằm trong JS).
 
-Cloudflare Pages: nối với repo GitHub, đặt build command `node tools/build.js`, output directory
-`dist`, và biến môi trường `SITE_URL`. `dist/` nằm trong `.gitignore` vì nó được dựng lại mỗi lần build.
+**Web thật: https://tuvithienluong.vn** — Cloudflare Pages, project `tuvithienluong`
+(tên miền mua ở Mắt Bão, nameserver đã chuyển sang Cloudflare).
+
+**Deploy tự động:** push lên nhánh `main` → `.github/workflows/deploy.yml` chạy hai bộ test,
+dựng `dist/` với `SITE_URL=https://tuvithienluong.vn` rồi đưa lên Cloudflare (~1 phút). Test hoặc
+build lỗi thì dừng, bản đang chạy giữ nguyên; xem kết quả ở tab **Actions** trên GitHub. Workflow cần
+hai secret của repo: `CLOUDFLARE_API_TOKEN` (quyền *Account · Cloudflare Pages · Edit*) và
+`CLOUDFLARE_ACCOUNT_ID`. Làm thử ở nhánh khác thì không lên web thật.
+
+Deploy tay (khi cần):
+```
+SITE_URL=https://tuvithienluong.vn node tools/build.js
+npx wrangler pages deploy dist --project-name tuvithienluong --branch main
+```
+Project được tạo theo kiểu *Direct Upload*, nên **không** nối Git trong giao diện Cloudflare được —
+đó là lý do dùng GitHub Actions. `dist/` nằm trong `.gitignore` vì nó được dựng lại mỗi lần build.
 
 ## Cấu trúc
 | File | Vai trò |
