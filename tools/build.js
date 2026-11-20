@@ -107,6 +107,17 @@ function write(rel, content) {
   fs.writeFileSync(full, content);
 }
 
+const _bam = new Map();
+/** 8 ký tự đầu SHA-1 của file đã copy vào dist/ — đổi nội dung là đổi mã. */
+function banBam(rel) {
+  if (!_bam.has(rel)) {
+    const full = path.join(DIST, rel);
+    if (!fs.existsSync(full)) throw new Error(`Không gắn được mã phiên bản: thiếu ${rel} trong dist/`);
+    _bam.set(rel, require('crypto').createHash('sha1').update(fs.readFileSync(full)).digest('hex').slice(0, 8));
+  }
+  return _bam.get(rel);
+}
+
 function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -169,6 +180,10 @@ function build() {
     let html = fs.readFileSync(path.join(ROOT, file), 'utf8');
     if (!html.includes('</head>')) throw new Error(`${file}: không tìm thấy </head>`);
     html = html.replace('</head>', metaTags(file) + '</head>');
+    // Gắn mã nội dung vào link CSS/JS (style.css?v=ab12cd34): assets được cache 1 ngày,
+    // nên không có mã này thì sửa CSS xong khách vẫn thấy HTML mới + CSS cũ (vỡ giao diện).
+    html = html.replace(/(href|src)="(assets\/(?:css|js)\/[^"?#]+)"/g, (m, attr, rel) =>
+      `${attr}="${rel}?v=${banBam(rel)}"`);
     write(file, html);
   }
 
@@ -196,8 +211,8 @@ function build() {
     '</urlset>\n');
 
   // 5. _headers (Cloudflare Pages / Netlify đều đọc file này)
-  //    KHÔNG đặt cache 1 năm cho assets: tên file không có mã băm nội dung, nên
-  //    sửa style.css xong khách vẫn giữ bản cũ tới cả năm. 1 ngày là mức an toàn.
+  //    Link CSS/JS trong HTML đã mang ?v=<mã nội dung> nên sửa là khách tải bản mới ngay;
+  //    vẫn giữ 1 ngày vì ảnh và file JS tự chèn (logo.svg) không mang mã.
   write('_headers',
     '/assets/*\n' +
     '  Cache-Control: public, max-age=86400\n' +

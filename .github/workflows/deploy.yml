@@ -1,7 +1,8 @@
 # Push lên main → chạy test → dựng dist/ → đưa lên Cloudflare Pages (project "tuvithienluong",
 # tên miền tuvithienluong.vn). Test hoặc build lỗi thì dừng, bản đang chạy không bị đụng tới.
 # Cần 2 secret của repo: CLOUDFLARE_API_TOKEN (quyền Account · Cloudflare Pages · Edit)
-# và CLOUDFLARE_ACCOUNT_ID.
+# và CLOUDFLARE_ACCOUNT_ID. Gọi thẳng wrangler 4 (không dùng wrangler-action, vì action đó
+# cài wrangler 3 và thu gọn mất thông báo lỗi trong log).
 name: Deploy lên Cloudflare Pages
 
 on:
@@ -23,7 +24,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Test bộ máy an sao
         run: node tests/engine.test.js
@@ -37,8 +38,7 @@ jobs:
           SITE_URL: https://tuvithienluong.vn
 
       - name: Đưa lên Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=tuvithienluong --branch=main --commit-dirty=true
+        run: npx --yes wrangler@4 pages deploy dist --project-name=tuvithienluong --branch=main --commit-dirty=true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
