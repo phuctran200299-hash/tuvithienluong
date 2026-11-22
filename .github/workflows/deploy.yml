@@ -48,10 +48,36 @@ jobs:
             echo "API Cloudflare trả về HTTP $ma:"
             jq -r '.errors[]? | "  code \(.code): \(.message)"' /tmp/cf.json || cat /tmp/cf.json
             echo ""
-            echo "code 7003       -> secret CLOUDFLARE_ACCOUNT_ID sai. Hay gặp nhất là dán nhầm"
-            echo "                   Zone ID (cả hai đều 32 ký tự hex), hoặc dính dấu cách/xuống dòng."
-            echo "                   Lấy đúng: dash.cloudflare.com -> chọn tài khoản -> Account ID ở cột phải."
-            echo "code 9109/10000 -> CLOUDFLARE_API_TOKEN thiếu quyền Account · Cloudflare Pages · Edit."
+            # Tách bạch: hỏng ở token hay hỏng ở account id? Không in ra giá trị nào cả.
+            tok=$(curl -s -o /tmp/tok.json -w '%{http_code}' \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              "https://api.cloudflare.com/client/v4/user/tokens/verify")
+            if [ "$tok" != "200" ]; then
+              echo "=> CLOUDFLARE_API_TOKEN hỏng: /user/tokens/verify trả HTTP $tok."
+              jq -r '.errors[]? | "   code \(.code): \(.message)"' /tmp/tok.json || true
+              echo "   Tạo token mới: dash.cloudflare.com -> My Profile -> API Tokens -> Create Token,"
+              echo "   quyền Account · Cloudflare Pages · Edit. Rồi: gh secret set CLOUDFLARE_API_TOKEN"
+              exit 1
+            fi
+            echo "=> Token hợp lệ."
+            ds=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              "https://api.cloudflare.com/client/v4/accounts")
+            so=$(echo "$ds" | jq -r '.result | length // 0')
+            khop=$(echo "$ds" | jq -r --arg id "$CLOUDFLARE_ACCOUNT_ID" \
+              '[.result[]? | select(.id == $id)] | length')
+            echo "=> Token nhìn thấy $so tài khoản; số khớp với CLOUDFLARE_ACCOUNT_ID: $khop."
+            if [ "$khop" = "0" ]; then
+              echo ""
+              echo "   VẬY LÀ SAI CLOUDFLARE_ACCOUNT_ID (hay dán nhầm Zone ID — cả hai đều 32 ký tự hex,"
+              echo "   hoặc dính dấu cách / xuống dòng lúc dán)."
+              echo "   Lấy đúng: dash.cloudflare.com -> chọn tài khoản -> Account ID ở cột phải,"
+              echo "   hoặc copy từ URL dash.cloudflare.com/<ACCOUNT_ID>/..."
+              echo "   Rồi chạy:  gh secret set CLOUDFLARE_ACCOUNT_ID"
+            else
+              echo ""
+              echo "   Account ID đúng nhưng token không được cấp quyền Cloudflare Pages trên tài khoản đó."
+              echo "   Sửa quyền token: Account · Cloudflare Pages · Edit."
+            fi
             exit 1
           fi
           echo "Project Pages có trong tài khoản:"
