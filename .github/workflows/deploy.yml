@@ -1,8 +1,14 @@
 # Push lên main → chạy test → dựng dist/ → đưa lên Cloudflare Pages (project "tuvithienluong",
 # tên miền tuvithienluong.vn). Test hoặc build lỗi thì dừng, bản đang chạy không bị đụng tới.
-# Cần 2 secret của repo: CLOUDFLARE_API_TOKEN (quyền Account · Cloudflare Pages · Edit)
-# và CLOUDFLARE_ACCOUNT_ID. Gọi thẳng wrangler 4 (không dùng wrangler-action, vì action đó
-# cài wrangler 3 và thu gọn mất thông báo lỗi trong log).
+#
+# Secret cần: CLOUDFLARE_API_TOKEN (quyền Account · Cloudflare Pages · Edit).
+# CLOUDFLARE_ACCOUNT_ID KHÔNG còn bắt buộc: bước "Xác định tài khoản" hỏi thẳng API xem token
+# thuộc tài khoản nào. Trước đây secret đó bị dán sai giá trị, wrangler chỉ báo cộc lốc
+# "code 7003 — could not route", và bốn lần deploy liên tiếp đều chết ở đó mà không ai biết vì sao.
+# Chỉ khi token nhìn thấy nhiều hơn một tài khoản thì mới cần secret để chọn.
+#
+# Gọi thẳng wrangler 4 (không dùng wrangler-action, vì action đó cài wrangler 3 và thu gọn
+# mất thông báo lỗi trong log).
 name: Deploy lên Cloudflare Pages
 
 on:
@@ -13,6 +19,9 @@ on:
 concurrency:
   group: deploy-production
   cancel-in-progress: false
+
+env:
+  PAGES_PROJECT: tuvithienluong
 
 jobs:
   deploy:
@@ -37,63 +46,67 @@ jobs:
         env:
           SITE_URL: https://tuvithienluong.vn
 
-      # wrangler chỉ báo "code 7003 — could not route", không nói hỏng ở đâu. Bước này
-      # gọi thẳng API để chỉ đúng tên: sai ACCOUNT_ID, thiếu quyền token, hay sai tên project.
-      - name: Soát secret Cloudflare
+      # Lấy account id từ chính token, rồi che nó khỏi log. Không in giá trị secret nào.
+      - name: Xác định tài khoản Cloudflare
+        id: cf
         run: |
-          ma=$(curl -s -o /tmp/cf.json -w '%{http_code}' \
-            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects")
-          if [ "$ma" != "200" ]; then
-            echo "API Cloudflare trả về HTTP $ma:"
-            jq -r '.errors[]? | "  code \(.code): \(.message)"' /tmp/cf.json || cat /tmp/cf.json
-            echo ""
-            # Tách bạch: hỏng ở token hay hỏng ở account id? Không in ra giá trị nào cả.
-            tok=$(curl -s -o /tmp/tok.json -w '%{http_code}' \
-              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-              "https://api.cloudflare.com/client/v4/user/tokens/verify")
-            if [ "$tok" != "200" ]; then
-              echo "=> CLOUDFLARE_API_TOKEN hỏng: /user/tokens/verify trả HTTP $tok."
-              jq -r '.errors[]? | "   code \(.code): \(.message)"' /tmp/tok.json || true
-              echo "   Tạo token mới: dash.cloudflare.com -> My Profile -> API Tokens -> Create Token,"
-              echo "   quyền Account · Cloudflare Pages · Edit. Rồi: gh secret set CLOUDFLARE_API_TOKEN"
-              exit 1
-            fi
-            echo "=> Token hợp lệ."
-            ds=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-              "https://api.cloudflare.com/client/v4/accounts")
-            so=$(echo "$ds" | jq -r '.result | length // 0')
-            khop=$(echo "$ds" | jq -r --arg id "$CLOUDFLARE_ACCOUNT_ID" \
-              '[.result[]? | select(.id == $id)] | length')
-            echo "=> Token nhìn thấy $so tài khoản; số khớp với CLOUDFLARE_ACCOUNT_ID: $khop."
-            if [ "$khop" = "0" ]; then
-              echo ""
-              echo "   VẬY LÀ SAI CLOUDFLARE_ACCOUNT_ID (hay dán nhầm Zone ID — cả hai đều 32 ký tự hex,"
-              echo "   hoặc dính dấu cách / xuống dòng lúc dán)."
-              echo "   Lấy đúng: dash.cloudflare.com -> chọn tài khoản -> Account ID ở cột phải,"
-              echo "   hoặc copy từ URL dash.cloudflare.com/<ACCOUNT_ID>/..."
-              echo "   Rồi chạy:  gh secret set CLOUDFLARE_ACCOUNT_ID"
-            else
-              echo ""
-              echo "   Account ID đúng nhưng token không được cấp quyền Cloudflare Pages trên tài khoản đó."
-              echo "   Sửa quyền token: Account · Cloudflare Pages · Edit."
-            fi
+          ds=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts")
+          if [ "$(echo "$ds" | jq -r '.success')" != "true" ]; then
+            echo "CLOUDFLARE_API_TOKEN không gọi được /accounts:"
+            echo "$ds" | jq -r '.errors[]? | "  code \(.code): \(.message)"'
+            echo "Tạo lại token: dash.cloudflare.com -> My Profile -> API Tokens -> Create Token,"
+            echo "quyền Account · Cloudflare Pages · Edit. Rồi: gh secret set CLOUDFLARE_API_TOKEN"
             exit 1
           fi
-          echo "Project Pages có trong tài khoản:"
-          jq -r '.result[].name | "  - " + .' /tmp/cf.json
-          jq -e '.result[] | select(.name == "tuvithienluong")' /tmp/cf.json > /dev/null || {
-            echo ""
-            echo "Không thấy project tên 'tuvithienluong'. Sửa --project-name ở bước dưới cho khớp"
-            echo "một trong các tên trên, hoặc tạo project Pages (Direct Upload) tên đó."
+          so=$(echo "$ds" | jq -r '.result | length')
+          echo "Token nhìn thấy $so tài khoản."
+          if [ "$so" = "0" ]; then
+            echo "Token không gắn với tài khoản nào — tạo lại token ở đúng tài khoản chứa project Pages."
             exit 1
-          }
+          elif [ "$so" = "1" ]; then
+            id=$(echo "$ds" | jq -r '.result[0].id')
+          else
+            id=$(echo "$ds" | jq -r --arg id "$CLOUDFLARE_ACCOUNT_ID" \
+              '.result[] | select(.id == $id) | .id')
+            if [ -z "$id" ]; then
+              echo "Token thấy nhiều tài khoản nhưng CLOUDFLARE_ACCOUNT_ID không khớp cái nào."
+              echo "Các tài khoản token thấy:"
+              echo "$ds" | jq -r '.result[].name | "  - " + .'
+              echo "Đặt lại: gh secret set CLOUDFLARE_ACCOUNT_ID"
+              exit 1
+            fi
+          fi
+          echo "::add-mask::$id"
+          echo "id=$id" >> "$GITHUB_OUTPUT"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      - name: Đưa lên Cloudflare Pages
-        run: npx --yes wrangler@4 pages deploy dist --project-name=tuvithienluong --branch=main --commit-dirty=true
+      # Dừng sớm nếu chưa có project Pages, thay vì để wrangler báo lỗi khó hiểu.
+      - name: Soát project Pages
+        run: |
+          ds=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects")
+          if [ "$(echo "$ds" | jq -r '.success')" != "true" ]; then
+            echo "Không đọc được danh sách project Pages:"
+            echo "$ds" | jq -r '.errors[]? | "  code \(.code): \(.message)"'
+            echo "Thường là token thiếu quyền Account · Cloudflare Pages · Edit."
+            exit 1
+          fi
+          echo "Project Pages trong tài khoản:"
+          echo "$ds" | jq -r '.result[].name | "  - " + .'
+          echo "$ds" | jq -e --arg p "$PAGES_PROJECT" '.result[] | select(.name == $p)' > /dev/null || {
+            echo "Không có project tên '$PAGES_PROJECT'. Tạo project Pages (Direct Upload) tên đó,"
+            echo "hoặc sửa biến PAGES_PROJECT ở đầu workflow cho khớp một tên bên trên."
+            exit 1
+          }
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ steps.cf.outputs.id }}
+
+      - name: Đưa lên Cloudflare Pages
+        run: npx --yes wrangler@4 pages deploy dist --project-name="$PAGES_PROJECT" --branch=main --commit-dirty=true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ steps.cf.outputs.id }}
