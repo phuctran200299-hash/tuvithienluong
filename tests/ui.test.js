@@ -498,10 +498,9 @@ t('Bảng phí liệt kê đủ dịch vụ, gói trọn và mức phí khách d
   assert.match(MQ, /\.fee-table, \.fee-table tbody/);
 });
 
-t('Form đặt lịch chọn gói theo đúng bảng phí niêm yết', () => {
+t('Form đặt lịch liệt kê đủ dịch vụ theo đúng bảng phí', () => {
   const html = PAGES['dat-lich.html'];
   assert.match(html, /<select id="pkg">/);
-  assert.doesNotMatch(html, /Phí: Thầy chốt/, 'còn mức phí cũ, lệch với bảng phí');
   for (let i = 1; i <= 12; i++) {
     const ma = 'TV-' + (i < 10 ? '0' : '') + i;
     assert.ok(html.includes(ma), 'dat-lich.html thiếu ' + ma);
@@ -509,6 +508,27 @@ t('Form đặt lịch chọn gói theo đúng bảng phí niêm yết', () => {
   for (const g of GOI_TRON) assert.ok(html.includes('Gói ' + g), 'dat-lich.html thiếu gói ' + g);
   assert.match(read('assets/js/booking.js'), /\$\('pkg'\)\.value/,
     'booking.js vẫn đọc nhóm radio cũ, nội dung gửi Thầy sẽ rỗng');
+});
+
+t('Số tiền chỉ được xuất hiện khi trang Bảng phí đang bật', () => {
+  // Khách chưa muốn công bố giá: tắt bang-gia.html mà vẫn để giá trong ô chọn gói
+  // là vẫn lộ. Ràng hai thứ vào nhau để không lệch.
+  // Hai trang này sinh ra để nói về phí (bảng phí, và mức đặt cọc ở bước 3);
+  // mọi trang còn lại phải sạch tiền.
+  const TRANG_GIA = ['bang-gia.html', 'quy-trinh.html'];
+  const coGia = (html) => MUC_PHI.filter((v) => html.includes(v));
+  for (const [f, html] of Object.entries(PAGES)) {
+    if (TRANG_GIA.includes(f)) continue;
+    assert.deepStrictEqual(coGia(html), [], f + ': không được in số tiền ở đây');
+  }
+  const datLich = PAGES['dat-lich.html'];
+  if (TRANG['bang-gia.html']) {
+    assert.match(datLich, /bảng phí dịch vụ<\/a>/,
+      'bật trang Bảng phí thì ô chọn gói phải dẫn sang đó');
+  } else {
+    assert.match(datLich, /Phí: Thầy chốt/,
+      'tắt trang Bảng phí thì ô chọn gói phải ghi "Phí: Thầy chốt", đừng để trống');
+  }
 });
 
 t('Quy trình có đủ 6 bước và lưu ý không xem hộ khi chưa được đồng ý', () => {

@@ -12,7 +12,7 @@ No build step, no package.json, no npm dependencies. Plain HTML + CSS + classic 
 
 ```sh
 node tests/engine.test.js      # engine test suite (39 checks, incl. a 2000-chart invariant sweep); exits 1 if any fail
-node tests/ui.test.js          # UI/brand regression suite (43 checks) — locks TL-01…TL-11, the signed-off design system, the published price list and the per-page switch
+node tests/ui.test.js          # UI/brand regression suite (44 checks) — locks TL-01…TL-11, the signed-off design system, the published price list and the per-page switch
 node tools/serve.js            # serve locally on :8080 — use this, not just opening index.html, for copy-link/PNG
 npx serve .                    # alternative; python -m http.server works too but 404s on /la-so
 SITE_URL=https://… node tools/build.js   # build dist/ for deploy; refuses to run without SITE_URL
@@ -67,9 +67,13 @@ stay in sync (brand name, nav items, favicons, fonts, footer wording).
 
 `bang-gia.html` and `quy-trinh.html` are the client's signed-off price sheet and booking flow turned
 into pages. **The prices, codes TV-01…TV-12, the four gói trọn and the six steps are the client's own
-figures** — a test pins every number, so change one only when the client sends a new sheet, and change
-it in `bang-gia.html`, in the `#pkg` select of `dat-lich.html` and in the step 3 wording of
-`quy-trinh.html` together.
+figures** — a test pins every number, so change one only when the client sends a new sheet.
+
+**Money appears on those two pages only.** The client has not published prices yet, so a test fails if
+any other page prints one of the figures: `dat-lich.html` lists the same TV-01…TV-12 services by code,
+name and duration but says "Phí: Thầy chốt sau khi trao đổi". If the client later turns the price sheet
+back on and wants figures in the booking dropdown too, add them there and the same test switches to
+requiring the link across to `bang-gia.html`.
 
 **Two designs on purpose.** The client asked to keep the homepage as it was before the mockup.
 So `index.html` uses the *old* design, with all of its CSS scoped under `body.page-home` in
