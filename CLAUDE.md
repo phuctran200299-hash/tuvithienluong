@@ -12,7 +12,7 @@ No build step, no package.json, no npm dependencies. Plain HTML + CSS + classic 
 
 ```sh
 node tests/engine.test.js      # engine test suite (39 checks, incl. a 2000-chart invariant sweep); exits 1 if any fail
-node tests/ui.test.js          # UI/brand regression suite (41 checks) — locks TL-01…TL-11, the signed-off design system, and the published price list
+node tests/ui.test.js          # UI/brand regression suite (43 checks) — locks TL-01…TL-11, the signed-off design system, the published price list and the per-page switch
 node tools/serve.js            # serve locally on :8080 — use this, not just opening index.html, for copy-link/PNG
 npx serve .                    # alternative; python -m http.server works too but 404s on /la-so
 SITE_URL=https://… node tools/build.js   # build dist/ for deploy; refuses to run without SITE_URL
@@ -76,12 +76,19 @@ So `index.html` uses the *old* design, with all of its CSS scoped under `body.pa
 `style.css` (own token block, Noto Serif, `.wrap` 1200px). The other four pages use the mockup design.
 Don't "unify" them or drop the `.page-home` prefix; a test checks the scoping.
 
-**`CONFIG.trangMoi` in `assets/js/common.js` is the one switch** for Chuyên gia · Bảng phí · Quy trình · Bài viết · Đặt lịch
-(currently `false` = hidden until the client says to show them). When false, `common.js` hides every
-`a[href^=<page>]` (or its `.consult-bar` / `.sticky-cta` container; hidden, not removed, because
-`chart-page.js` still references `#consult-link`), and `tools/build.js` reads the same line by regex
-and leaves the three pages plus `posts.js`, `posts-page.js`, `booking.js` out of `dist/`. Don't add a
-second flag anywhere.
+**`var TRANG` at the top of `assets/js/common.js` is the one switch**, one boolean per secondary page
+(`chuyen-gia`, `bang-gia`, `quy-trinh`, `bai-viet`, `dat-lich`). It replaced the old single
+`CONFIG.trangMoi` when the client asked to hide only Bảng phí and Quy trình — **those two are
+`false` right now and go back to `true` when the client says so.**
+
+For every page set to `false`, `common.js` hides each `a[href^=<page>]` (hidden, not removed, because
+`chart-page.js` still references `#consult-link`), and `tools/build.js` parses that same block by regex
+and leaves the page out of `dist/`, out of the sitemap, and drops the JS only that page needs
+(`posts.js` + `posts-page.js` for Bài viết, `booking.js` for Đặt lịch). Don't add a second flag anywhere.
+
+A link **mid-sentence** must not be hidden on its own, or the sentence is left with a hole. Give the
+whole sentence `class="link-trang"` — `common.js` hides `.consult-bar`, `.sticky-cta` and `.link-trang`
+containers wholesale, and a test fails on any mid-sentence link to an off page that lacks one.
 
 The design comes from a mockup the client signed off (a 4-view single-file demo). Two things were
 **deliberately not** carried over from it:

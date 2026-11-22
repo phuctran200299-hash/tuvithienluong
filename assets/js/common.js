@@ -2,27 +2,36 @@
 (function (root) {
   'use strict';
 
+  /**
+   * CÔNG TẮC TỪNG TRANG PHỤ — đây là CHỖ DUY NHẤT bật/tắt.
+   *
+   * false: mọi liên kết tới trang đó bị ẩn trên giao diện, và `tools/build.js`
+   *   cũng KHÔNG đóng gói trang đó vào dist/ (nó đọc thẳng khối này bằng regex,
+   *   nên không được tách thành biến khác hay thêm cờ thứ hai ở nơi nào).
+   * true: trang hiện lại trong menu và có mặt trong dist/.
+   *
+   * File HTML vẫn nằm trong repo và vẫn mở được khi chạy máy cá nhân
+   * (`node tools/serve.js`), nên đổi đúng một chữ là xem thử được ngay.
+   */
+  var TRANG = {
+    'chuyen-gia.html': true,
+    'bang-gia.html': false,     // khách yêu cầu ẩn, bật lại khi khách báo
+    'quy-trinh.html': false,    // khách yêu cầu ẩn, bật lại khi khách báo
+    'bai-viet.html': true,
+    'dat-lich.html': true
+  };
+
   var CONFIG = {
-    /**
-     * CÔNG TẮC ba trang Chuyên gia · Bài viết · Đặt lịch luận giải.
-     *
-     * false (đang dùng): mọi liên kết tới ba trang đó bị ẩn trên giao diện, và
-     *   `tools/build.js` cũng KHÔNG đóng gói ba file đó vào dist/ (nó đọc thẳng
-     *   dòng này để chỉ có đúng MỘT chỗ bật/tắt).
-     * true: menu hiện lại đủ bốn mục và dist/ có đủ năm trang.
-     *
-     * Ba file HTML vẫn nằm trong repo và vẫn mở được khi chạy máy cá nhân, nên
-     * đổi đúng chữ này là xem thử được ngay.
-     */
-    trangMoi: true,
 
     /** Link Zalo / Messenger của thầy cho nút "Nhờ thầy luận giải". Để trống thì ẩn nút. */
     lienHeThayUrl: '',
     historyKey: 'tvtl_history_v1'
   };
 
-  /** Các trang nằm sau công tắc `trangMoi` */
-  var TRANG_MOI = ['chuyen-gia.html', 'bang-gia.html', 'quy-trinh.html', 'bai-viet.html', 'dat-lich.html'];
+  /** Tên các trang đang tắt */
+  function trangTat() {
+    return Object.keys(TRANG).filter(function (f) { return !TRANG[f]; });
+  }
 
   function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -108,18 +117,20 @@
     toast._t = setTimeout(function () { t.classList.remove('show'); }, 2200);
   }
 
-  /* ---------- Ẩn ba trang chưa công bố ---------- */
+  /* ---------- Ẩn những trang đang tắt ---------- */
   /* Ẩn chứ không xoá khỏi DOM: chart-page.js còn gán href cho #consult-link và
      #sticky-link, xoá đi là nó lỗi. Khối cha nào chỉ tồn tại để chứa đúng cái
-     link đó (thanh luận giải, dải CTA dính đáy) thì ẩn cả khối. */
-  (function anTrangMoi() {
-    if (CONFIG.trangMoi) return;
-    var sel = TRANG_MOI.map(function (f) { return 'a[href^="' + f + '"]'; }).join(', ');
+     link đó (thanh luận giải, dải CTA dính đáy, câu dẫn .link-trang) thì ẩn cả
+     khối — bằng không còn lại một câu cụt mất chỗ bấm. */
+  (function anTrangTat() {
+    var tat = trangTat();
+    if (!tat.length) return;
+    var sel = tat.map(function (f) { return 'a[href^="' + f + '"]'; }).join(', ');
     document.querySelectorAll(sel).forEach(function (a) {
-      var khoi = a.closest('.consult-bar, .sticky-cta');
+      var khoi = a.closest('.consult-bar, .sticky-cta, .link-trang');
       (khoi || a).hidden = true;
     });
-    document.body.classList.remove('has-sticky');
+    if (tat.indexOf('dat-lich.html') >= 0) document.body.classList.remove('has-sticky');
   })();
 
   /* ---------- Menu thu gọn trên điện thoại ---------- */

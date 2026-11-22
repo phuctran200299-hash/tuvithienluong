@@ -42,17 +42,28 @@ const EXCLUDE = [
   'assets/img/logo-tuvithienluong-tim-1024.png'
 ];
 
-/* Công tắc ba trang Chuyên gia · Bài viết · Đặt lịch. Đọc thẳng từ common.js để
-   chỉ có đúng MỘT chỗ bật/tắt — sửa `trangMoi` ở đó là cả web lẫn bản dựng đổi theo. */
-const TRANG_MOI = /trangMoi:\s*true/.test(
-  fs.readFileSync(path.join(ROOT, 'assets/js/common.js'), 'utf8'));
+/* Công tắc từng trang phụ. Đọc thẳng khối `var TRANG = { ... }` trong common.js
+   để chỉ có đúng MỘT chỗ bật/tắt — sửa ở đó là cả web lẫn bản dựng đổi theo. */
+const COMMON_JS = fs.readFileSync(path.join(ROOT, 'assets/js/common.js'), 'utf8');
+const KHOI_TRANG = COMMON_JS.match(/var TRANG = \{([\s\S]*?)\n  \};/);
+if (!KHOI_TRANG) {
+  console.error('Không đọc được khoi var TRANG trong assets/js/common.js');
+  process.exit(1);
+}
+/** { 'chuyen-gia.html': true, ... } — đúng như common.js khai báo */
+const TRANG = {};
+for (const m of KHOI_TRANG[1].matchAll(/'([\w.-]+\.html)'\s*:\s*(true|false)/g)) {
+  TRANG[m[1]] = m[2] === 'true';
+}
+const bat = (f) => TRANG[f] === true;
 
 const PAGES = ['index.html', 'la-so.html']
-  .concat(TRANG_MOI ? ['chuyen-gia.html', 'bang-gia.html', 'quy-trinh.html', 'bai-viet.html', 'dat-lich.html'] : []);
+  .concat(Object.keys(TRANG).filter(bat));
 
-// Tắt ba trang thì ba file JS phục vụ chúng cũng không cần publish — nhất là
+// Trang nào tắt thì file JS chỉ phục vụ riêng nó cũng không cần publish — nhất là
 // posts.js, vốn chứa toàn bộ nội dung bài viết chưa muốn công bố.
-if (!TRANG_MOI) EXCLUDE.push('assets/js/posts.js', 'assets/js/posts-page.js', 'assets/js/booking.js');
+if (!bat('bai-viet.html')) EXCLUDE.push('assets/js/posts.js', 'assets/js/posts-page.js');
+if (!bat('dat-lich.html')) EXCLUDE.push('assets/js/booking.js');
 
 /** Mô tả cho thẻ og: của từng trang */
 const META = {
@@ -207,13 +218,12 @@ function build() {
   // 4. sitemap.xml — trang chủ và trang bài viết. Trang lá số bị noindex vì nó
   //    mang họ tên + ngày giờ sinh của khách.
   const today = new Date().toISOString().slice(0, 10);
-  const sitemapUrls = [{ loc: SITE + '/', priority: '1.0' }].concat(TRANG_MOI ? [
-    { loc: SITE + '/chuyen-gia.html', priority: '0.8' },
-    { loc: SITE + '/bang-gia.html', priority: '0.9' },
-    { loc: SITE + '/quy-trinh.html', priority: '0.7' },
-    { loc: SITE + '/bai-viet.html', priority: '0.7' },
-    { loc: SITE + '/dat-lich.html', priority: '0.8' }
-  ] : []);
+  const UU_TIEN = {
+    'chuyen-gia.html': '0.8', 'bang-gia.html': '0.9', 'quy-trinh.html': '0.7',
+    'bai-viet.html': '0.7', 'dat-lich.html': '0.8'
+  };
+  const sitemapUrls = [{ loc: SITE + '/', priority: '1.0' }].concat(
+    Object.keys(TRANG).filter(bat).map((f) => ({ loc: SITE + '/' + f, priority: UU_TIEN[f] })));
   write('sitemap.xml',
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +

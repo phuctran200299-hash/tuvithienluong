@@ -27,7 +27,14 @@ for (const f of FILES) PAGES[f] = read(f);
 const CU = ['index.html'];
 const MOI = FILES.filter((f) => !CU.includes(f));
 const COMMON_JS = read('assets/js/common.js');
-const TRANG_MOI_BAT = /trangMoi:\s*true/.test(COMMON_JS);
+/** Công tắc từng trang, đọc đúng như tools/build.js đọc */
+const TRANG = (() => {
+  const khoi = COMMON_JS.match(/var TRANG = \{([\s\S]*?)\n  \};/);
+  assert.ok(khoi, 'common.js phải có đúng một khối `var TRANG = { ... }`');
+  const r = {};
+  for (const m of khoi[1].matchAll(/'([\w.-]+\.html)'\s*:\s*(true|false)/g)) r[m[1]] = m[2] === 'true';
+  return r;
+})();
 const INDEX = PAGES['index.html'];
 const LASO = PAGES['la-so.html'];
 const CSS = read('assets/css/style.css');
@@ -164,7 +171,7 @@ t('TL-10 có đủ bộ biểu tượng và file đã tồn tại', () => {
 
 t('TL-10 build.js publish mọi trang kèm thẻ og: và sitemap', () => {
   const build = read('tools/build.js');
-  // PAGES giờ dựng động theo công tắc trangMoi, nên soát cả file thay vì một mảng
+  // PAGES giờ dựng động theo khối TRANG, nên soát cả file thay vì một mảng
   for (const f of FILES) {
     assert.ok(build.includes(`'${f}'`), 'build.js thiếu ' + f);
     assert.ok(build.includes(`'${f}': {`), 'build.js thiếu thẻ META cho ' + f);
@@ -514,6 +521,45 @@ t('Quy trình có đủ 6 bước và lưu ý không xem hộ khi chưa được
   // Hai trang nói về phí phải dẫn sang nhau, tránh khách chỉ đọc một nửa
   assert.match(html, /href="bang-gia\.html"/);
   assert.match(PAGES['bang-gia.html'], /href="quy-trinh\.html"/);
+});
+
+
+/* ---------------- Công tắc từng trang ----------------------------------- */
+
+t('Công tắc: mỗi trang phụ khai đúng một lần, build.js đọc được', () => {
+  for (const f of ['chuyen-gia.html', 'bang-gia.html', 'quy-trinh.html', 'bai-viet.html', 'dat-lich.html']) {
+    assert.strictEqual(typeof TRANG[f], 'boolean', 'thiếu công tắc cho ' + f);
+  }
+  const build = read('tools/build.js');
+  assert.match(build, /var TRANG = \\\{/, 'build.js phải đọc chính khối TRANG trong common.js');
+  assert.doesNotMatch(build, /trangMoi/, 'build.js còn dùng công tắc cũ');
+  assert.doesNotMatch(COMMON_JS, /trangMoi/, 'common.js còn sót công tắc cũ — chỉ được có MỘT chỗ bật/tắt');
+  // Trang tắt thì JS chỉ phục vụ riêng nó cũng không được publish
+  if (TRANG['bai-viet.html'] === false) assert.match(build, /assets\/js\/posts\.js/);
+  if (TRANG['dat-lich.html'] === false) assert.match(build, /assets\/js\/booking\.js/);
+});
+
+t('Trang đang tắt: không để lại câu cụt ở các trang còn bật', () => {
+  const tat = Object.keys(TRANG).filter((f) => !TRANG[f]);
+  if (!tat.length) return;
+  const ANDUOC = /consult-bar|sticky-cta|link-trang/;
+  for (const [f, html] of Object.entries(PAGES)) {
+    if (TRANG[f] === false) continue;          // nội dung trang tắt không ra web
+    for (const dich of tat) {
+      const re = new RegExp('<a [^>]*href="' + dich.replace(/\./g, '\\.') + '[^"]*"[^>]*>', 'g');
+      for (const m of html.matchAll(re)) {
+        const truoc = html.slice(0, m.index);
+        const khoi = [...truoc.matchAll(/<(p|li|td|nav)\b[^>]*>/g)].pop();
+        if (!khoi || khoi[1] === 'nav') continue;   // trong menu, ẩn mỗi thẻ <a> là gọn
+        const chuTruoc = truoc.slice(khoi.index + khoi[0].length).replace(/<[^>]*>/g, '').trim();
+        if (!chuTruoc) continue;                    // link đứng đầu khối
+        assert.match(khoi[0], ANDUOC, f + ': link tới ' + dich + ' nằm giữa câu "…' +
+          chuTruoc.slice(-40) + '". Ẩn trang xong sẽ còn lại câu cụt — cho cả khối class "link-trang".');
+      }
+    }
+  }
+  // common.js phải ẩn cả khối đó, không chỉ mỗi thẻ <a>
+  assert.match(COMMON_JS, /closest\('\.consult-bar, \.sticky-cta, \.link-trang'\)/);
 });
 
 console.log(`${pass} đạt, ${fail} lỗi`);

@@ -80,11 +80,23 @@ các trang có khớp nhau không.
   không ảnh hưởng sáu trang kia. Đừng gỡ tiền tố `.page-home`.
 - `la-so.html` và năm trang mới dùng giao diện theo bản demo.
 
-**Công tắc năm trang mới — `CONFIG.trangMoi` trong `assets/js/common.js`** (hiện `true`, đang hiện đủ bảy trang):
-- `false`: Chuyên gia · Bảng phí · Quy trình · Bài viết · Đặt lịch bị **ẩn** — mọi link tới chúng bị ẩn
-  bằng JS, thanh "Nhờ Thầy luận giải" và dải CTA dính đáy ở trang lá số cũng ẩn; `tools/build.js` đọc
-  đúng dòng này và **không đóng gói** năm trang + `posts.js`, `posts-page.js`, `booking.js` vào `dist/`.
-- `true`: hiện lại đủ menu, `dist/` có đủ bảy trang. Chỉ đổi một chữ này, rồi build lại.
+**Công tắc từng trang — khối `var TRANG` ở đầu `assets/js/common.js`**, mỗi trang phụ một dòng
+`true`/`false`. Đây là **chỗ duy nhất** bật/tắt; `tools/build.js` đọc thẳng khối đó.
+
+| Trang | Hiện tại |
+|---|---|
+| `chuyen-gia.html` | `true` |
+| `bang-gia.html` | **`false`** — khách yêu cầu ẩn, bật lại khi khách báo |
+| `quy-trinh.html` | **`false`** — khách yêu cầu ẩn, bật lại khi khách báo |
+| `bai-viet.html` | `true` |
+| `dat-lich.html` | `true` |
+
+- `false`: mọi link tới trang đó bị ẩn bằng JS (thanh "Nhờ Thầy luận giải" và dải CTA dính đáy ở trang
+  lá số cũng ẩn theo); `tools/build.js` **không đóng gói** trang đó vào `dist/`, bỏ khỏi sitemap, và bỏ
+  luôn file JS chỉ phục vụ riêng nó (`posts.js`, `posts-page.js` cho Bài viết; `booking.js` cho Đặt lịch).
+- `true`: trang hiện lại trong menu và có trong `dist/`. Đổi một chữ rồi build lại là xong.
+- Câu văn có link **nằm giữa câu** trỏ tới trang đang tắt thì phải cho cả câu `class="link-trang"`,
+  bằng không ẩn xong còn lại câu cụt. Có test chặn chuyện này.
 
 **Bảng phí là số liệu của khách.** `bang-gia.html` (12 mã TV-01…TV-12 + 4 gói trọn), ô chọn gói
 `#pkg` trong `dat-lich.html` và bước 3 của `quy-trinh.html` phải khớp nhau; `tests/ui.test.js` chốt
