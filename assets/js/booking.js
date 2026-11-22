@@ -108,7 +108,7 @@
     var now = new Date(), p2 = C.pad;
     var ma = 'TVTL-' + String(now.getFullYear()).slice(2) + p2(now.getMonth() + 1) + p2(now.getDate()) +
       '-' + String(Math.floor(Math.random() * 900) + 100);
-    var goi = form.querySelector('input[name=pkg]:checked').value;
+    var goi = $('pkg').value;
     var hinhThuc = form.querySelector('input[name=mode]:checked').value;
     var cauHoi = $('qs').value.split('\n').map(function (s) { return s.trim(); })
       .filter(Boolean).slice(0, 3);

@@ -11,6 +11,8 @@
   var MOBILE = '(max-width: 639px)';
   /** Số sao phụ hiện sẵn mỗi cột khi thu gọn; phần còn lại nằm sau chip "+N" */
   var PHU_RUT_GON = 3;
+  /** Tên miền in trong lá số — ảnh PNG khách tải về luôn dẫn được về web */
+  var SITE = 'tuvithienluong.vn';
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -142,6 +144,7 @@
       '<div class="tc-panel">' +
       '<div class="tc-brand"><img src="assets/img/logo.svg" alt="" width="26" height="26"> TỬ VI THIÊN LƯƠNG</div>' +
       '<h2 class="tc-title">Lá Số Tử Vi</h2>' +
+      '<div class="tc-link">' + SITE + '</div>' +
       infoTableHtml(chart) +
       '</div>' +
       '<div class="tc-crest">' +
@@ -149,6 +152,7 @@
       '<b>LÁ SỐ TỬ VI</b>' +
       '<span class="tc-crest-ten">' + esc(i.ten || '—') + '</span>' +
       '<small>' + esc(i.canChiNam + ' · ' + i.cuc) + '</small>' +
+      '<span class="tc-link">' + SITE + '</span>' +
       '</div>' +
       '</div>' +
       '<div class="tc-focus" aria-live="polite"></div>' +

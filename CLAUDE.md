@@ -12,9 +12,9 @@ No build step, no package.json, no npm dependencies. Plain HTML + CSS + classic 
 
 ```sh
 node tests/engine.test.js      # engine test suite (39 checks, incl. a 2000-chart invariant sweep); exits 1 if any fail
-node tests/ui.test.js          # UI/brand regression suite (36 checks) — locks TL-01…TL-11 plus the signed-off design system
-npx serve .                    # serve locally — use this, not just opening index.html, for copy-link/PNG
-python -m http.server 8080     # alternative static server
+node tests/ui.test.js          # UI/brand regression suite (41 checks) — locks TL-01…TL-11, the signed-off design system, and the published price list
+node tools/serve.js            # serve locally on :8080 — use this, not just opening index.html, for copy-link/PNG
+npx serve .                    # alternative; python -m http.server works too but 404s on /la-so
 SITE_URL=https://… node tools/build.js   # build dist/ for deploy; refuses to run without SITE_URL
 python tools/gen-logo.py       # rebuild the purple logo set from tools/logo-src/logo-chan-dung-goc.png
 python tools/gen-og.py         # regenerate assets/img/og-image.png (run AFTER gen-logo.py — it pastes that logo)
@@ -57,19 +57,26 @@ node -e "const T=require('./assets/js/tuvi-core.js');const ls=T.lapLaSo({ngay:20
 - Lunar calendar is Hồ Ngọc Đức's algorithm at GMT+7 (`TVTL.lunar.*`), which is why Vietnamese Tết dates differ from Chinese ones (e.g. 1985).
 - Invariant enforced by the tests: every star appears exactly once per chart, and every chart has exactly 14 chính tinh across 1900–2100.
 
-### Five pages, one design system
+### Seven pages, one design system
 
-`index.html` (cast a chart) · `la-so.html` (the chart) · `chuyen-gia.html` · `bai-viet.html` · `dat-lich.html`.
+`index.html` (cast a chart) · `la-so.html` (the chart) · `chuyen-gia.html` · `bang-gia.html` ·
+`quy-trinh.html` · `bai-viet.html` · `dat-lich.html`.
 They share `assets/css/style.css` and the same header/footer markup, copied by hand — there is no
-templating step, so a header change means editing five files, and `tests/ui.test.js` checks all five
+templating step, so a header change means editing seven files, and `tests/ui.test.js` checks all seven
 stay in sync (brand name, nav items, favicons, fonts, footer wording).
+
+`bang-gia.html` and `quy-trinh.html` are the client's signed-off price sheet and booking flow turned
+into pages. **The prices, codes TV-01…TV-12, the four gói trọn and the six steps are the client's own
+figures** — a test pins every number, so change one only when the client sends a new sheet, and change
+it in `bang-gia.html`, in the `#pkg` select of `dat-lich.html` and in the step 3 wording of
+`quy-trinh.html` together.
 
 **Two designs on purpose.** The client asked to keep the homepage as it was before the mockup.
 So `index.html` uses the *old* design, with all of its CSS scoped under `body.page-home` in
 `style.css` (own token block, Noto Serif, `.wrap` 1200px). The other four pages use the mockup design.
 Don't "unify" them or drop the `.page-home` prefix; a test checks the scoping.
 
-**`CONFIG.trangMoi` in `assets/js/common.js` is the one switch** for Chuyên gia · Bài viết · Đặt lịch
+**`CONFIG.trangMoi` in `assets/js/common.js` is the one switch** for Chuyên gia · Bảng phí · Quy trình · Bài viết · Đặt lịch
 (currently `false` = hidden until the client says to show them). When false, `common.js` hides every
 `a[href^=<page>]` (or its `.consult-bar` / `.sticky-cta` container; hidden, not removed, because
 `chart-page.js` still references `#consult-link`), and `tools/build.js` reads the same line by regex
@@ -100,6 +107,12 @@ old-style figures, which drop "1" and "8" below the baseline, so anything numeri
 `index.html` form → `TVTLCommon.chartUrl(p)` → `la-so.html#n=..&d=..&m=..`. `readParams()` reads the hash first and only falls back to `location.search`.
 
 This is deliberate: `npx serve` (and similar hosts with cleanUrls) 301-redirects `la-so.html?x=1` to `/la-so` and **drops the query string**, which previously made the chart page show the empty state after submitting. Any new link between pages must keep using `#` + `toQuery(p)`.
+
+The flip side: Cloudflare Pages serves the chart at **both** `/la-so.html` and `/la-so`, so links
+people saved from the live site have no `.html`. `python -m http.server` has no such mapping and
+404s on `/la-so`, which looks exactly like a broken site. That is why `tools/serve.js` exists — it
+resolves `/x` → `x.html` the way Pages does, so local and production agree. Use it for local
+testing; it is a dev-only tool and `tools/` is never copied into `dist/`.
 
 Query keys are short and stable (`n d m y al nh h mi tz g nx tx ty hc hn kv tg n15`) — non-default school options only. Changing a key breaks saved links and localStorage history.
 
@@ -141,6 +154,10 @@ failure messages before "simplifying" any of the rules below.
   padding and font for exactly that reason, otherwise it covers the tiểu hạn labels on the four edges.
 - On mobile the centre shows `.tc-crest` (logo + name) and the full table moves to `#chart-info` below the
   board. Both tables come from `TVTLRender.infoRows`, so they can't drift apart.
+- The centre block prints the domain (`.tc-link`, `SITE` at the top of `render.js`) under "Lá Số Tử Vi",
+  so the PNG people download carries a way back to the site. It is deliberately inside `.tc-panel`, which
+  `.board.exporting` keeps — the mobile `.tc-crest` has its own copy. The print block shrinks it for the
+  same reason it shrinks `.tc-title`: A4 landscape only gives the trung cung 90mm.
 
 ## Gotchas
 

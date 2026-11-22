@@ -22,7 +22,7 @@
   };
 
   /** Các trang nằm sau công tắc `trangMoi` */
-  var TRANG_MOI = ['chuyen-gia.html', 'bai-viet.html', 'dat-lich.html'];
+  var TRANG_MOI = ['chuyen-gia.html', 'bang-gia.html', 'quy-trinh.html', 'bai-viet.html', 'dat-lich.html'];
 
   function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {

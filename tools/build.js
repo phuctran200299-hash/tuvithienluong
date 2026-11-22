@@ -48,7 +48,7 @@ const TRANG_MOI = /trangMoi:\s*true/.test(
   fs.readFileSync(path.join(ROOT, 'assets/js/common.js'), 'utf8'));
 
 const PAGES = ['index.html', 'la-so.html']
-  .concat(TRANG_MOI ? ['chuyen-gia.html', 'bai-viet.html', 'dat-lich.html'] : []);
+  .concat(TRANG_MOI ? ['chuyen-gia.html', 'bang-gia.html', 'quy-trinh.html', 'bai-viet.html', 'dat-lich.html'] : []);
 
 // Tắt ba trang thì ba file JS phục vụ chúng cũng không cần publish — nhất là
 // posts.js, vốn chứa toàn bộ nội dung bài viết chưa muốn công bố.
@@ -65,6 +65,16 @@ const META = {
     title: 'Thầy Thiên Lương — Chuyên gia luận giải Tử Vi',
     desc: 'Gần 40 năm nghiên cứu và ứng dụng Tử Vi cùng tri thức phương Đông. Cố vấn doanh nghiệp, đào tạo hàng nghìn học viên.',
     canonical: '/chuyen-gia.html'
+  },
+  'bang-gia.html': {
+    title: 'Bảng phí dịch vụ tư vấn — Tử Vi Thiên Lương',
+    desc: 'Phí niêm yết 12 dịch vụ luận giải Tử Vi của Thầy Thiên Lương, từ hạn tháng đến soi tỏ vận mệnh toàn diện, kèm bốn gói trọn. Áp dụng từ năm 2026.',
+    canonical: '/bang-gia.html'
+  },
+  'quy-trinh.html': {
+    title: 'Quy trình nhận đặt lịch hẹn — Tử Vi Thiên Lương',
+    desc: 'Sáu bước nhận đặt lịch luận giải: tiếp nhận yêu cầu, cung cấp thông tin, xác nhận phí, chốt lịch hẹn, nhắc hẹn và bàn giao sau buổi xem.',
+    canonical: '/quy-trinh.html'
   },
   'dat-lich.html': {
     title: 'Đặt lịch luận giải — Tử Vi Thiên Lương',
@@ -199,6 +209,8 @@ function build() {
   const today = new Date().toISOString().slice(0, 10);
   const sitemapUrls = [{ loc: SITE + '/', priority: '1.0' }].concat(TRANG_MOI ? [
     { loc: SITE + '/chuyen-gia.html', priority: '0.8' },
+    { loc: SITE + '/bang-gia.html', priority: '0.9' },
+    { loc: SITE + '/quy-trinh.html', priority: '0.7' },
     { loc: SITE + '/bai-viet.html', priority: '0.7' },
     { loc: SITE + '/dat-lich.html', priority: '0.8' }
   ] : []);

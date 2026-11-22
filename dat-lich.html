@@ -27,6 +27,8 @@
       <nav class="nav" id="site-nav" aria-label="Chính">
         <a href="index.html">Lập lá số</a>
         <a href="chuyen-gia.html">Chuyên gia</a>
+        <a href="bang-gia.html">Bảng phí</a>
+        <a href="quy-trinh.html">Quy trình</a>
         <a href="bai-viet.html">Bài viết</a>
         <a href="dat-lich.html" class="nav-cta" aria-current="page">Đặt lịch luận giải</a>
       </nav>
@@ -70,16 +72,41 @@
 
             <fieldset>
               <legend>Gói luận giải</legend>
-              <div class="pkgs">
-                <label class="pkg"><input type="radio" name="pkg" value="Luận giải tổng quan" checked>
-                  <b>Luận giải tổng quan</b><span>Tính cách, sở trường, đại vận hiện tại.</span><em>Phí: Thầy chốt</em></label>
-                <label class="pkg"><input type="radio" name="pkg" value="Luận giải chuyên đề">
-                  <b>Luận giải chuyên đề</b><span>Sự nghiệp, tài lộc, gia đạo hoặc sức khỏe.</span><em>Phí: Thầy chốt</em></label>
-                <label class="pkg"><input type="radio" name="pkg" value="Vận hạn năm">
-                  <b>Vận hạn năm</b><span>Lưu niên và 12 tháng của năm xem.</span><em>Phí: Thầy chốt</em></label>
-                <label class="pkg"><input type="radio" name="pkg" value="Tư vấn trực tiếp 1–1">
-                  <b>Tư vấn trực tiếp 1–1</b><span>Gặp Thầy, trao đổi sâu theo vấn đề riêng.</span><em>Phí: Thầy chốt</em></label>
-              </div>
+              <label class="f" for="pkg">Chọn dịch vụ theo bảng phí niêm yết
+                <select id="pkg">
+                  <optgroup label="Xem nhanh">
+                    <option value="TV-01 · Hạn tháng — 100.000đ (≤ 10 phút)">TV-01 · Hạn tháng — 100.000đ (≤ 10 phút)</option>
+                    <option value="TV-02 · Hỏi nhanh một việc — 300.000đ (≤ 15 phút)">TV-02 · Hỏi nhanh một việc — 300.000đ (≤ 15 phút)</option>
+                  </optgroup>
+                  <optgroup label="Vận hạn">
+                    <option value="TV-03 · Vận hạn năm — 500.000đ (30 phút)">TV-03 · Vận hạn năm — 500.000đ (30 phút)</option>
+                    <option value="TV-04 · Vận hạn 12 tháng — 1.000.000đ (45 phút + bảng tóm tắt)">TV-04 · Vận hạn 12 tháng — 1.000.000đ (45 phút + bảng tóm tắt)</option>
+                  </optgroup>
+                  <optgroup label="Theo chủ đề — 1.500.000đ / chủ đề, 60 phút">
+                    <option value="TV-05 · Chủ đề Hôn nhân — 1.500.000đ (60 phút)">TV-05 · Hôn nhân</option>
+                    <option value="TV-06 · Chủ đề Công danh sự nghiệp — 1.500.000đ (60 phút)">TV-06 · Công danh sự nghiệp</option>
+                    <option value="TV-07 · Chủ đề Con cái — 1.500.000đ (60 phút)">TV-07 · Con cái</option>
+                    <option value="TV-08 · Chủ đề Mồ mả — 1.500.000đ (60 phút)">TV-08 · Mồ mả</option>
+                  </optgroup>
+                  <optgroup label="Luận giải tổng quát">
+                    <option value="TV-09 · Tổng quát sơ bộ — 800.000đ (45 phút)" selected>TV-09 · Tổng quát sơ bộ — 800.000đ (45 phút)</option>
+                    <option value="TV-10 · Tổng quát chi tiết — 3.000.000đ (120 phút + bản tóm tắt)">TV-10 · Tổng quát chi tiết — 3.000.000đ (120 phút + bản tóm tắt)</option>
+                    <option value="TV-11 · Tử vi tâm lý học chuyên sâu — 5.000.000đ (150 phút + bản viết 15–20 trang)">TV-11 · Tử vi tâm lý học chuyên sâu — 5.000.000đ</option>
+                    <option value="TV-12 · Soi tỏ vận mệnh toàn diện — 10.000.000đ (2 buổi × 120 phút + hồ sơ 30–40 trang)">TV-12 · Soi tỏ vận mệnh toàn diện — 10.000.000đ</option>
+                  </optgroup>
+                  <optgroup label="Gói trọn">
+                    <option value="Gói Đồng Hành Năm — 1.200.000đ">Gói Đồng Hành Năm — 1.200.000đ</option>
+                    <option value="Gói Khởi Niên — 2.000.000đ">Gói Khởi Niên — 2.000.000đ</option>
+                    <option value="Gói Gia Đạo — 3.800.000đ">Gói Gia Đạo — 3.800.000đ</option>
+                    <option value="Gói Lập Nghiệp — 4.500.000đ">Gói Lập Nghiệp — 4.500.000đ</option>
+                  </optgroup>
+                  <optgroup label="Chưa rõ">
+                    <option value="Chưa chọn được gói — nhờ Thầy tư vấn">Chưa chọn được, nhờ Thầy tư vấn giúp</option>
+                  </optgroup>
+                </select>
+              </label>
+              <p class="hint">Phí áp dụng từ năm 2026. Xem đầy đủ ở <a href="bang-gia.html">bảng phí dịch vụ</a>;
+                cách thu phí và các bước tiếp theo nằm trong <a href="quy-trinh.html">quy trình nhận đặt lịch hẹn</a>.</p>
             </fieldset>
 
             <fieldset>

@@ -44,6 +44,8 @@ Project được tạo theo kiểu *Direct Upload*, nên **không** nối Git tr
 | `index.html` | Trang chủ: tranh nền, thẻ "Hôm nay" (âm lịch, tiết khí, giờ hoàng đạo), form lập lá số — **giữ thiết kế cũ** (xem mục Năm màn hình) |
 | `la-so.html` | Trang lá số: tóm tắt, đổi năm/tháng xem, lá số 12 cung, in / tải ảnh / chia sẻ |
 | `chuyen-gia.html` | Hồ sơ Thầy Thiên Lương: lĩnh vực, triết lý, quy trình 4 bước |
+| `bang-gia.html` | Bảng phí dịch vụ tư vấn: 12 mã TV-01…TV-12 + 4 gói trọn, cách thu phí (số liệu của khách, áp dụng từ 2026) |
+| `quy-trinh.html` | Quy trình nhận đặt lịch hẹn: 6 bước, kèm lưu ý không xem hộ khi người đó chưa đồng ý |
 | `bai-viet.html` | Danh sách bài viết + bài chi tiết (`#bai-<slug>`), lọc theo chuyên mục |
 | `dat-lich.html` | Biểu mẫu đặt lịch luận giải, tự điền từ lá số vừa lập |
 | `assets/js/posts.js` | Toàn bộ nội dung bài viết + hàm dựng thẻ/bài; `posts-page.js` điều khiển trang |
@@ -55,6 +57,7 @@ Project được tạo theo kiểu *Direct Upload*, nên **không** nối Git tr
 | `assets/css/style.css` | Giao diện tím – vàng đồng, dựng theo bản demo đã chốt (xem mục Bộ nhận diện) |
 | `assets/img/logo-tuvithienluong-tim-*.{png,webp}` | Bộ logo tròn chân dung Thầy Thiên Lương, nền tím, nền ngoài trong suốt (sinh bằng `python tools/gen-logo.py`) |
 | `assets/img/og-image.png` | Ảnh hiện ra khi dán link lên Zalo/Facebook (sinh bằng `python tools/gen-og.py`) |
+| `tools/serve.js` | Máy chủ chạy thử trên máy (`node tools/serve.js`): phục vụ cả `/la-so` lẫn `/la-so.html` giống Cloudflare Pages, nên link lưu từ bản thật mở ở máy vẫn chạy |
 | `tools/build.js` | Dựng `dist/` để deploy: lọc file được phép công bố, chèn thẻ `og:`, sinh `robots.txt`/`sitemap.xml`/`_headers` |
 | `tests/engine.test.js` | Đối chiếu từng sao với lá số mẫu tuvi.vn (Kỷ Mão 1999) |
 | `tests/ui.test.js` | Chốt 11 lỗi khách báo: thứ tự họ tên, lá số vừa khung điện thoại, trung cung, tên thương hiệu, logo, chú giải, menu… |
@@ -62,7 +65,7 @@ Project được tạo theo kiểu *Direct Upload*, nên **không** nối Git tr
 | `tools/xcheck/` | Script đối chiếu engine với tuvi.vn / iztro / lasotuvi (xem `tools/xcheck/README.md`) |
 | `design-1/2/3.html` + `assets/css/theme-*.css` | 3 bản demo giao diện để khách chọn (xem mục dưới) |
 
-## Năm màn hình
+## Bảy màn hình
 Đây là web tĩnh nhiều trang, **không phải SPA**. Bản demo khách duyệt dùng `location.hash` để chuyển
 giữa 4 khung xem, nhưng dự án này không làm vậy được: **thông số lá số đã chiếm dấu `#`** (xem mục
 "Trang lá số" bên dưới). Nên mỗi màn là một file riêng, chỉ `bai-viet.html` dùng `#bai-<slug>` cho bài
@@ -74,14 +77,18 @@ các trang có khớp nhau không.
 **Hai thiết kế cùng tồn tại (theo yêu cầu khách):**
 - `index.html` **giữ giao diện trước bản demo** (đã có các sửa TL-01…TL-11). Toàn bộ CSS của nó nằm
   trong khối `.page-home` ở `style.css`, có bộ token riêng (chữ Noto Serif, `.wrap` rộng 1200px) nên
-  không ảnh hưởng bốn trang kia. Đừng gỡ tiền tố `.page-home`.
-- `la-so.html` và ba trang mới dùng giao diện theo bản demo.
+  không ảnh hưởng sáu trang kia. Đừng gỡ tiền tố `.page-home`.
+- `la-so.html` và năm trang mới dùng giao diện theo bản demo.
 
-**Công tắc ba trang mới — `CONFIG.trangMoi` trong `assets/js/common.js`** (hiện `true`, đang hiện đủ năm trang):
-- `false`: Chuyên gia · Bài viết · Đặt lịch bị **ẩn** — mọi link tới chúng bị ẩn bằng JS, thanh
-  "Nhờ Thầy luận giải" và dải CTA dính đáy ở trang lá số cũng ẩn; `tools/build.js` đọc đúng dòng này
-  và **không đóng gói** ba trang + `posts.js`, `posts-page.js`, `booking.js` vào `dist/`.
-- `true`: hiện lại đủ menu, `dist/` có đủ năm trang. Chỉ đổi một chữ này, rồi build lại.
+**Công tắc năm trang mới — `CONFIG.trangMoi` trong `assets/js/common.js`** (hiện `true`, đang hiện đủ bảy trang):
+- `false`: Chuyên gia · Bảng phí · Quy trình · Bài viết · Đặt lịch bị **ẩn** — mọi link tới chúng bị ẩn
+  bằng JS, thanh "Nhờ Thầy luận giải" và dải CTA dính đáy ở trang lá số cũng ẩn; `tools/build.js` đọc
+  đúng dòng này và **không đóng gói** năm trang + `posts.js`, `posts-page.js`, `booking.js` vào `dist/`.
+- `true`: hiện lại đủ menu, `dist/` có đủ bảy trang. Chỉ đổi một chữ này, rồi build lại.
+
+**Bảng phí là số liệu của khách.** `bang-gia.html` (12 mã TV-01…TV-12 + 4 gói trọn), ô chọn gói
+`#pkg` trong `dat-lich.html` và bước 3 của `quy-trinh.html` phải khớp nhau; `tests/ui.test.js` chốt
+từng con số. Khách gửi bảng phí mới thì sửa cả ba chỗ trong cùng một lần.
 
 ## Ba bản demo giao diện cũ (đã thay thế)
 > Ba file `design-*.html` dưới đây là bản chọn giao diện **đợt trước**, nay đã bị bản demo mới thay thế.

@@ -18,10 +18,11 @@ function t(name, fn) {
   catch (e) { fail++; console.log('✗ ' + name + '\n   ' + e.message); }
 }
 
-const FILES = ['index.html', 'la-so.html', 'chuyen-gia.html', 'bai-viet.html', 'dat-lich.html'];
+const FILES = ['index.html', 'la-so.html', 'chuyen-gia.html', 'bang-gia.html',
+  'quy-trinh.html', 'bai-viet.html', 'dat-lich.html'];
 const PAGES = {};
 for (const f of FILES) PAGES[f] = read(f);
-// Trang chủ giữ giao diện của đợt trước (khách yêu cầu); bốn trang kia dựng theo
+// Trang chủ giữ giao diện của đợt trước (khách yêu cầu); các trang kia dựng theo
 // bản demo mới. Nhiều phép kiểm vì thế phải tách hai nhóm.
 const CU = ['index.html'];
 const MOI = FILES.filter((f) => !CU.includes(f));
@@ -37,7 +38,7 @@ const POSTS_JS = read('assets/js/posts.js');
 const bỏTênFile = (s) => s
   .replace(/assets\/[\w./-]+/g, '')
   .replace(/'tuvithienluong-'/g, '')
-  .replace(/tuvithienluong\.com/g, '');
+  .replace(/tuvithienluong\.(com|vn)/g, '');
 
 /* ---------------- TL-01 — họ tên giữ nguyên thứ tự người dùng nhập -------- */
 
@@ -223,13 +224,13 @@ t('TL-08 chân trang dùng đúng câu khách duyệt, có đường sang luận
 
 /* ---------------- TL-11 — menu điều hướng ------------------------------- */
 
-t('TL-11 mọi trang có đủ 4 mục menu, kèm nút thu gọn', () => {
+t('TL-11 mọi trang có đủ 6 mục menu, kèm nút thu gọn', () => {
   for (const [f, html] of Object.entries(PAGES)) {
     const h = html.match(/<header[\s\S]*?<\/header>/)[0];
     // trang chủ cũ gọi mục đầu là "Lập lá số", bốn trang mới gọi là "Lá số"
     const đầu = h.includes('>Lá số</a>') || h.includes('>Lập lá số</a>');
     assert.ok(đầu, f + ': thiếu mục lá số');
-    for (const mục of ['Chuyên gia', 'Bài viết', 'Đặt lịch luận giải']) {
+    for (const mục of ['Chuyên gia', 'Bảng phí', 'Quy trình', 'Bài viết', 'Đặt lịch luận giải']) {
       assert.ok(h.includes('>' + mục + '</a>'), f + ': thiếu mục "' + mục + '"');
     }
     assert.match(h, /class="nav-cta"/, f + ': thiếu nút CTA');
@@ -237,6 +238,15 @@ t('TL-11 mọi trang có đủ 4 mục menu, kèm nút thu gọn', () => {
     assert.match(h, /aria-current="page"/, f + ': không đánh dấu mục đang xem');
   }
   assert.match(read('assets/js/common.js'), /nav-toggle/, 'common.js phải nối nút menu');
+
+  // Sáu mục cạnh logo cần ~940px. Thu gọn ở 860px như trước là menu tràn ra
+  // ngoài header trong khoảng 861–940px, nên hai ngưỡng phải bằng nhau và ≥ 940.
+  const nguong = [...CSS.matchAll(/@media \(max-width: (\d+)px\) \{([^@]*?)\n\}/g)]
+    .filter((m) => /\.nav-toggle \{ display: (block|inline-flex)/.test(m[2]))
+    .map((m) => Number(m[1]));
+  assert.strictEqual(nguong.length, 2, 'phải có đúng 2 ngưỡng thu gọn menu (trang chủ + các trang kia)');
+  assert.deepStrictEqual([...new Set(nguong)].length, 1, 'hai ngưỡng lệch nhau: ' + nguong.join(' vs '));
+  assert.ok(nguong[0] >= 940, 'ngưỡng ' + nguong[0] + 'px quá hẹp cho 6 mục menu');
 });
 
 t('TL-11 mọi liên kết nội bộ đều tới file/neo có thật', () => {
@@ -270,7 +280,7 @@ t('Nhận diện: bảng màu đúng brief (tím #1c0e30 … #4c286e, vàng #c9a
   }
 });
 
-t('Nhận diện: bốn trang mới dùng Cormorant Garamond + Be Vietnam Pro', () => {
+t('Nhận diện: các trang mới dùng Cormorant Garamond + Be Vietnam Pro', () => {
   assert.match(CSS, /--f-display: "Cormorant Garamond"/);
   assert.match(CSS, /--f-body: "Be Vietnam Pro"/);
   for (const f of MOI) {
@@ -279,19 +289,19 @@ t('Nhận diện: bốn trang mới dùng Cormorant Garamond + Be Vietnam Pro', 
   }
 });
 
-t('Trang chủ giữ bộ chữ cũ và CSS riêng, không đụng bốn trang kia', () => {
+t('Trang chủ giữ bộ chữ cũ và CSS riêng, không đụng các trang kia', () => {
   assert.match(PAGES['index.html'], /family=Noto\+Serif/, 'trang chủ phải nạp Noto Serif');
   assert.match(CSS, /\.page-home \{[\s\S]*?--font-serif: "Noto Serif"/,
     'thiếu khối token riêng của trang chủ');
   // Mọi quy tắc của giao diện cũ PHẢI nằm trong .page-home, nếu không nó đè
-  // lên bốn trang dựng theo bản demo mới.
+  // lên các trang dựng theo bản demo mới.
   const khoi = CSS.slice(CSS.indexOf('TRANG CHỦ — giao diện của đợt trước'));
   const lạc = khoi.split('\n').filter((l) =>
     /^\.(glass|brand-hero|hero|today|form-card|ifield|btn-cta|history|h-open|site-header|site-footer)/.test(l));
   assert.deepStrictEqual(lạc, [], 'quy tắc cũ chưa được giới hạn trong .page-home:\n   ' + lạc.join('\n   '));
 });
 
-t('Nhận diện: BỐN TRANG MỚI không còn class của giao diện cũ', () => {
+t('Nhận diện: CÁC TRANG MỚI không còn class của giao diện cũ', () => {
   // Trang chủ được giữ nguyên giao diện cũ theo yêu cầu nên vẫn dùng các class này.
   const cũ = ['glass-light', 'glass-dark', 'btn-cta', 'btn-soft', 'btn-primary',
     'brand-name', 'brand-sub', 'nav-link', 'ifield', 'band-card', 'post-soon', 'chart-page'];
@@ -449,6 +459,61 @@ t('mọi biến CSS được dùng đều đã được định nghĩa', () => {
   const định = new Set([...CSS.matchAll(/^\s*(--[\w-]+)\s*:/gm)].map((m) => m[1]));
   const thiếu = [...dùng].filter((v) => !định.has(v));
   assert.deepStrictEqual(thiếu, [], 'biến chưa định nghĩa: ' + thiếu.join(', '));
+});
+
+
+/* ---------------- Tên miền in trong lá số -------------------------------- */
+
+t('lá số in kèm tên miền, để ảnh PNG khách tải về dẫn được về web', () => {
+  const lan = (out.board.match(/class="tc-link">tuvithienluong\.vn</g) || []).length;
+  assert.strictEqual(lan, 2, 'cần cả bản đầy đủ (ảnh PNG, máy tính) lẫn huy hiệu điện thoại');
+  assert.match(CSS, /\.tc-link \{[^}]*color: var\(--tl-gold-700\)/);
+  // .board.exporting giữ bản đầy đủ nên dòng này nằm trong ảnh PNG; bản in A4
+  // phải thu nhỏ nó lại, bằng không khối trung cung tràn ra che nhãn tiểu hạn.
+  assert.match(CSS.slice(CSS.indexOf('@media print')), /\.tc-link \{/,
+    'bản in A4 chưa chỉnh cỡ chữ tên miền');
+});
+
+/* ---------------- Bảng phí & quy trình đặt lịch -------------------------- */
+
+const MA_PHI = ['TV-01', 'TV-02', 'TV-03', 'TV-04', 'TV-05 – 08', 'TV-09', 'TV-10', 'TV-11', 'TV-12'];
+const GOI_TRON = ['Đồng Hành Năm', 'Khởi Niên', 'Gia Đạo', 'Lập Nghiệp'];
+const MUC_PHI = ['100.000', '300.000', '500.000', '1.000.000', '1.500.000', '800.000',
+  '3.000.000', '5.000.000', '10.000.000', '1.200.000', '2.000.000', '3.800.000', '4.500.000'];
+
+t('Bảng phí liệt kê đủ dịch vụ, gói trọn và mức phí khách duyệt', () => {
+  const html = PAGES['bang-gia.html'];
+  for (const x of MA_PHI.concat(GOI_TRON, MUC_PHI)) {
+    assert.ok(html.includes(x), 'bang-gia.html thiếu "' + x + '"');
+  }
+  assert.match(html, /Áp dụng từ năm 2026/);
+  // Bảng 4 cột phải xếp lại thành thẻ dưới 640px, bằng không là cuộn ngang (TL-02)
+  assert.match(MQ, /\.fee-table, \.fee-table tbody/);
+});
+
+t('Form đặt lịch chọn gói theo đúng bảng phí niêm yết', () => {
+  const html = PAGES['dat-lich.html'];
+  assert.match(html, /<select id="pkg">/);
+  assert.doesNotMatch(html, /Phí: Thầy chốt/, 'còn mức phí cũ, lệch với bảng phí');
+  for (let i = 1; i <= 12; i++) {
+    const ma = 'TV-' + (i < 10 ? '0' : '') + i;
+    assert.ok(html.includes(ma), 'dat-lich.html thiếu ' + ma);
+  }
+  for (const g of GOI_TRON) assert.ok(html.includes('Gói ' + g), 'dat-lich.html thiếu gói ' + g);
+  assert.match(read('assets/js/booking.js'), /\$\('pkg'\)\.value/,
+    'booking.js vẫn đọc nhóm radio cũ, nội dung gửi Thầy sẽ rỗng');
+});
+
+t('Quy trình có đủ 6 bước và lưu ý không xem hộ khi chưa được đồng ý', () => {
+  const html = PAGES['quy-trinh.html'];
+  const flow = html.match(/<ol class="flow">[\s\S]*?<\/ol>/)[0];
+  assert.strictEqual((flow.match(/<h3>/g) || []).length, 6, 'phải đủ 6 bước');
+  assert.match(CSS, /\.flow > li::before \{[^}]*content: counter\(f\)/,
+    'số bước do CSS counter sinh — đổi thứ tự <li> là số tự chạy lại');
+  assert.match(html, /chưa biết và chưa đồng ý/);
+  // Hai trang nói về phí phải dẫn sang nhau, tránh khách chỉ đọc một nửa
+  assert.match(html, /href="bang-gia\.html"/);
+  assert.match(PAGES['bang-gia.html'], /href="quy-trinh\.html"/);
 });
 
 console.log(`${pass} đạt, ${fail} lỗi`);
