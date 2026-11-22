@@ -1,0 +1,72 @@
+[
+  {
+    "file": "01-dang-nhap",
+    "route": "dang-nhap",
+    "w": 1100,
+    "h": 680,
+    "h1": "Đăng nhập quản trị"
+  },
+  {
+    "file": "02-noi-dung-website",
+    "route": "tong-quan",
+    "w": 1440,
+    "h": 1310,
+    "h1": "Nội dung website"
+  },
+  {
+    "file": "03-trang-chu-khoi-gioi-thieu",
+    "route": "trang-chu",
+    "w": 1440,
+    "h": 1320,
+    "h1": "Sửa nội dung trang chủ"
+  },
+  {
+    "file": "04-trang-chu-bieu-mau",
+    "route": "trang-chu-bieu-mau",
+    "w": 1440,
+    "h": 1160,
+    "h1": "Sửa nội dung trang chủ"
+  },
+  {
+    "file": "05-trang-la-so",
+    "route": "trang-la-so",
+    "w": 1440,
+    "h": 1080,
+    "h1": "Sửa nội dung trang lá số"
+  },
+  {
+    "file": "06-lien-he-cta",
+    "route": "lien-he-cta",
+    "w": 1440,
+    "h": 1250,
+    "h1": "Liên hệ & nút CTA"
+  },
+  {
+    "file": "07-seo-logo-chia-se",
+    "route": "seo-logo-chia-se",
+    "w": 1440,
+    "h": 1140,
+    "h1": "SEO, logo & chia sẻ"
+  },
+  {
+    "file": "08-tuy-chon-an-sao",
+    "route": "tuy-chon-an-sao",
+    "w": 1440,
+    "h": 1020,
+    "h1": "Tùy chọn an sao"
+  },
+  {
+    "file": "09-xac-nhan-xoa",
+    "route": "xac-nhan-xoa",
+    "w": 1440,
+    "h": 660,
+    "h1": "Sửa nội dung trang chủ"
+  },
+  {
+    "file": "10-tai-khoan-nhat-ky",
+    "route": "tai-khoan-nhat-ky",
+    "w": 1440,
+    "h": 1060,
+    "h1": "Tài khoản & nhật ký"
+  }
+]

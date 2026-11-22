@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quản trị Thiên Lương</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Lấy đúng token của website Thiên Lương (assets/css/style.css) */
+  --ink:#2c2335; --muted:#6b5b7b; --line:#e7e1ef; --bg:#f6f3fa; --card:#fff;
+  --brand:#5e2d86; --brand-d:#2a1844; --gold:#c7a14e; --gold-d:#8c6a3c; --cream:#faf6ef;
+  --ok:#157f52; --ok-bg:#e4f5ec; --warn:#8c6a3c; --warn-bg:#f8efdc;
+  --danger:#c0392b; --danger-bg:#fdecea; --info:#4c1d6f; --info-bg:#efe7f4;
+}
+body{font:14px/1.5 "Be Vietnam Pro","Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+/* ---------- sidebar ---------- */
+.side{background:linear-gradient(180deg,#3b1d5d,#1f1430);color:#efeaf7;padding:18px 14px;display:flex;flex-direction:column;gap:2px}
+.logo{display:flex;align-items:center;gap:10px;padding:4px 6px 12px}
+.logo .mk{width:40px;height:40px;flex:none;display:grid;place-items:center}
+.logo .mk img{width:40px;height:40px;display:block}
+.logo b{font-family:"Noto Serif",Georgia,serif;letter-spacing:.06em}
+.logo b{font-size:15px;display:block;letter-spacing:.2px}
+.logo span{font-size:11.5px;color:#b9a9d4}
+.navgrp{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#9c8bbd;margin:12px 8px 5px}
+.side a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;color:#dcd3ec;text-decoration:none;font-size:13.2px}
+.side a .ic{width:17px;text-align:center;opacity:.9}
+.side a.on{background:rgba(255,255,255,.12);color:#fff;font-weight:600;box-shadow:inset 2px 0 0 var(--gold)}
+.side a .tag{margin-left:auto;background:var(--gold);color:#2a1844;font-size:10.5px;font-weight:700;border-radius:20px;padding:1px 7px}
+.side .foot{margin-top:auto;border-top:1px solid rgba(255,255,255,.12);padding-top:10px;font-size:11.5px;color:#a797c6}
+/* ---------- topbar ---------- */
+.main{display:flex;flex-direction:column;min-width:0}
+.top{background:#fff;border-bottom:1px solid var(--line);padding:12px 24px;display:flex;align-items:center;gap:14px}
+.crumb{font-size:12px;color:var(--muted)}
+.crumb b{color:var(--ink)}
+.top h1{font-size:19px;letter-spacing:-.2px}
+.top .sp{margin-left:auto;display:flex;align-items:center;gap:10px}
+.search{border:1px solid var(--line);border-radius:9px;padding:7px 11px;width:230px;color:var(--muted);background:#faf9fd;font-size:13px}
+.me{display:flex;align-items:center;gap:8px;font-size:13px}
+.av{width:30px;height:30px;border-radius:50%;background:#5b2d8e;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+.wrap{padding:20px 24px 28px;display:flex;flex-direction:column;gap:16px}
+/* ---------- bits ---------- */
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 13px;font-size:13px;font-weight:600;color:var(--ink)}
+.btn.p{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.g{background:var(--gold);border-color:#b98d31;color:#2a1844}
+.btn.d{color:var(--danger);border-color:#f0cdc8;background:#fff}
+.btn.sm{padding:4px 9px;font-size:12px;border-radius:7px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:0 1px 2px rgba(29,24,48,.04)}
+.card>h2{font-size:14.5px;padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}
+.card>h2 .sp{margin-left:auto;display:flex;gap:8px;align-items:center}
+.card>h2 small{font-weight:400;color:var(--muted);font-size:12px}
+.pad{padding:16px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g-73{grid-template-columns:1.9fr 1fr}
+.g-37{grid-template-columns:1fr 1.9fr}
+.muted{color:var(--muted)}
+.hint{font-size:11.8px;color:var(--muted);margin-top:4px}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;border-radius:20px;padding:2px 9px}
+.b-ok{background:var(--ok-bg);color:var(--ok)}
+.b-warn{background:var(--warn-bg);color:var(--warn)}
+.b-off{background:#eeecf3;color:#6f6889}
+.b-dan{background:var(--danger-bg);color:var(--danger)}
+.b-info{background:var(--info-bg);color:var(--info)}
+/* ---------- table ---------- */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 14px;background:#faf9fd;border-bottom:1px solid var(--line);font-weight:700}
+td{padding:11px 14px;border-bottom:1px solid #f1eff6;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.act{text-align:right;white-space:nowrap}
+.hd{color:#b8b2c8;letter-spacing:-2px;font-size:15px}
+.tmeta{font-size:11.5px;color:var(--muted)}
+/* ---------- form ---------- */
+.f{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.f>label{font-size:12.5px;font-weight:600}
+.inp{border:1px solid #dcd7e8;border-radius:9px;padding:8px 11px;font-size:13px;background:#fff;min-height:36px}
+.inp.ro{background:#faf9fd;color:var(--muted)}
+.ta{min-height:72px;line-height:1.55;color:#3c3556}
+.sel{border:1px solid #dcd7e8;border-radius:9px;padding:8px 26px 8px 11px;font-size:13px;background:#fff;min-height:36px;position:relative}
+.sel:after{content:"⌄";position:absolute;right:10px;top:4px;color:#8b84a3}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sw{width:38px;height:21px;border-radius:20px;background:#d8d3e6;position:relative;display:inline-block;flex:0 0 auto}
+.sw:after{content:"";position:absolute;width:17px;height:17px;border-radius:50%;background:#fff;top:2px;left:2px;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.sw.on{background:var(--ok)}
+.sw.on:after{left:19px}
+.swline{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1eff6}
+.swline:last-child{border-bottom:0}
+.swline b{font-size:13px;font-weight:600}
+.chk{width:16px;height:16px;border:1.5px solid #c6bfdb;border-radius:4px;display:inline-block;vertical-align:-3px}
+.chk.on{background:var(--brand);border-color:var(--brand);position:relative}
+.chk.on:after{content:"✓";color:#fff;font-size:11px;position:absolute;left:2.5px;top:-3px}
+.counter{font-size:11px;color:var(--muted);text-align:right}
+/* ---------- misc ---------- */
+.kpi{padding:15px 16px}
+.kpi .n{font-size:26px;font-weight:800;letter-spacing:-.6px;margin-top:3px}
+.kpi .l{font-size:12px;color:var(--muted);font-weight:600}
+.kpi .d{font-size:11.5px;color:var(--ok);font-weight:700;margin-top:3px}
+.prev{background:linear-gradient(160deg,#2a1844,#432a66);border-radius:11px;padding:18px;color:#f1eaf9}
+.prev .ey{color:var(--gold);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.prev h3{font-size:19px;line-height:1.35;margin:7px 0;font-weight:700}
+.prev h3 em{color:var(--gold);font-style:normal}
+.prev p{font-size:12.5px;color:#cfc3e4}
+.prev .fx{display:flex;gap:9px;margin-top:12px}
+.prev .fx div{background:rgba(255,255,255,.1);border-radius:8px;padding:7px 10px;font-size:11px;flex:1}
+.prev .fx b{display:block;font-size:14px;color:var(--gold)}
+.steps{display:flex;font-size:12px;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}
+.steps div{padding:7px 13px;border-right:1px solid var(--line);color:var(--muted)}
+.steps div.on{background:#f2ecfa;color:var(--brand);font-weight:700}
+.steps div:last-child{border-right:0}
+.media{display:grid;grid-template-columns:repeat(5,1fr);gap:13px}
+.mi{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.mi .im{height:92px;background:linear-gradient(135deg,#3b2360,#7d5bb3);position:relative}
+.mi .im.s2{background:linear-gradient(135deg,#1f3d5c,#4c86b8)}
+.mi .im.s3{background:linear-gradient(135deg,#5c2c2c,#b07a4e)}
+.mi .im.s4{background:linear-gradient(135deg,#2c5c3f,#6fae86)}
+.mi .im .x{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:6px;background:rgba(0,0,0,.5);color:#fff;display:grid;place-items:center;font-size:13px}
+.mi .mt{padding:7px 9px;font-size:11.5px}
+.mi .mt b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mi .mt span{color:var(--muted);font-size:10.5px}
+.drop{border:2px dashed #cdc5e2;border-radius:11px;padding:22px;text-align:center;color:var(--muted);background:#faf9fd}
+.log{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid #f1eff6;font-size:12.8px}
+.log:last-child{border-bottom:0}
+.log .dot{width:9px;height:9px;border-radius:50%;background:var(--brand);margin-top:5px;flex:0 0 auto}
+.log .dot.e{background:var(--warn)}.log .dot.x{background:var(--danger)}
+.log .t{margin-left:auto;color:var(--muted);font-size:11.5px;white-space:nowrap}
+.mask{position:fixed;inset:0;background:rgba(29,24,48,.55)}
+.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:440px;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.3);overflow:hidden}
+.modal .mh{padding:18px 20px 0;display:flex;gap:13px}
+.modal .wi{width:40px;height:40px;border-radius:50%;background:var(--danger-bg);color:var(--danger);display:grid;place-items:center;font-size:20px;flex:0 0 auto}
+.modal h3{font-size:16px;margin-bottom:5px}
+.modal p{font-size:13px;color:var(--muted)}
+.modal .mb{padding:14px 20px 0}
+.modal .mf{padding:16px 20px;display:flex;justify-content:flex-end;gap:9px;margin-top:14px;background:#faf9fd;border-top:1px solid var(--line)}
+.note{background:#fdf8ec;border:1px solid #f0e0bd;border-radius:10px;padding:11px 13px;font-size:12.5px;color:#6b5420}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);padding:0 16px}
+.tabs div{padding:10px 13px;font-size:13px;color:var(--muted);font-weight:600;border-bottom:2px solid transparent}
+.tabs div.on{color:var(--brand);border-bottom-color:var(--brand)}
+.swatch{width:26px;height:26px;border-radius:7px;border:1px solid rgba(0,0,0,.12);display:inline-block;vertical-align:-7px;margin-right:7px}
+.themecard{border:1px solid var(--line);border-radius:11px;padding:11px;text-align:center;font-size:12px}
+.themecard.on{border-color:var(--brand);box-shadow:0 0 0 2px #e9ddf8}
+.themecard .sk{height:58px;border-radius:8px;margin-bottom:8px}
+.pill{display:inline-block;font-size:11.5px;background:#f2ecfa;color:var(--brand);border-radius:20px;padding:2px 9px;font-weight:600}
+.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(160deg,#2a1844,#1a0f2b 70%)}
+.login .box{width:392px;background:#fff;border-radius:16px;padding:28px;box-shadow:0 30px 70px rgba(0,0,0,.4)}
+.login .box h1{font-size:19px;text-align:center;margin-bottom:4px}
+.login .box p.s{text-align:center;color:var(--muted);font-size:12.5px;margin-bottom:20px}
+.login .lg{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:16px}
+.login .lg .mk{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f3d58a,#c89b3c 60%,#8d6a1f);display:grid;place-items:center;color:#2a1844;font-weight:800;font-size:19px}
+
+
+/* --- gom nhiều màn vào một tệp --- */
+.screen{display:none}
+.screen.on{display:block}
+a{color:inherit}
+a.btn,a.logo,a.me{text-decoration:none}
+a.btn:hover{border-color:var(--brand);color:var(--brand)}
+a.btn.p:hover{color:#fff;filter:brightness(1.1)}
+a.me{color:inherit}
+.tabs a{padding:10px 13px;font-size:13px;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;text-decoration:none}
+.tabs a.on{color:var(--brand);border-bottom-color:var(--brand)}
+.tabs a:hover{color:var(--brand)}
+.side a:hover{background:rgba(255,255,255,.07)}
+.side .foot .out{display:inline-block;margin-top:6px;color:#d9c79b;text-decoration:underline}
+svg.mk{width:40px;height:40px;display:block}
+svg.mk.big{width:66px;height:66px}
+svg.mk.md{width:46px;height:46px}
+svg.mk.sm2{width:22px;height:22px}
+.login .lg{margin-bottom:16px}
+.demo-tag{background:#f8efdc;border:1px solid #e0c98a;color:#8c6a3c;font-size:11px;font-weight:700;
+  letter-spacing:.04em;text-align:center;border-radius:8px;padding:6px 8px;margin-bottom:14px}
+/* màn hình nhỏ: cho cuộn ngang thay vì vỡ bố cục (bản vẽ này thiết kế cho máy tính) */
+@media (max-width:1100px){
+  body{overflow-x:auto}
+  .screen{min-width:1280px}
+  .login .box{min-width:0}
+  .screen#dang-nhap{min-width:0}
+}
+/* bảng hướng dẫn nhỏ ở góc — ẩn khi chụp ảnh (thêm ?clean vào link) */
+.tip{position:fixed;right:16px;bottom:16px;z-index:50;background:#2a1844;color:#efe7f4;font-size:12px;
+  padding:9px 13px;border-radius:999px;box-shadow:0 10px 24px rgba(0,0,0,.35);border:1px solid #c7a14e}
+body.clean .tip{display:none}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="tl-logo" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0dba8"/>
+      <stop offset="0.55" stop-color="#d9b96f"/>
+      <stop offset="1" stop-color="#ac8a3b"/>
+    </linearGradient>
+    <linearGradient id="dg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c3a259"/>
+      <stop offset="1" stop-color="#8f6f2b"/>
+    </linearGradient>
+  </defs>
+  <!-- khung vuông + vòng tròn -->
+  <rect x="3" y="3" width="94" height="94" fill="none" stroke="url(#lg)" stroke-width="2.6"/>
+  <circle cx="50" cy="50" r="38.5" fill="none" stroke="url(#lg)" stroke-width="2.2"/>
+  <!-- 4 cánh ngắn (chéo) -->
+  <g fill="url(#dg)">
+    <polygon points="68,32 52.6,47.4 47.4,52.6"/>
+    <polygon points="68,68 52.6,52.6 47.4,47.4"/>
+    <polygon points="32,68 47.4,52.6 52.6,47.4"/>
+    <polygon points="32,32 47.4,47.4 52.6,52.6"/>
+  </g>
+  <!-- 4 cánh dài (chính) -->
+  <g>
+    <polygon points="50,7 44.6,50 50,50" fill="url(#dg)"/>
+    <polygon points="50,7 55.4,50 50,50" fill="url(#lg)"/>
+    <polygon points="93,50 50,44.6 50,50" fill="url(#lg)"/>
+    <polygon points="93,50 50,55.4 50,50" fill="url(#dg)"/>
+    <polygon points="50,93 55.4,50 50,50" fill="url(#dg)"/>
+    <polygon points="50,93 44.6,50 50,50" fill="url(#lg)"/>
+    <polygon points="7,50 50,55.4 50,50" fill="url(#lg)"/>
+    <polygon points="7,50 50,44.6 50,50" fill="url(#dg)"/>
+  </g>
+  <circle cx="50" cy="50" r="4.6" fill="#3a2060" stroke="url(#lg)" stroke-width="1.6"/>
+</symbol></svg>
+
+<section class="screen" id="dang-nhap" style="min-height:680px">
+<div class="login"><div class="box">
+  <div class="lg"><svg class="mk big" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg></div>
+  <div class="demo-tag">BẢN VẼ MINH HỌA · KHÔNG PHẢI TRANG ĐĂNG NHẬP THẬT</div>
+  <h1>Trang quản trị Thiên Lương</h1><p class="s">Chỉ dành cho thầy và người được cấp quyền</p>
+  <div class="f"><label>Email đăng nhập</label><div class="inp ">thay@thienluong.vn</div></div>
+  <div class="f"><label>Mật khẩu</label><div class="inp ">••••••••••••</div></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin:2px 0 18px">
+    <span style="font-size:12.5px"><span class="chk on"></span> Ghi nhớ đăng nhập</span>
+    <a href="#dang-nhap" style="font-size:12.5px;color:var(--brand);text-decoration:none">Quên mật khẩu?</a></div>
+  <a class="btn p" href="#tong-quan" style="width:100%;justify-content:center;padding:11px">Đăng nhập</a>
+  <div class="hint" style="text-align:center;margin-top:14px">Tự động đăng xuất sau 60 phút không dùng · Khóa tạm khi nhập sai nhiều lần</div>
+</div></div>
+</section>
+
+<section class="screen" id="tong-quan" style="min-height:1310px">
+<div class="app">
+<aside class="side">
+  <a class="logo" href="#tong-quan"><svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg><div><b>THIÊN LƯƠNG</b><span>Trang quản trị nội dung</span></div></a>
+  <div class="navgrp">Tổng quan</div>
+  <a href="#tong-quan" class="on"><span class="ic">◧</span>Nội dung website</a>
+  <div class="navgrp">Sửa nội dung</div>
+  <a href="#trang-chu"><span class="ic">▤</span>Trang chủ</a>
+  <a href="#trang-la-so"><span class="ic">✦</span>Trang lá số</a>
+  <a href="#lien-he-cta"><span class="ic">☏</span>Liên hệ & nút CTA</a>
+  <div class="navgrp">Cấu hình</div>
+  <a href="#seo-logo-chia-se"><span class="ic">◎</span>SEO, logo & chia sẻ</a>
+  <a href="#tuy-chon-an-sao"><span class="ic">⚙</span>Tùy chọn an sao</a>
+  <div class="navgrp">Hệ thống</div>
+  <a href="#tai-khoan-nhat-ky"><span class="ic">☺</span>Tài khoản & nhật ký</a>
+  <div class="foot">Phiên bản 1.0 · Thầy Thiên Lương<br>Đăng nhập: 19/11/2026 09:12<br><a class="out" href="#dang-nhap">Đăng xuất</a></div>
+</aside>
+<div class="main">
+  <div class="top">
+    <div><div class="crumb">Quản trị / <b>Tổng quan</b></div><h1>Nội dung website</h1></div>
+    <div class="sp"><span class="btn">👁 Xem trang thật</span><span class="btn p">⤴ Phát hành (3)</span><a class="me" href="#tai-khoan-nhat-ky"><div class="av">TL</div><div><b>Thầy Thiên Lương</b><div class="tmeta">Chủ website</div></div></a></div>
+  </div>
+  <div class="wrap">
+<div class="grid g3">
+  <section class="card kpi"><div class="l">Thay đổi chưa phát hành</div><div class="n">3</div><div class="d" style="color:var(--info)">Sửa gần nhất 09:05 hôm nay</div></section>
+  <section class="card kpi"><div class="l">Lần phát hành gần nhất</div><div class="n" style="font-size:20px;margin-top:7px">18/11 21:50</div><div class="d" style="color:var(--muted)">bản v1.0.13</div></section>
+  <section class="card kpi"><div class="l">Nút “Liên hệ thầy” trên trang lá số</div><div class="n" style="font-size:20px;margin-top:7px;color:var(--danger)">ĐANG ẨN</div><div class="d" style="color:var(--warn)">Chưa điền link Zalo/Messenger</div></section>
+</div>
+<section class="card"><h2>Các khu vực nội dung sửa được <small>2 trang · 12 khu vực — bấm Sửa để vào đúng màn</small></h2><table><thead><tr><th>Khu vực nội dung</th><th>Thuộc trang</th><th>Chữ đang hiển thị</th><th>Trạng thái</th><th>Sửa lần cuối</th><th style="text-align:right;width:110px"></th></tr></thead><tbody><tr><td><b>Thương hiệu & thanh menu</b><div class="tmeta">Logo, tên, dòng phụ, liên kết menu</div></td><td>Cả 2 trang</td><td>THIÊN LƯƠNG · Sáng rõ trước mỗi quyết định</td><td><span class="badge b-ok">● Đang hiện</span></td><td>05/11 11:00</td><td class="act"><a class="btn sm" href="#seo-logo-chia-se">✎ Sửa</a></td></tr><tr><td><b>Khối thương hiệu giữa trang chủ</b><div class="tmeta">Logo lớn, tên, câu định vị</div></td><td>Trang chủ</td><td>Câu chuyện thương hiệu · Sáng rõ trước mỗi…</td><td><span class="badge b-ok">● Đang hiện</span></td><td>05/11 11:00</td><td class="act"><a class="btn sm" href="#trang-chu">✎ Sửa</a></td></tr><tr><td><b>Khối giới thiệu</b><div class="tmeta">Dòng nhấn, tiêu đề lớn, mô tả, 3 ô số liệu</div></td><td>Trang chủ</td><td>Lập lá số Tử Vi chuẩn xác, luận giải bởi…</td><td><span class="badge b-warn">● Có bản nháp</span></td><td>09:05 hôm nay</td><td class="act"><a class="btn sm" href="#trang-chu">✎ Sửa</a></td></tr><tr><td><b>Khối “Lịch hôm nay”</b><div class="tmeta">Nhãn chữ; số liệu do máy tự tính</div></td><td>Trang chủ</td><td>Hôm nay · Âm lịch · Tiết khí · Giờ hoàng đạo</td><td><span class="badge b-ok">● Đang hiện</span></td><td>02/11 08:12</td><td class="act"><a class="btn sm" href="#trang-chu-bieu-mau">✎ Sửa</a></td></tr><tr><td><b>Biểu mẫu lập lá số</b><div class="tmeta">Nhãn ô nhập, chữ gợi ý, câu báo lỗi</div></td><td>Trang chủ</td><td>Lập lá số Tử Vi · Họ và tên · Năm sinh…</td><td><span class="badge b-ok">● Đang hiện</span></td><td>10/11 15:44</td><td class="act"><a class="btn sm" href="#trang-chu-bieu-mau">✎ Sửa</a></td></tr><tr><td><b>Khối “Lá số gần đây”</b><div class="tmeta">Tiêu đề khối lịch sử trên máy khách</div></td><td>Trang chủ</td><td>Lá số gần đây</td><td><span class="badge b-ok">● Đang hiện</span></td><td>02/11 08:12</td><td class="act"><a class="btn sm" href="#trang-chu-bieu-mau">✎ Sửa</a></td></tr><tr><td><b>Chữ quanh lá số</b><div class="tmeta">Dòng gợi ý, chú giải, câu khi thiếu thông tin</div></td><td>Trang lá số</td><td>Rê chuột hoặc chạm vào một cung…</td><td><span class="badge b-ok">● Đang hiện</span></td><td>12/11 09:20</td><td class="act"><a class="btn sm" href="#trang-la-so">✎ Sửa</a></td></tr><tr><td><b>Khối giữa lá số</b><div class="tmeta">Tên thương hiệu, tiêu đề, dấu triện</div></td><td>Trang lá số</td><td>TUVITHIENLUONG · Lá Số Tử Vi · triện THIÊN LƯƠNG</td><td><span class="badge b-ok">● Đang hiện</span></td><td>12/11 09:20</td><td class="act"><a class="btn sm" href="#trang-la-so">✎ Sửa</a></td></tr><tr><td><b>Thanh công cụ cho khách</b><div class="tmeta">Nút Sửa · Sao chép link · In · Tải ảnh</div></td><td>Trang lá số</td><td>4 nút đang bật</td><td><span class="badge b-ok">● Đang hiện</span></td><td>12/11 09:20</td><td class="act"><a class="btn sm" href="#trang-la-so">✎ Sửa</a></td></tr><tr><td><b>Dải “Nhờ thầy luận giải”</b><div class="tmeta">Tiêu đề, mô tả, nút liên hệ</div></td><td>Trang lá số</td><td>Nhờ thầy luận giải lá số này</td><td><span class="badge b-dan">● Đang ẩn</span></td><td>—</td><td class="act"><a class="btn sm" href="#lien-he-cta">✎ Sửa</a></td></tr><tr><td><b>Chân trang</b><div class="tmeta">2 dòng mô tả và miễn trừ trách nhiệm</div></td><td>Cả 2 trang</td><td>Lá số mang tính tham khảo…</td><td><span class="badge b-ok">● Đang hiện</span></td><td>05/11 11:00</td><td class="act"><a class="btn sm" href="#trang-chu">✎ Sửa</a></td></tr><tr><td><b>Tiêu đề, mô tả & ảnh chia sẻ</b><div class="tmeta">Thẻ title, description, ảnh Facebook/Zalo</div></td><td>Cả 2 trang</td><td>Thiên Lương — Lập lá số Tử Vi phái Việt Nam</td><td><span class="badge b-ok">● Đang hiện</span></td><td>05/11 11:00</td><td class="act"><a class="btn sm" href="#seo-logo-chia-se">✎ Sửa</a></td></tr></tbody></table></section>
+<section class="card"><h2>Thay đổi gần đây <small>bấm Khôi phục để quay lại bản cũ</small></h2><div class="pad" style="padding-top:4px">
+  <div class="log"><span class="dot"></span><div><b>Thầy Thiên Lương</b> sửa <b>Tiêu đề khối giới thiệu</b></div><span class="t">09:05 hôm nay <span class="badge b-warn">chưa phát hành</span></span></div><div class="log"><span class="dot"></span><div><b>Thầy Thiên Lương</b> sửa <b>Chú giải đắc tính</b></div><span class="t">12/11 09:20 <span class="btn sm">↺ Khôi phục</span></span></div><div class="log"><span class="dot"></span><div><b>Thầy Thiên Lương</b> đổi <b>câu định vị thương hiệu</b></div><span class="t">05/11 11:00 <span class="btn sm">↺ Khôi phục</span></span></div>
+</div></section></div>
+</div>
+</div>
+</section>
+
+<section class="screen" id="trang-chu" style="min-height:1320px">
+<div class="app">
+<aside class="side">
+  <a class="logo" href="#tong-quan"><svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg><div><b>THIÊN LƯƠNG</b><span>Trang quản trị nội dung</span></div></a>
+  <div class="navgrp">Tổng quan</div>
+  <a href="#tong-quan"><span class="ic">◧</span>Nội dung website</a>
+  <div class="navgrp">Sửa nội dung</div>
+  <a href="#trang-chu" class="on"><span class="ic">▤</span>Trang chủ</a>
+  <a href="#trang-la-so"><span class="ic">✦</span>Trang lá số</a>
+  <a href="#lien-he-cta"><span class="ic">☏</span>Liên hệ & nút CTA</a>
+  <div class="navgrp">Cấu hình</div>
+  <a href="#seo-logo-chia-se"><span class="ic">◎</span>SEO, logo & chia sẻ</a>
+  <a href="#tuy-chon-an-sao"><span class="ic">⚙</span>Tùy chọn an sao</a>
+  <div class="navgrp">Hệ thống</div>
+  <a href="#tai-khoan-nhat-ky"><span class="ic">☺</span>Tài khoản & nhật ký</a>
+  <div class="foot">Phiên bản 1.0 · Thầy Thiên Lương<br>Đăng nhập: 19/11/2026 09:12<br><a class="out" href="#dang-nhap">Đăng xuất</a></div>
+</aside>
+<div class="main">
+  <div class="top">
+    <div><div class="crumb">Sửa nội dung / <b>Trang chủ</b></div><h1>Sửa nội dung trang chủ</h1></div>
+    <div class="sp"><span class="btn">👁 Xem trước</span><span class="btn">💾 Lưu nháp</span><span class="btn p">⤴ Lưu & phát hành</span><a class="me" href="#tai-khoan-nhat-ky"><div class="av">TL</div><div><b>Thầy Thiên Lương</b><div class="tmeta">Chủ website</div></div></a></div>
+  </div>
+  <div class="wrap">
+<section class="card"><div class="tabs"><a href="#seo-logo-chia-se">Thương hiệu & menu</a><a href="#trang-chu">Khối thương hiệu</a><a href="#trang-chu" class="on">Khối giới thiệu</a><a href="#trang-chu-bieu-mau">Biểu mẫu lập lá số</a><a href="#trang-chu-bieu-mau">Lịch hôm nay</a><a href="#trang-chu">Chân trang</a></div>
+<div class="pad"><div class="grid g-73">
+  <div>
+    <div class="f"><label>Dòng nhấn phía trên</label><div class="inp ">Tử Vi Đẩu Số · Trường phái Việt Nam</div><div class="hint">Tối đa 60 ký tự</div></div>
+    <div class="f"><label>Tiêu đề lớn</label><div class="inp ta">Lập lá số Tử Vi <mark style="background:#f4e8c1">chuẩn xác</mark>, luận giải bởi thầy Thiên Lương</div><div class="hint">Bôi chữ rồi bấm <b>A</b> để tô màu vàng kim.</div></div>
+    <div class="counter">63 / 120 ký tự</div>
+    <div class="f"><label>Đoạn mô tả</label><div class="inp ta">An đủ hơn 110 sao, đại vận, tiểu hạn, lưu niên và nguyệt hạn. Lịch âm tính theo múi giờ Việt Nam (GMT+7). Dữ liệu chỉ nằm trên máy bạn.</div></div>
+    <div class="counter">156 / 240 ký tự</div>
+  </div>
+  <div>
+    <label style="font-size:12.5px;font-weight:600">Xem trước ngay</label>
+    <div class="prev" style="margin-top:6px">
+      <div class="ey">✦ Tử Vi Đẩu Số · Trường phái Việt Nam</div>
+      <h3>Lập lá số Tử Vi <em>chuẩn xác</em>, luận giải bởi thầy Thiên Lương</h3>
+      <p>An đủ hơn 110 sao, đại vận, tiểu hạn, lưu niên và nguyệt hạn. Lịch âm tính theo múi giờ Việt Nam (GMT+7). Dữ liệu chỉ nằm trên máy bạn.</p>
+      <div class="fx"><div><b>110+</b>sao an đủ</div><div><b>GMT+7</b>lịch âm Việt</div><div><b>1 chạm</b>tải ảnh · in</div></div>
+    </div>
+    <div class="steps" style="margin-top:10px"><div class="on">Máy tính</div><div>Điện thoại</div></div>
+  </div>
+</div></div></section>
+<section class="card"><h2>Ba ô số liệu nổi bật <small>kéo ⣿ để đổi thứ tự</small><div class="sp"><span class="btn sm">+ Thêm ô</span></div></h2><table><thead><tr><th style="width:38px"></th><th>Số / chữ lớn</th><th>Chú thích bên dưới</th><th>Hiện</th><th style="text-align:right;width:150px"></th></tr></thead><tbody><tr><td class=""><span class="hd">⣿</span></td><td><div class="inp ">110+</div></td><td><div class="inp ">sao an đủ</div></td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr><tr><td class=""><span class="hd">⣿</span></td><td><div class="inp ">GMT+7</div></td><td><div class="inp ">lịch âm Việt</div></td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr><tr><td class=""><span class="hd">⣿</span></td><td><div class="inp ">1 chạm</div></td><td><div class="inp ">tải ảnh · in · chia sẻ</div></td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr></tbody></table></section>
+<div class="grid g2">
+  <section class="card"><h2>Khối thương hiệu giữa trang chủ <small>ngay dưới thanh menu</small></h2><div class="pad">
+    <div class="f"><label>Tên thương hiệu</label><div class="inp ">THIÊN LƯƠNG</div></div>
+    <div class="f"><label>Dòng dẫn</label><div class="inp ">Câu chuyện thương hiệu</div></div>
+    <div class="f"><label>Câu định vị</label><div class="inp ">Sáng rõ trước mỗi quyết định</div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Hiện khối thương hiệu</b><div class="hint">Tắt là trang chủ vào thẳng phần giới thiệu</div></div></div></div></section>
+  <section class="card"><h2>Chân trang <small>hiện ở cả 2 trang</small></h2><div class="pad">
+    <div class="f"><label>Dòng 1</label><div class="inp ta"><b>Tuvithienluong</b> — Lá số an theo trường phái Tử Vi Việt Nam, lịch âm múi giờ GMT+7.</div></div>
+    <div class="f"><label>Dòng 2 (miễn trừ trách nhiệm)</label><div class="inp ta">Lá số mang tính tham khảo. Phần luận giải chi tiết do thầy của Tuvithienluong thực hiện.</div></div></div></section>
+</div>
+<section class="card"><h2>Lịch sử phiên bản của khu vực này</h2><div class="pad" style="padding-top:4px">
+    <div class="log"><span class="dot"></span><div><b>Bản đang chạy</b><div class="tmeta">09:05 hôm nay · Thầy Thiên Lương</div></div><span class="t">đang dùng</span></div><div class="log"><span class="dot e"></span><div><b>Bản trước</b><div class="tmeta">10/11 15:44 · Thầy Thiên Lương</div></div><span class="t"><span class="btn sm">↺ Khôi phục</span></span></div><div class="log"><span class="dot e"></span><div><b>Bản trước nữa</b><div class="tmeta">02/11 08:12 · Thầy Thiên Lương</div></div><span class="t"><span class="btn sm">↺ Khôi phục</span></span></div>
+    </div></section></div>
+</div>
+</div>
+</section>
+
+<section class="screen" id="trang-chu-bieu-mau" style="min-height:1160px">
+<div class="app">
+<aside class="side">
+  <a class="logo" href="#tong-quan"><svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg><div><b>THIÊN LƯƠNG</b><span>Trang quản trị nội dung</span></div></a>
+  <div class="navgrp">Tổng quan</div>
+  <a href="#tong-quan"><span class="ic">◧</span>Nội dung website</a>
+  <div class="navgrp">Sửa nội dung</div>
+  <a href="#trang-chu"><span class="ic">▤</span>Trang chủ</a>
+  <a href="#trang-la-so"><span class="ic">✦</span>Trang lá số</a>
+  <a href="#lien-he-cta"><span class="ic">☏</span>Liên hệ & nút CTA</a>
+  <div class="navgrp">Cấu hình</div>
+  <a href="#seo-logo-chia-se"><span class="ic">◎</span>SEO, logo & chia sẻ</a>
+  <a href="#tuy-chon-an-sao"><span class="ic">⚙</span>Tùy chọn an sao</a>
+  <div class="navgrp">Hệ thống</div>
+  <a href="#tai-khoan-nhat-ky"><span class="ic">☺</span>Tài khoản & nhật ký</a>
+  <div class="foot">Phiên bản 1.0 · Thầy Thiên Lương<br>Đăng nhập: 19/11/2026 09:12<br><a class="out" href="#dang-nhap">Đăng xuất</a></div>
+</aside>
+<div class="main">
+  <div class="top">
+    <div><div class="crumb">Sửa nội dung / Trang chủ / <b>Biểu mẫu</b></div><h1>Sửa nội dung trang chủ</h1></div>
+    <div class="sp"><span class="btn">👁 Xem trước</span><span class="btn p">⤴ Lưu & phát hành</span><a class="me" href="#tai-khoan-nhat-ky"><div class="av">TL</div><div><b>Thầy Thiên Lương</b><div class="tmeta">Chủ website</div></div></a></div>
+  </div>
+  <div class="wrap">
+<section class="card"><div class="tabs"><a href="#seo-logo-chia-se">Thương hiệu & menu</a><a href="#trang-chu">Khối thương hiệu</a><a href="#trang-chu">Khối giới thiệu</a><a href="#trang-chu-bieu-mau" class="on">Biểu mẫu lập lá số</a><a href="#trang-chu-bieu-mau">Lịch hôm nay</a><a href="#trang-chu">Chân trang</a></div>
+<div class="pad"><div class="grid g2">
+  <div>
+    <div class="f"><label>Tiêu đề biểu mẫu</label><div class="inp ">Lập lá số Tử Vi</div></div>
+    <div class="f"><label>Chữ trên nút bấm</label><div class="inp ">Lập lá số</div></div>
+    <div class="f"><label>Câu báo lỗi năm sinh</label><div class="inp ">Nhập năm sinh từ 1900 đến 2100.</div></div>
+    <div class="f"><label>Chữ gợi ý khi chưa chọn giờ</label><div class="inp ta">Chưa rõ giờ sinh? Hãy hỏi lại gia đình, giờ sinh quyết định cung Mệnh.</div></div>
+    <div class="f"><label>Nhãn mục tùy chọn nâng cao</label><div class="inp ">Tùy chọn an sao nâng cao</div><div class="hint">Nội dung bên trong sửa ở mục <a href="#tuy-chon-an-sao"><b>Tùy chọn an sao</b></a></div></div>
+  </div>
+  <div>
+    <label style="font-size:12.5px;font-weight:600">Nhãn các ô nhập</label>
+    <div style="margin-top:6px">
+      <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f1eff6">
+          <div style="width:160px;font-size:12.5px;font-weight:600">Họ và tên</div>
+          <div class="inp" style="flex:1">Họ và tên</div><span class="btn sm">✎</span></div><div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f1eff6">
+          <div style="width:160px;font-size:12.5px;font-weight:600">Ngày / tháng / năm sinh</div>
+          <div class="inp" style="flex:1">Ngày · Tháng · Năm sinh</div><span class="btn sm">✎</span></div><div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f1eff6">
+          <div style="width:160px;font-size:12.5px;font-weight:600">Loại lịch</div>
+          <div class="inp" style="flex:1">Dương lịch / Âm lịch</div><span class="btn sm">✎</span></div><div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f1eff6">
+          <div style="width:160px;font-size:12.5px;font-weight:600">Tháng nhuận</div>
+          <div class="inp" style="flex:1">Sinh vào tháng nhuận</div><span class="btn sm">✎</span></div><div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f1eff6">
+          <div style="width:160px;font-size:12.5px;font-weight:600">Giờ · phút sinh</div>
+          <div class="inp" style="flex:1">Giờ sinh · Phút sinh</div><span class="btn sm">✎</span></div><div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f1eff6">
+          <div style="width:160px;font-size:12.5px;font-weight:600">Giới tính</div>
+          <div class="inp" style="flex:1">Nam / Nữ</div><span class="btn sm">✎</span></div><div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f1eff6">
+          <div style="width:160px;font-size:12.5px;font-weight:600">Năm xem · tháng xem</div>
+          <div class="inp" style="flex:1">Năm xem · Tháng xem (âm lịch)</div><span class="btn sm">✎</span></div>
+    </div>
+    <div class="hint" style="margin-top:8px">Chỉ đổi được <b>chữ hiển thị</b>. Không thêm/bớt ô nhập vì bộ máy an sao cần đủ ngày – giờ – giới tính.</div>
+  </div>
+</div></div></section>
+<div class="grid g2">
+  <section class="card"><h2>Khối “Lịch hôm nay” <small>cột trái trang chủ</small></h2><div class="pad">
+    <div class="note" style="margin-bottom:12px">⚑ Ngày âm – dương, can chi, tiết khí và giờ hoàng đạo do máy tự tính theo lịch Việt Nam (GMT+7). Chỉ sửa được <b>nhãn chữ</b>.</div>
+    <div class="f"><label>Nhãn “Hôm nay”</label><div class="inp ">Hôm nay</div></div>
+    <div class="f"><label>Nhãn “Âm lịch”</label><div class="inp ">Âm lịch</div></div>
+    <div class="row3"><div class="f"><label>Nhãn “Ngày”</label><div class="inp ">Ngày</div></div><div class="f"><label>Nhãn “Tháng”</label><div class="inp ">Tháng</div></div><div class="f"><label>Nhãn “Tiết khí”</label><div class="inp ">Tiết khí</div></div></div>
+    <div class="f"><label>Nhãn “Giờ hoàng đạo”</label><div class="inp ">Giờ hoàng đạo</div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Hiện khối Lịch hôm nay</b><div class="hint">Tắt là ẩn khỏi trang chủ</div></div></div></div></section>
+  <section class="card"><h2>Khối “Lá số gần đây” <small>lịch sử nằm trên máy khách</small></h2><div class="pad">
+    <div class="f"><label>Tiêu đề khối</label><div class="inp ">Lá số gần đây</div></div>
+    <div class="f"><label>Số lá số lưu lại tối đa</label><div class="sel">8 lá số</div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Cho khách lưu lá số gần đây</b><div class="hint">Tắt là bỏ hẳn khối này khỏi trang chủ</div></div></div>
+    <div class="note" style="margin-top:12px">⚑ Đây là lịch sử riêng trên trình duyệt của từng khách. Trang quản trị <b>không</b> đọc được danh sách này — đúng cam kết “dữ liệu chỉ nằm trên máy bạn”.</div></div></section>
+</div></div>
+</div>
+</div>
+</section>
+
+<section class="screen" id="trang-la-so" style="min-height:1080px">
+<div class="app">
+<aside class="side">
+  <a class="logo" href="#tong-quan"><svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg><div><b>THIÊN LƯƠNG</b><span>Trang quản trị nội dung</span></div></a>
+  <div class="navgrp">Tổng quan</div>
+  <a href="#tong-quan"><span class="ic">◧</span>Nội dung website</a>
+  <div class="navgrp">Sửa nội dung</div>
+  <a href="#trang-chu"><span class="ic">▤</span>Trang chủ</a>
+  <a href="#trang-la-so" class="on"><span class="ic">✦</span>Trang lá số</a>
+  <a href="#lien-he-cta"><span class="ic">☏</span>Liên hệ & nút CTA</a>
+  <div class="navgrp">Cấu hình</div>
+  <a href="#seo-logo-chia-se"><span class="ic">◎</span>SEO, logo & chia sẻ</a>
+  <a href="#tuy-chon-an-sao"><span class="ic">⚙</span>Tùy chọn an sao</a>
+  <div class="navgrp">Hệ thống</div>
+  <a href="#tai-khoan-nhat-ky"><span class="ic">☺</span>Tài khoản & nhật ký</a>
+  <div class="foot">Phiên bản 1.0 · Thầy Thiên Lương<br>Đăng nhập: 19/11/2026 09:12<br><a class="out" href="#dang-nhap">Đăng xuất</a></div>
+</aside>
+<div class="main">
+  <div class="top">
+    <div><div class="crumb">Sửa nội dung / <b>Trang lá số</b></div><h1>Sửa nội dung trang lá số</h1></div>
+    <div class="sp"><span class="btn">👁 Xem trước</span><span class="btn p">⤴ Lưu & phát hành</span><a class="me" href="#tai-khoan-nhat-ky"><div class="av">TL</div><div><b>Thầy Thiên Lương</b><div class="tmeta">Chủ website</div></div></a></div>
+  </div>
+  <div class="wrap">
+<div class="note">⚑ Trang này chỉ sửa được <b>phần chữ xung quanh</b>. Tên sao, tên cung, đắc tính (M/V/Đ/B/H), đại vận, tiểu hạn do máy tính theo trường phái Việt Nam — xem mục <a href="#tuy-chon-an-sao"><b>Tùy chọn an sao</b></a>.</div>
+<div class="grid g2">
+  <section class="card"><h2>Chữ hướng dẫn & chú giải</h2><div class="pad">
+    <div class="f"><label>Dòng gợi ý trên lá số</label><div class="inp ">Rê chuột hoặc chạm vào một cung để xem tam phương tứ chính</div></div>
+    <div class="f"><label>Chú giải ngũ hành</label><div class="inp ro">Kim · Mộc · Thủy · Hỏa · Thổ</div><div class="hint">Hệ thống tự sinh, không sửa</div></div>
+    <div class="f"><label>Chú giải đắc tính</label><div class="inp ">(M) Miếu · (V) Vượng · (Đ) Đắc · (B) Bình · (H) Hãm</div></div>
+    <div class="f"><label>Chú giải sao lưu / đại vận</label><div class="inp ta">L. Sao lưu niên · ĐV. Sao đại vận · ĐV./LN. Cung đại vận / lưu niên · Th. Nguyệt hạn</div></div>
+    <div class="f"><label>Khi khách vào mà thiếu thông tin</label><div class="inp ">Hãy nhập ngày giờ sinh để lập lá số.</div></div>
+    <div class="f"><label>Chữ trên nút ở màn hình đó</label><div class="inp ">Lập lá số</div></div>
+    <div class="f"><label>Đường dẫn phía trên lá số</label><div class="inp ">Trang chủ / Lá số Tử Vi</div></div></div></section>
+  <div style="display:flex;flex-direction:column;gap:16px">
+  <section class="card"><h2>Thanh công cụ cho khách <small>bật/tắt từng nút</small></h2><div class="pad" style="padding-top:6px">
+    <div class="swline"><span class="sw on"></span><div><b>Nút “Sửa”</b><div class="hint">Quay lại biểu mẫu để sửa ngày sinh</div></div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Nút “Sao chép link”</b><div class="hint">Khách gửi link lá số cho người khác</div></div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Nút “In”</b><div class="hint">In lá số ra giấy A4</div></div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Nút “Tải ảnh”</b><div class="hint">Xuất lá số thành ảnh PNG</div></div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Chọn năm xem / tháng xem</b><div class="hint">Cho khách tự xem vận các năm khác</div></div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Hiện sao đại vận (ĐV.)</b><div class="hint">Mặc định bật sẵn khi khách mới vào</div></div></div></div></section>
+  <section class="card"><h2>Khối giữa lá số <small>phần in luôn lên ảnh khách tải về</small></h2><div class="pad">
+    <div class="f"><label>Tên thương hiệu trên lá số</label><div class="inp ">TUVITHIENLUONG</div></div>
+    <div class="f"><label>Tiêu đề giữa lá số</label><div class="inp ">Lá Số Tử Vi</div></div>
+    <div class="f"><label>Dấu triện góc</label><div class="inp ">THIÊN LƯƠNG</div><div class="hint">Hai chữ xếp thành 2 dòng</div></div>
+    <div class="swline"><span class="sw on"></span><div><b>In logo & dấu triện lên ảnh tải về</b><div class="hint">Ảnh khách chia sẻ luôn mang thương hiệu</div></div></div></div></section>
+  </div>
+</div></div>
+</div>
+</div>
+</section>
+
+<section class="screen" id="lien-he-cta" style="min-height:1250px">
+<div class="app">
+<aside class="side">
+  <a class="logo" href="#tong-quan"><svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg><div><b>THIÊN LƯƠNG</b><span>Trang quản trị nội dung</span></div></a>
+  <div class="navgrp">Tổng quan</div>
+  <a href="#tong-quan"><span class="ic">◧</span>Nội dung website</a>
+  <div class="navgrp">Sửa nội dung</div>
+  <a href="#trang-chu"><span class="ic">▤</span>Trang chủ</a>
+  <a href="#trang-la-so"><span class="ic">✦</span>Trang lá số</a>
+  <a href="#lien-he-cta" class="on"><span class="ic">☏</span>Liên hệ & nút CTA</a>
+  <div class="navgrp">Cấu hình</div>
+  <a href="#seo-logo-chia-se"><span class="ic">◎</span>SEO, logo & chia sẻ</a>
+  <a href="#tuy-chon-an-sao"><span class="ic">⚙</span>Tùy chọn an sao</a>
+  <div class="navgrp">Hệ thống</div>
+  <a href="#tai-khoan-nhat-ky"><span class="ic">☺</span>Tài khoản & nhật ký</a>
+  <div class="foot">Phiên bản 1.0 · Thầy Thiên Lương<br>Đăng nhập: 19/11/2026 09:12<br><a class="out" href="#dang-nhap">Đăng xuất</a></div>
+</aside>
+<div class="main">
+  <div class="top">
+    <div><div class="crumb">Sửa nội dung / <b>Liên hệ & nút CTA</b></div><h1>Liên hệ & nút CTA</h1></div>
+    <div class="sp"><span class="btn">👁 Xem trước</span><span class="btn p">⤴ Lưu & phát hành</span><a class="me" href="#tai-khoan-nhat-ky"><div class="av">TL</div><div><b>Thầy Thiên Lương</b><div class="tmeta">Chủ website</div></div></a></div>
+  </div>
+  <div class="wrap">
+<div class="note" style="background:#fdecea;border-color:#f3cdc8;color:#8c2b20">⚠ Hiện tại link liên hệ đang <b>để trống</b> nên dải “Nhờ thầy luận giải” <b>bị ẩn</b> trên trang lá số. Điền link Zalo hoặc Messenger rồi phát hành là nút hiện ra ngay.</div>
+<section class="card"><h2>Dải “Nhờ thầy luận giải” <small>cuối trang lá số</small></h2><div class="pad"><div class="grid g-73">
+  <div>
+    <div class="f"><label>Tiêu đề</label><div class="inp ">Nhờ thầy luận giải lá số này</div></div>
+    <div class="f"><label>Đoạn mô tả</label><div class="inp ta">Thầy Tuvithienluong sẽ luận chi tiết tính cách, sự nghiệp, tài lộc, tình duyên và vận hạn của bạn.</div></div>
+    <div class="row2"><div class="f"><label>Chữ trên nút</label><div class="inp ">Liên hệ thầy</div></div><div class="f"><label>Nút dẫn tới</label><div class="sel">Kênh Zalo của thầy</div></div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Hiện dải này trên trang lá số</b><div class="hint">Tắt là ẩn hoàn toàn</div></div></div>
+  </div>
+  <div>
+    <label style="font-size:12.5px;font-weight:600">Xem trước</label>
+    <div class="prev" style="margin-top:6px">
+      <h3 style="font-size:16px">Nhờ thầy luận giải lá số này</h3>
+      <p>Thầy Tuvithienluong sẽ luận chi tiết tính cách, sự nghiệp, tài lộc, tình duyên và vận hạn của bạn.</p>
+      <div style="margin-top:12px"><span class="btn g">💬 Liên hệ thầy</span></div>
+    </div>
+  </div>
+</div></div></section>
+<section class="card"><h2>Kênh liên hệ của thầy <small>kéo ⣿ để đổi thứ tự</small><div class="sp"><span class="btn sm">+ Thêm kênh</span></div></h2><table><thead><tr><th style="width:38px"></th><th>Kênh</th><th>Đường dẫn / số</th><th>Chữ trên nút</th><th>Dùng cho nút CTA</th><th style="text-align:right;width:150px"></th></tr></thead><tbody><tr><td class=""><span class="hd">⣿</span></td><td><b>Zalo</b></td><td><div class="inp ">https://zalo.me/0912345678</div></td><td><div class="inp ">Liên hệ thầy</div></td><td><span class="badge b-ok">● Đang dùng</span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr><tr><td class=""><span class="hd">⣿</span></td><td><b>Messenger</b></td><td><div class="inp ">https://m.me/thienluong</div></td><td><div class="inp ">Chat Facebook</div></td><td><span class="badge b-off">dự phòng</span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr><tr><td class=""><span class="hd">⣿</span></td><td><b>Điện thoại</b></td><td><div class="inp ">0912 345 678</div></td><td><div class="inp ">Gọi thầy</div></td><td><span class="badge b-off">dự phòng</span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr></tbody></table></section>
+<div class="grid g2">
+  <section class="card"><h2>Thêm kênh liên hệ</h2><div class="pad">
+    <div class="f"><label>Loại kênh</label><div class="sel">Fanpage Facebook</div></div>
+    <div class="f"><label>Đường dẫn</label><div class="inp ">https://facebook.com/thienluong</div></div>
+    <div class="f"><label>Chữ trên nút</label><div class="inp ">Xem Fanpage</div></div>
+    <div style="display:flex;gap:8px;margin-top:4px"><span class="btn p">+ Thêm kênh</span><span class="btn">Hủy</span></div></div></section>
+  <section class="card"><h2>Nút liên hệ nổi (tùy chọn)</h2><div class="pad" style="padding-top:6px">
+    <div class="swline"><span class="sw"></span><div><b>Bật nút nổi ở góc dưới bên phải</b><div class="hint">Hiện trên cả 2 trang</div></div></div>
+    <div class="swline"><span class="sw"></span><div><b>Chỉ hiện trên điện thoại</b></div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Chỉ hiện sau khi khách lập xong lá số</b><div class="hint">Tránh làm rối khi khách chưa xem gì</div></div></div>
+    <div class="hint" style="margin-top:8px">Đây là phần <b>bổ sung mới</b>, hiện website chưa có. Có thể bỏ nếu Quý khách thấy chưa cần.</div></div></section>
+</div></div>
+</div>
+</div>
+</section>
+
+<section class="screen" id="seo-logo-chia-se" style="min-height:1140px">
+<div class="app">
+<aside class="side">
+  <a class="logo" href="#tong-quan"><svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg><div><b>THIÊN LƯƠNG</b><span>Trang quản trị nội dung</span></div></a>
+  <div class="navgrp">Tổng quan</div>
+  <a href="#tong-quan"><span class="ic">◧</span>Nội dung website</a>
+  <div class="navgrp">Sửa nội dung</div>
+  <a href="#trang-chu"><span class="ic">▤</span>Trang chủ</a>
+  <a href="#trang-la-so"><span class="ic">✦</span>Trang lá số</a>
+  <a href="#lien-he-cta"><span class="ic">☏</span>Liên hệ & nút CTA</a>
+  <div class="navgrp">Cấu hình</div>
+  <a href="#seo-logo-chia-se" class="on"><span class="ic">◎</span>SEO, logo & chia sẻ</a>
+  <a href="#tuy-chon-an-sao"><span class="ic">⚙</span>Tùy chọn an sao</a>
+  <div class="navgrp">Hệ thống</div>
+  <a href="#tai-khoan-nhat-ky"><span class="ic">☺</span>Tài khoản & nhật ký</a>
+  <div class="foot">Phiên bản 1.0 · Thầy Thiên Lương<br>Đăng nhập: 19/11/2026 09:12<br><a class="out" href="#dang-nhap">Đăng xuất</a></div>
+</aside>
+<div class="main">
+  <div class="top">
+    <div><div class="crumb">Cấu hình / <b>SEO, logo & chia sẻ</b></div><h1>SEO, logo & chia sẻ</h1></div>
+    <div class="sp"><span class="btn p">⤴ Lưu & phát hành</span><a class="me" href="#tai-khoan-nhat-ky"><div class="av">TL</div><div><b>Thầy Thiên Lương</b><div class="tmeta">Chủ website</div></div></a></div>
+  </div>
+  <div class="wrap">
+<section class="card"><h2>Tiêu đề & mô tả cho Google <small>2 trang hiện có</small></h2><table><thead><tr><th>Trang</th><th>Tiêu đề trên Google</th><th>Mô tả</th><th style="text-align:right;width:110px"></th></tr></thead><tbody><tr><td><b>Trang chủ</b><div class="tmeta">/</div></td><td>Thiên Lương — Lập lá số Tử Vi phái Việt Nam<div class="tmeta">44 / 60 ký tự</div></td><td>An đủ hơn 110 sao, đại vận, tiểu hạn, lưu niên và nguyệt hạn. Lịch âm múi giờ Việt Nam (GMT+7). Miễn phí, dữ liệu chỉ nằm trên máy bạn.<div class="tmeta">146 / 160 ký tự</div></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a></td></tr><tr><td><b>Trang lá số</b><div class="tmeta">/la-so.html</div></td><td>Lá số Tử Vi — Thiên Lương<div class="tmeta">25 / 60 ký tự</div></td><td>Lá số Tử Vi 12 cung, an sao chuẩn trường phái Việt Nam, kèm đại vận, tiểu hạn, lưu niên và nguyệt hạn.<div class="tmeta">104 / 160 ký tự</div></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a></td></tr></tbody></table></section>
+<div class="grid g2">
+  <section class="card"><h2>Thương hiệu & hình ảnh</h2><div class="pad">
+    <div class="f"><label>Tên thương hiệu</label><div class="inp ">THIÊN LƯƠNG</div></div>
+    <div class="f"><label>Dòng phụ trên thanh menu</label><div class="inp ">Sáng rõ trước mỗi quyết định</div></div>
+    <div class="f"><label>Logo</label><div style="display:flex;align-items:center;gap:12px"><svg class="mk md" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg><span class="btn sm">⤒ Đổi logo</span><span class="btn sm d">🗑 Bỏ</span></div><div class="hint">SVG hoặc PNG nền trong suốt, tối thiểu 256×256</div></div>
+    <div class="f"><label>Biểu tượng tab (favicon)</label><div style="display:flex;align-items:center;gap:12px"><div style="width:30px;height:30px;border-radius:7px;background:#3b1d5d;display:grid;place-items:center"><svg class="mk sm2" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg></div><span class="btn sm">⤒ Đổi</span></div></div>
+    <div class="f"><label>Màu nền thanh trình duyệt</label><div style="display:flex;align-items:center;gap:12px"><div style="width:30px;height:30px;border-radius:7px;background:#3b1d5d;border:1px solid var(--line)"></div><div class="inp" style="width:120px">#3b1d5d</div></div></div></div></section>
+  <section class="card"><h2>Ảnh & chữ khi chia sẻ Facebook / Zalo</h2><div class="pad">
+    <div class="f"><label>Ảnh chia sẻ</label><div style="display:flex;gap:12px;align-items:center"><div style="width:120px;height:63px;border-radius:8px;background:linear-gradient(135deg,#3b1d5d,#7a4aa6);display:grid;place-items:center;color:#e1c78e;font-size:11px;letter-spacing:.12em">THIÊN LƯƠNG</div><div><span class="btn sm">⤒ Đổi ảnh</span><div class="hint" style="margin-top:6px">Chuẩn 1200×630 px</div></div></div><div class="hint">Đang dùng: assets/img/og-image.png</div></div>
+    <div class="f"><label>Tiêu đề khi chia sẻ</label><div class="inp ">Thiên Lương — Lập lá số Tử Vi phái Việt Nam</div></div>
+    <div class="f"><label>Mô tả khi chia sẻ</label><div class="inp ta">An đủ 110+ sao, đại vận, tiểu hạn. Thầy Thiên Lương luận giải chi tiết.</div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Chặn Google lập chỉ mục link lá số của khách</b><div class="hint">Giữ riêng tư lá số khách đã chia sẻ</div></div></div></div></section>
+</div>
+<section class="card"><h2>Liên kết trên thanh menu <small>mỗi trang một liên kết</small><div class="sp"><span class="btn sm">+ Thêm liên kết</span></div></h2><table><thead><tr><th style="width:38px"></th><th>Tên hiển thị</th><th>Hiện ở trang</th><th>Dẫn tới</th><th>Hiện</th><th style="text-align:right;width:150px"></th></tr></thead><tbody><tr><td class=""><span class="hd">⣿</span></td><td><div class="inp ">Lập lá số</div></td><td>Trang chủ</td><td><div class="sel">Trang chủ › phần biểu mẫu</div></td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr><tr><td class=""><span class="hd">⣿</span></td><td><div class="inp ">Lập lá số mới</div></td><td>Trang lá số</td><td><div class="sel">Trang chủ › phần biểu mẫu</div></td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr></tbody></table></section></div>
+</div>
+</div>
+</section>
+
+<section class="screen" id="tuy-chon-an-sao" style="min-height:1020px">
+<div class="app">
+<aside class="side">
+  <a class="logo" href="#tong-quan"><svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg><div><b>THIÊN LƯƠNG</b><span>Trang quản trị nội dung</span></div></a>
+  <div class="navgrp">Tổng quan</div>
+  <a href="#tong-quan"><span class="ic">◧</span>Nội dung website</a>
+  <div class="navgrp">Sửa nội dung</div>
+  <a href="#trang-chu"><span class="ic">▤</span>Trang chủ</a>
+  <a href="#trang-la-so"><span class="ic">✦</span>Trang lá số</a>
+  <a href="#lien-he-cta"><span class="ic">☏</span>Liên hệ & nút CTA</a>
+  <div class="navgrp">Cấu hình</div>
+  <a href="#seo-logo-chia-se"><span class="ic">◎</span>SEO, logo & chia sẻ</a>
+  <a href="#tuy-chon-an-sao" class="on"><span class="ic">⚙</span>Tùy chọn an sao</a>
+  <div class="navgrp">Hệ thống</div>
+  <a href="#tai-khoan-nhat-ky"><span class="ic">☺</span>Tài khoản & nhật ký</a>
+  <div class="foot">Phiên bản 1.0 · Thầy Thiên Lương<br>Đăng nhập: 19/11/2026 09:12<br><a class="out" href="#dang-nhap">Đăng xuất</a></div>
+</aside>
+<div class="main">
+  <div class="top">
+    <div><div class="crumb">Cấu hình / <b>Tùy chọn an sao</b></div><h1>Tùy chọn an sao</h1></div>
+    <div class="sp"><span class="btn">↻ Về mặc định</span><span class="btn p">⤴ Lưu & phát hành</span><a class="me" href="#tai-khoan-nhat-ky"><div class="av">TL</div><div><b>Thầy Thiên Lương</b><div class="tmeta">Chủ website</div></div></a></div>
+  </div>
+  <div class="wrap">
+<div class="note">⚠ Đây là phần <b>chuyên môn</b>, đổi là đổi kết quả an sao của mọi lá số lập sau đó. Chỉ thầy mới có quyền sửa, mỗi lần lưu đều ghi lại ai đổi và đổi gì.</div>
+<section class="card"><h2>6 tùy chọn trường phái <small>đúng 6 tùy chọn đang có trong mục “Tùy chọn an sao nâng cao” trên trang chủ</small></h2><table><thead><tr><th>Điểm an sao</th><th>Đang chọn làm mặc định</th><th>Lựa chọn khác</th><th>Cho khách tự đổi</th><th style="text-align:right;width:100px"></th></tr></thead><tbody><tr><td><b>Tứ Hóa năm Canh</b></td><td>Nhật – Vũ – Âm – Đồng <span class="badge b-ok">phổ biến</span></td><td>Nhật – Vũ – Đồng – Âm</td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a></td></tr><tr><td><b>Tứ Hóa năm Nhâm (Hóa Khoa)</b></td><td>Lương – Tử – Tả – Vũ (Tả Phù hóa Khoa)</td><td>Lương – Tử – Phủ – Vũ</td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a></td></tr><tr><td><b>Khôi – Việt năm Canh</b></td><td>Khôi Ngọ – Việt Dần</td><td>Khôi Sửu – Việt Mùi</td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a></td></tr><tr><td><b>An Thiên Giải</b></td><td>Từ Thân, đếm liền từng cung</td><td>Từ Thân, đếm nhảy cung (sách cụ Thiên Lương)</td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a></td></tr><tr><td><b>Giờ Tý muộn (23h–24h)</b></td><td>Tính sang ngày hôm sau</td><td>Giữ nguyên ngày</td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a></td></tr><tr><td><b>Sinh tháng nhuận sau ngày 15</b></td><td>Giữ nguyên tháng nhuận</td><td>Tính sang tháng sau</td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a></td></tr></tbody></table></section>
+<div class="grid g2">
+  <section class="card"><h2>Kiểm tra trước khi lưu</h2><div class="pad">
+    <div class="row3"><div class="f"><label>Ngày</label><div class="inp ">20</div></div><div class="f"><label>Tháng</label><div class="inp ">02</div></div><div class="f"><label>Năm</label><div class="inp ">1999</div></div></div>
+    <div class="row3"><div class="f"><label>Giờ</label><div class="inp ">05</div></div><div class="f"><label>Phút</label><div class="inp ">30</div></div><div class="f"><label>Giới tính</label><div class="sel">Nam</div></div></div>
+    <span class="btn p">▶ Lập thử lá số với tùy chọn mới</span>
+    <div style="margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12.5px;background:#faf9fd">
+      <b>Kết quả so sánh:</b><div style="margin-top:6px;color:var(--ok)">✓ 14 chính tinh · mỗi sao xuất hiện đúng 1 lần</div>
+      <div style="color:var(--warn)">● 2 cung khác so với tùy chọn đang chạy: cung Tý (Hóa Kỵ), cung Dần (Thiên Giải)</div>
+      <div class="btn sm" style="margin-top:9px">Xem lá số thử</div></div></div></section>
+  <section class="card"><h2>Chữ hiển thị trên lá số</h2><div class="pad">
+    <div class="f"><label>Tên 12 cung</label><div class="inp ro">Mệnh · Phụ Mẫu · Phúc Đức · Điền Trạch · Quan Lộc · Nô Bộc · Di Chuyển · Tật Bệnh · Tài Bạch · <b>Tử Tức</b> · Phu Thê · Huynh Đệ</div><div class="hint">Phái Việt Nam dùng <b>Tử Tức</b> (không phải Tử Nữ). Sửa được chữ hiển thị nhưng không đổi cách tính.</div></div>
+    <div class="f"><label>Ký hiệu đắc tính</label><div class="inp ">M · V · Đ · B · H</div></div>
+    <div class="row3"><div class="f"><label>Nhãn sao lưu niên</label><div class="inp ">L.</div></div><div class="f"><label>Nhãn sao đại vận</label><div class="inp ">ĐV.</div></div><div class="f"><label>Nhãn nguyệt hạn</label><div class="inp ">Th.</div></div></div>
+    <div class="swline"><span class="sw on"></span><div><b>Hiện đắc tính trong ngoặc</b><div class="hint">Ví dụ: Tử Vi (M)</div></div></div></div></section>
+</div></div>
+</div>
+</div>
+</section>
+
+<section class="screen" id="xac-nhan-xoa" style="min-height:660px">
+<div class="app">
+<aside class="side">
+  <a class="logo" href="#tong-quan"><svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg><div><b>THIÊN LƯƠNG</b><span>Trang quản trị nội dung</span></div></a>
+  <div class="navgrp">Tổng quan</div>
+  <a href="#tong-quan"><span class="ic">◧</span>Nội dung website</a>
+  <div class="navgrp">Sửa nội dung</div>
+  <a href="#trang-chu"><span class="ic">▤</span>Trang chủ</a>
+  <a href="#trang-la-so"><span class="ic">✦</span>Trang lá số</a>
+  <a href="#lien-he-cta"><span class="ic">☏</span>Liên hệ & nút CTA</a>
+  <div class="navgrp">Cấu hình</div>
+  <a href="#seo-logo-chia-se"><span class="ic">◎</span>SEO, logo & chia sẻ</a>
+  <a href="#tuy-chon-an-sao"><span class="ic">⚙</span>Tùy chọn an sao</a>
+  <div class="navgrp">Hệ thống</div>
+  <a href="#tai-khoan-nhat-ky"><span class="ic">☺</span>Tài khoản & nhật ký</a>
+  <div class="foot">Phiên bản 1.0 · Thầy Thiên Lương<br>Đăng nhập: 19/11/2026 09:12<br><a class="out" href="#dang-nhap">Đăng xuất</a></div>
+</aside>
+<div class="main">
+  <div class="top">
+    <div><div class="crumb">Sửa nội dung / Trang chủ / <b>Khối giới thiệu</b></div><h1>Sửa nội dung trang chủ</h1></div>
+    <div class="sp"><span class="btn p">⤴ Lưu & phát hành</span><a class="me" href="#tai-khoan-nhat-ky"><div class="av">TL</div><div><b>Thầy Thiên Lương</b><div class="tmeta">Chủ website</div></div></a></div>
+  </div>
+  <div class="wrap">
+<section class="card"><h2>Ba ô số liệu nổi bật<div class="sp"><span class="btn sm">+ Thêm ô</span></div></h2><table><thead><tr><th style="width:38px"></th><th>Số / chữ lớn</th><th>Chú thích bên dưới</th><th>Hiện</th><th style="text-align:right;width:150px"></th></tr></thead><tbody><tr><td class=""><span class="hd">⣿</span></td><td><div class="inp ">110+</div></td><td><div class="inp ">sao an đủ</div></td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr><tr><td class=""><span class="hd">⣿</span></td><td><div class="inp ">GMT+7</div></td><td><div class="inp ">lịch âm Việt</div></td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr><tr><td class=""><span class="hd">⣿</span></td><td><div class="inp ">1 chạm</div></td><td><div class="inp ">tải ảnh · in · chia sẻ</div></td><td><span class="sw on"></span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr></tbody></table></section>
+<div class="mask"></div>
+<div class="modal">
+  <div class="mh"><div class="wi">🗑</div><div><h3>Xóa ô số liệu này?</h3><p>Ô <b>“1 chạm — tải ảnh · in · chia sẻ”</b> sẽ không còn hiển thị trên trang chủ.</p></div></div>
+  <div class="mb">
+    <div class="note">⚑ Khối giới thiệu đang hiển thị 3 ô. Xóa xong còn 2 ô, bố cục tự giãn ra cho cân.</div>
+    <div style="font-size:12.5px;margin-top:12px"><span class="chk on"></span> Giữ trong thùng rác 30 ngày (có thể phục hồi)</div>
+    <div class="hint" style="margin-top:6px">Nếu chỉ muốn ẩn tạm, hãy <b>tắt công tắc “Hiện”</b> thay vì xóa.</div>
+  </div>
+  <div class="mf"><a class="btn" href="#trang-chu">Hủy</a><a class="btn d" href="#tai-khoan-nhat-ky" style="background:var(--danger);color:#fff;border-color:var(--danger)">🗑 Xóa ô số liệu</a></div>
+</div></div>
+</div>
+</div>
+</section>
+
+<section class="screen" id="tai-khoan-nhat-ky" style="min-height:1060px">
+<div class="app">
+<aside class="side">
+  <a class="logo" href="#tong-quan"><svg class="mk" viewBox="0 0 100 100" aria-hidden="true"><use href="#tl-logo"/></svg><div><b>THIÊN LƯƠNG</b><span>Trang quản trị nội dung</span></div></a>
+  <div class="navgrp">Tổng quan</div>
+  <a href="#tong-quan"><span class="ic">◧</span>Nội dung website</a>
+  <div class="navgrp">Sửa nội dung</div>
+  <a href="#trang-chu"><span class="ic">▤</span>Trang chủ</a>
+  <a href="#trang-la-so"><span class="ic">✦</span>Trang lá số</a>
+  <a href="#lien-he-cta"><span class="ic">☏</span>Liên hệ & nút CTA</a>
+  <div class="navgrp">Cấu hình</div>
+  <a href="#seo-logo-chia-se"><span class="ic">◎</span>SEO, logo & chia sẻ</a>
+  <a href="#tuy-chon-an-sao"><span class="ic">⚙</span>Tùy chọn an sao</a>
+  <div class="navgrp">Hệ thống</div>
+  <a href="#tai-khoan-nhat-ky" class="on"><span class="ic">☺</span>Tài khoản & nhật ký</a>
+  <div class="foot">Phiên bản 1.0 · Thầy Thiên Lương<br>Đăng nhập: 19/11/2026 09:12<br><a class="out" href="#dang-nhap">Đăng xuất</a></div>
+</aside>
+<div class="main">
+  <div class="top">
+    <div><div class="crumb">Hệ thống / <b>Tài khoản & nhật ký</b></div><h1>Tài khoản & nhật ký</h1></div>
+    <div class="sp"><span class="btn p">+ Thêm tài khoản</span><a class="me" href="#tai-khoan-nhat-ky"><div class="av">TL</div><div><b>Thầy Thiên Lương</b><div class="tmeta">Chủ website</div></div></a></div>
+  </div>
+  <div class="wrap">
+<section class="card"><h2>Người được vào trang quản trị <small>2 tài khoản</small><div class="sp"><span class="btn sm">+ Thêm tài khoản</span></div></h2><table><thead><tr><th>Người dùng</th><th>Email đăng nhập</th><th>Vai trò</th><th>Lần vào gần nhất</th><th>Trạng thái</th><th style="text-align:right;width:150px"></th></tr></thead><tbody><tr><td><b>Thầy Thiên Lương</b><div class="tmeta">Chủ website</div></td><td>thay@thienluong.vn</td><td><span class="badge b-info">Quản trị</span></td><td>09:12 hôm nay</td><td><span class="badge b-ok">● Đang bật</span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr><tr><td><b>Trợ lý nội dung</b><div class="tmeta">Sửa chữ, không đổi an sao</div></td><td>troly@thienluong.vn</td><td><span class="badge b-off">Biên tập</span></td><td>18/11 20:40</td><td><span class="badge b-ok">● Đang bật</span></td><td class="act"><a class="btn sm" href="#xac-nhan-xoa">✎ Sửa</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa</a></td></tr></tbody></table></section>
+<div class="grid g2">
+  <section class="card"><h2>Thêm tài khoản</h2><div class="pad">
+    <div class="f"><label>Tên hiển thị</label><div class="inp ">Nguyễn Văn A</div></div>
+    <div class="f"><label>Email đăng nhập</label><div class="inp ">nguyenvana@thienluong.vn</div></div>
+    <div class="f"><label>Vai trò</label><div class="sel">Biên tập — sửa chữ, không đổi tùy chọn an sao</div></div>
+    <div class="hint"><b>Quản trị:</b> sửa mọi thứ, kể cả tùy chọn an sao và tài khoản.<br><b>Biên tập:</b> sửa chữ và ảnh, không đụng được phần an sao.</div>
+    <div style="display:flex;gap:8px;margin-top:10px"><span class="btn p">+ Gửi lời mời</span><span class="btn">Hủy</span></div></div></section>
+  <section class="card"><h2>Thùng rác <small>giữ 30 ngày rồi tự xóa hẳn</small></h2><table><thead><tr><th>Mục đã xóa</th><th>Xóa lúc</th><th style="text-align:right;width:160px"></th></tr></thead><tbody><tr><td><b>Ô số liệu “1 chạm”</b><div class="tmeta">Khối giới thiệu · trang chủ</div></td><td>18/11 21:40</td><td class="act"><a class="btn sm" href="#trang-chu">↺ Phục hồi</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa hẳn</a></td></tr><tr><td><b>Kênh liên hệ “Điện thoại”</b><div class="tmeta">Liên hệ & nút CTA</div></td><td>12/11 09:20</td><td class="act"><a class="btn sm" href="#lien-he-cta">↺ Phục hồi</a> <a class="btn sm d" href="#xac-nhan-xoa">🗑 Xóa hẳn</a></td></tr></tbody></table></section>
+</div>
+<section class="card"><h2>Nhật ký thay đổi <small>ai sửa gì, lúc nào</small></h2><table><thead><tr><th>Thời điểm</th><th>Người sửa</th><th>Việc đã làm</th><th>Khu vực nội dung</th><th style="text-align:right;width:110px"></th></tr></thead><tbody><tr><td>09:05 hôm nay</td><td>Thầy Thiên Lương</td><td><span class="badge b-warn">Sửa</span> tiêu đề lớn</td><td>Khối giới thiệu · trang chủ</td><td class="act"><a class="btn sm" href="#trang-chu">✎ Sửa</a></td></tr><tr><td>18/11 21:50</td><td>Thầy Thiên Lương</td><td><span class="badge b-ok">Phát hành</span> bản v1.0.13</td><td>Toàn site</td><td class="act"><a class="btn sm" href="#tong-quan">✎ Sửa</a></td></tr><tr><td>18/11 21:40</td><td>Trợ lý nội dung</td><td><span class="badge b-dan">Xóa</span> ô số liệu “1 chạm”</td><td>Khối giới thiệu · trang chủ</td><td class="act"><a class="btn sm" href="#trang-chu">✎ Sửa</a></td></tr><tr><td>12/11 09:20</td><td>Thầy Thiên Lương</td><td><span class="badge b-info">Thêm</span> kênh liên hệ Messenger</td><td>Liên hệ & nút CTA</td><td class="act"><a class="btn sm" href="#lien-he-cta">✎ Sửa</a></td></tr></tbody></table></section></div>
+</div>
+</div>
+</section>
+
+<div class="tip">Bản xem thử · bấm menu bên trái để đi các màn</div>
+
+<script>
+(function () {
+  var DEFAULT = 'dang-nhap';
+  function show() {
+    var id = (location.hash || '').replace(/^#/, '') || DEFAULT;
+    var el = document.getElementById(id) || document.getElementById(DEFAULT);
+    var all = document.querySelectorAll('.screen');
+    for (var i = 0; i < all.length; i++) all[i].className = 'screen' + (all[i] === el ? ' on' : '');
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', show);
+  if (/[?&]clean/.test(location.search)) document.body.className = 'clean';
+  show();
+}());
+</script>
+</body></html>

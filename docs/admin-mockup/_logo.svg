@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Thiên Lương">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0dba8"/>
+      <stop offset="0.55" stop-color="#d9b96f"/>
+      <stop offset="1" stop-color="#ac8a3b"/>
+    </linearGradient>
+    <linearGradient id="dg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c3a259"/>
+      <stop offset="1" stop-color="#8f6f2b"/>
+    </linearGradient>
+  </defs>
+  <!-- khung vuông + vòng tròn -->
+  <rect x="3" y="3" width="94" height="94" fill="none" stroke="url(#lg)" stroke-width="2.6"/>
+  <circle cx="50" cy="50" r="38.5" fill="none" stroke="url(#lg)" stroke-width="2.2"/>
+  <!-- 4 cánh ngắn (chéo) -->
+  <g fill="url(#dg)">
+    <polygon points="68,32 52.6,47.4 47.4,52.6"/>
+    <polygon points="68,68 52.6,52.6 47.4,47.4"/>
+    <polygon points="32,68 47.4,52.6 52.6,47.4"/>
+    <polygon points="32,32 47.4,47.4 52.6,52.6"/>
+  </g>
+  <!-- 4 cánh dài (chính) -->
+  <g>
+    <polygon points="50,7 44.6,50 50,50" fill="url(#dg)"/>
+    <polygon points="50,7 55.4,50 50,50" fill="url(#lg)"/>
+    <polygon points="93,50 50,44.6 50,50" fill="url(#lg)"/>
+    <polygon points="93,50 50,55.4 50,50" fill="url(#dg)"/>
+    <polygon points="50,93 55.4,50 50,50" fill="url(#dg)"/>
+    <polygon points="50,93 44.6,50 50,50" fill="url(#lg)"/>
+    <polygon points="7,50 50,55.4 50,50" fill="url(#lg)"/>
+    <polygon points="7,50 50,44.6 50,50" fill="url(#dg)"/>
+  </g>
+  <circle cx="50" cy="50" r="4.6" fill="#3a2060" stroke="url(#lg)" stroke-width="1.6"/>
+</svg>
