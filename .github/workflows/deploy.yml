@@ -22,6 +22,7 @@ concurrency:
 
 env:
   PAGES_PROJECT: tuvithienluong
+  SITE_HOST: tuvithienluong.vn
 
 jobs:
   deploy:
@@ -123,3 +124,29 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ steps.cf.outputs.id }}
+
+      # Gỡ một trang khỏi dist/ thôi là chưa đủ: bản cũ còn nằm trong cache biên của
+      # Cloudflare và vẫn mở được ở đường dẫn sạch. Xoá cache cho chắc. Bước này chỉ
+      # CẢNH BÁO nếu token không đủ quyền — bản vừa đẩy lên đã đúng rồi, không việc gì
+      # phải đánh đỏ cả lần deploy.
+      - name: Xoá cache biên
+        continue-on-error: true
+        run: |
+          z=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/zones?name=$SITE_HOST")
+          zid=$(echo "$z" | jq -r '.result[0].id // empty')
+          if [ -z "$zid" ]; then
+            echo "::warning title=Chưa xoá được cache::Token không đọc được zone $SITE_HOST (cần quyền Zone · Zone · Read + Zone · Cache Purge · Purge). Nếu vừa gỡ trang nào, vào dash.cloudflare.com -> $SITE_HOST -> Caching -> Purge Everything."
+            exit 0
+          fi
+          kq=$(curl -s -X POST -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            -H "Content-Type: application/json" --data '{"purge_everything":true}' \
+            "https://api.cloudflare.com/client/v4/zones/$zid/purge_cache")
+          if [ "$(echo "$kq" | jq -r '.success')" = "true" ]; then
+            echo "Đã xoá cache biên của $SITE_HOST."
+          else
+            echo "$kq" | jq -r '.errors[]? | "  code \(.code): \(.message)"'
+            echo "::warning title=Chưa xoá được cache::Thêm quyền Zone · Cache Purge · Purge cho token, hoặc Purge Everything bằng tay trên dashboard."
+          fi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

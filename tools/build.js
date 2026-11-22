@@ -235,6 +235,14 @@ function build() {
   // 5. _headers (Cloudflare Pages / Netlify đều đọc file này)
   //    Link CSS/JS trong HTML đã mang ?v=<mã nội dung> nên sửa là khách tải bản mới ngay;
   //    vẫn giữ 1 ngày vì ảnh và file JS tự chèn (logo.svg) không mang mã.
+  //
+  //    Phần HTML phải liệt kê TỪNG đường dẫn, cả bản có .html lẫn bản sạch.
+  //    Cloudflare Pages phục vụ `la-so.html` ở cả /la-so.html và /la-so, nhưng quy tắc
+  //    `/*.html` chỉ khớp bản có đuôi; bản sạch rơi vào mặc định của Cloudflare là
+  //    s-maxage=604800 — tức sửa trang xong khách vẫn thấy bản cũ tới 7 ngày, và trang
+  //    đã gỡ vẫn còn mở được ở biên. Đây đúng là chuyện đã xảy ra với /bang-gia.
+  const duongDanHtml = ['/'].concat(PAGES.flatMap((f) =>
+    f === 'index.html' ? ['/index.html'] : ['/' + f, '/' + f.replace(/\.html$/, '')]));
   write('_headers',
     '/assets/*\n' +
     '  Cache-Control: public, max-age=86400\n' +
@@ -244,8 +252,7 @@ function build() {
     '  Referrer-Policy: strict-origin-when-cross-origin\n' +
     '  X-Frame-Options: SAMEORIGIN\n' +
     '\n' +
-    '/*.html\n' +
-    '  Cache-Control: public, max-age=0, must-revalidate\n');
+    duongDanHtml.map((d) => d + '\n  Cache-Control: public, max-age=0, must-revalidate\n').join('\n'));
 
   verify();
 
