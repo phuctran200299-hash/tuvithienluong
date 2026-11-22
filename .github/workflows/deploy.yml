@@ -29,9 +29,9 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
 
@@ -58,6 +58,19 @@ jobs:
             echo "Tạo lại token: dash.cloudflare.com -> My Profile -> API Tokens -> Create Token,"
             echo "quyền Account · Cloudflare Pages · Edit. Rồi: gh secret set CLOUDFLARE_API_TOKEN"
             exit 1
+          fi
+          # Token hết hạn giữa chừng cũng làm deploy đỏ — nhắc trước 14 ngày.
+          tk=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/user/tokens/verify")
+          het=$(echo "$tk" | jq -r '.result.expires_on // empty')
+          if [ -n "$het" ]; then
+            con=$(( ( $(date -u -d "$het" +%s) - $(date -u +%s) ) / 86400 ))
+            echo "Token hết hạn ngày $het (còn $con ngày)."
+            if [ "$con" -lt 14 ]; then
+              echo "::warning title=Token Cloudflare sắp hết hạn::Còn $con ngày. Tạo token mới (Account · Cloudflare Pages · Edit) rồi chạy: gh secret set CLOUDFLARE_API_TOKEN"
+            fi
+          else
+            echo "Token không đặt ngày hết hạn."
           fi
           so=$(echo "$ds" | jq -r '.result | length')
           echo "Token nhìn thấy $so tài khoản."
